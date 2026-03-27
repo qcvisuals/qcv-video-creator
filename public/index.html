@@ -24,6 +24,17 @@ body{font-family:Georgia,serif;background:#f5f5f3;color:#1a1a1a;}
 .field-label{font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:#888;margin-bottom:6px;}
 input[type=text]{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:Georgia,serif;background:#fff;}
 input:focus{outline:none;border-color:#1a1a1a;}
+.dd-wrap{position:relative;width:100%;}
+.dd-btn{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:14px;font-family:Georgia,serif;color:#1a1a1a;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color 0.15s;}
+.dd-btn:hover{border-color:#1a1a1a;}
+.dd-btn.open{border-color:#F47920;border-bottom-left-radius:0;border-bottom-right-radius:0;}
+.dd-arrow{font-size:10px;color:#999;transition:transform 0.15s;}
+.dd-btn.open .dd-arrow{transform:rotate(180deg);}
+.dd-list{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #F47920;border-top:none;border-bottom-left-radius:6px;border-bottom-right-radius:6px;z-index:100;}
+.dd-list.open{display:block;}
+.dd-item{padding:10px 14px;font-size:14px;font-family:Georgia,serif;color:#444;cursor:pointer;transition:background 0.1s;}
+.dd-item:hover{background:#f5f5f3;}
+.dd-item.active{background:#1a1a1a;color:#fff;}
 .upload-area{border:2px dashed #ddd;border-radius:8px;padding:30px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:12px;}
 .upload-area:hover{border-color:#F47920;}
 .upload-area p{font-size:14px;color:#888;margin-bottom:4px;}
@@ -31,16 +42,20 @@ input:focus{outline:none;border-color:#1a1a1a;}
 .photo-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
 .photo-thumb{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #ddd;}
 .option-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
-.opt-btn{padding:12px 8px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;font-family:Georgia,serif;color:#666;text-align:center;transition:all 0.15s;}
+.option-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px;}
+.opt-btn{padding:12px 8px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;font-family:Georgia,serif;color:#666;text-align:center;transition:all 0.15s;line-height:1.4;}
 .opt-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
 .opt-btn:hover:not(.active){border-color:#1a1a1a;color:#1a1a1a;}
 .btn{width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-size:14px;letter-spacing:0.05em;cursor:pointer;font-family:Georgia,serif;margin-top:8px;transition:opacity 0.15s;}
 .btn:hover{opacity:0.8;}
 .btn:disabled{opacity:0.4;cursor:default;}
 .progress-wrap{display:none;margin-top:20px;}
-.progress-label{font-size:13px;color:#666;margin-bottom:8px;}
-.progress-bar{background:#f0f0f0;border-radius:20px;height:8px;overflow:hidden;}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.progress-label{font-size:13px;color:#666;}
+.progress-pct{font-size:13px;font-weight:600;color:#F47920;}
+.progress-bar{background:#f0f0f0;border-radius:20px;height:10px;overflow:hidden;}
 .progress-fill{background:#F47920;height:100%;border-radius:20px;transition:width 0.5s ease;width:0%;}
+.progress-note{font-size:11px;color:#bbb;margin-top:8px;text-align:center;}
 .result{display:none;text-align:center;padding:32px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:20px;}
 .result h3{font-size:20px;font-weight:400;margin-bottom:8px;}
 .result p{font-size:14px;color:#888;margin-bottom:24px;}
@@ -67,7 +82,7 @@ input:focus{outline:none;border-color:#1a1a1a;}
   <div class="gate-wrap">
     <div class="gate-card">
       <h2>Create Your Property Video</h2>
-      <p>Professional listing videos with Ken Burns effects, text overlays, and your branding — ready in 60 seconds.</p>
+      <p>Professional listing videos with Ken Burns effects, text overlays, and your branding — ready in under 2 minutes.</p>
       <input class="gate-input" type="text" id="gname" placeholder="Your Name" />
       <input class="gate-input" type="email" id="gemail" placeholder="Your Email" />
       <button class="gate-btn" onclick="gateSubmit()">Get Started Free</button>
@@ -77,12 +92,12 @@ input:focus{outline:none;border-color:#1a1a1a;}
 <div id="main-content">
   <div class="hero">
     <h2>Property Video Creator</h2>
-    <p>Upload your listing photos, fill in the details, and download a branded property video in under 60 seconds.</p>
+    <p>Upload your listing photos, fill in the details, and download a branded property video in under 2 minutes.</p>
   </div>
   <div class="container">
     <div class="card">
       <h3>Upload Photos</h3>
-      <p>Upload 8 to 10 listing photos. Best results with high resolution images.</p>
+      <p>Upload 8 to 10 listing photos. High resolution gives the best results.</p>
       <div class="upload-area" onclick="document.getElementById('photos-input').click()">
         <p>Click to upload listing photos</p><span>JPG or PNG · 8-10 photos</span>
       </div>
@@ -104,12 +119,33 @@ input:focus{outline:none;border-color:#1a1a1a;}
       <div class="grid2">
         <div class="full"><div class="field-label">Property Address</div><input type="text" id="address" placeholder="123 Peachtree St NE, Atlanta, GA" /></div>
         <div><div class="field-label">List Price</div><input type="text" id="price" placeholder="$1,250,000" /></div>
-        <div><div class="field-label">Beds</div><input type="text" id="beds" placeholder="4" /></div>
-        <div><div class="field-label">Baths</div><input type="text" id="baths" placeholder="3" /></div>
+        <div>
+          <div class="field-label">Bedrooms</div>
+          <div class="dd-wrap">
+            <button class="dd-btn" id="bed-btn" onclick="toggleDD('bed')"><span id="bed-label">4 Beds</span><span class="dd-arrow">▼</span></button>
+            <div class="dd-list" id="bed-list"></div>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Bathrooms</div>
+          <div class="dd-wrap">
+            <button class="dd-btn" id="bath-btn" onclick="toggleDD('bath')"><span id="bath-label">3 Baths</span><span class="dd-arrow">▼</span></button>
+            <div class="dd-list" id="bath-list"></div>
+          </div>
+        </div>
         <div><div class="field-label">Square Footage</div><input type="text" id="sqft" placeholder="3,200 sq ft" /></div>
-        <div class="full"><div class="field-label">Custom Tagline</div><input type="text" id="tagline" placeholder="Just Listed - Stunning Views" /></div>
+        <div class="full"><div class="field-label">Custom Tagline</div><input type="text" id="tagline" placeholder="Just Listed — Stunning Views" /></div>
         <div><div class="field-label">Agent Name</div><input type="text" id="agentName" placeholder="Sarah Johnson" /></div>
         <div><div class="field-label">Agent Phone</div><input type="text" id="agentPhone" placeholder="(404) 555-0100" /></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Transition Style</h3>
+      <p>Choose how photos transition from one to the next.</p>
+      <div class="option-grid-3" id="transition-grid">
+        <button class="opt-btn active" onclick="setOption('transition',this)">Fade<br><span style="font-size:10px;opacity:0.6;">Smooth &amp; Classic</span></button>
+        <button class="opt-btn" onclick="setOption('transition',this)">Cut<br><span style="font-size:10px;opacity:0.6;">Sharp &amp; Modern</span></button>
+        <button class="opt-btn" onclick="setOption('transition',this)">Dissolve<br><span style="font-size:10px;opacity:0.6;">Soft &amp; Elegant</span></button>
       </div>
     </div>
     <div class="card">
@@ -134,8 +170,12 @@ input:focus{outline:none;border-color:#1a1a1a;}
     </div>
     <button class="btn" id="generate-btn" onclick="generateVideo()">Generate My Property Video</button>
     <div class="progress-wrap" id="progress-wrap">
-      <div class="progress-label" id="progress-label">Processing...</div>
+      <div class="progress-top">
+        <span class="progress-label" id="progress-label">Getting everything ready...</span>
+        <span class="progress-pct" id="progress-pct">0%</span>
+      </div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="progress-note">Videos typically take 60–90 seconds to render. You can leave this page open.</div>
     </div>
     <div class="result" id="result">
       <h3>Your Video Is Ready</h3>
@@ -145,14 +185,48 @@ input:focus{outline:none;border-color:#1a1a1a;}
   </div>
 </div>
 <script>
-var selectedPhotos=[],selectedLogo=null,selectedMusic='Cinematic',selectedFormat='9x16',currentJobId=null;
+var selectedPhotos=[],selectedLogo=null,selectedMusic='Cinematic',selectedFormat='9x16',selectedTransition='Fade',selectedBeds=4,selectedBaths=3,currentJobId=null;
 var formatMap={'9x16 Reels':'9x16','4x5 Feed':'4x5','1x1 Square':'1x1','16x9 YouTube':'16x9'};
+
+function buildDD(id,type,def){
+  var list=document.getElementById(id+'-list');
+  list.innerHTML='';
+  for(var i=1;i<=10;i++){
+    var div=document.createElement('div');
+    div.className='dd-item'+(i===def?' active':'');
+    div.textContent=i+' '+(type==='bed'?'Bed':'Bath')+(i===1?'':'s');
+    var val=i;
+    div.onclick=(function(v){return function(){selectDD(id,type,v);};})(val);
+    list.appendChild(div);
+  }
+}
+function toggleDD(id){
+  var btn=document.getElementById(id+'-btn');
+  var list=document.getElementById(id+'-list');
+  var isOpen=list.classList.contains('open');
+  document.querySelectorAll('.dd-list.open').forEach(function(l){l.classList.remove('open');});
+  document.querySelectorAll('.dd-btn.open').forEach(function(b){b.classList.remove('open');});
+  if(!isOpen){list.classList.add('open');btn.classList.add('open');}
+}
+function selectDD(id,type,val){
+  var label=val+' '+(type==='bed'?'Bed':'Bath')+(val===1?'':'s');
+  document.getElementById(id+'-label').textContent=label;
+  document.getElementById(id+'-list').querySelectorAll('.dd-item').forEach(function(i){i.classList.remove('active');if(parseInt(i.textContent)===val)i.classList.add('active');});
+  document.getElementById(id+'-list').classList.remove('open');
+  document.getElementById(id+'-btn').classList.remove('open');
+  if(type==='bed')selectedBeds=val;
+  else selectedBaths=val;
+}
+document.addEventListener('click',function(e){if(!e.target.closest('.dd-wrap')){document.querySelectorAll('.dd-list.open').forEach(function(l){l.classList.remove('open');});document.querySelectorAll('.dd-btn.open').forEach(function(b){b.classList.remove('open');});}});
+
 function gateSubmit(){
   var n=document.getElementById('gname').value.trim(),e=document.getElementById('gemail').value.trim();
   if(!n||!e){alert('Please enter your name and email.');return;}
   fetch('https://formspree.io/f/mwvwekvj',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,source:'QCV Video Creator'})});
   document.getElementById('gate').style.display='none';
   document.getElementById('main-content').style.display='block';
+  buildDD('bed','bed',4);
+  buildDD('bath','bath',3);
 }
 function handlePhotos(e){
   var files=Array.from(e.target.files);
@@ -166,30 +240,35 @@ function handleLogo(e){
   if(selectedLogo){var img=document.getElementById('logo-preview');img.src=URL.createObjectURL(selectedLogo);img.style.display='block';}
 }
 function setOption(type,btn){
-  var g=type==='music'?'music-grid':'format-grid';
-  document.getElementById(g).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('active');});
+  var grids={'music':'music-grid','format':'format-grid','transition':'transition-grid'};
+  document.getElementById(grids[type]).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  if(type==='music')selectedMusic=btn.textContent.trim();
-  else selectedFormat=formatMap[btn.textContent.trim()]||'9x16';
+  if(type==='music')selectedMusic=btn.textContent.trim().split('\n')[0];
+  else if(type==='format')selectedFormat=formatMap[btn.textContent.trim().replace(/\s+/g,' ')]||'9x16';
+  else if(type==='transition')selectedTransition=btn.textContent.trim().split('\n')[0];
 }
 async function generateVideo(){
   if(selectedPhotos.length<8){alert('Please upload 8-10 listing photos first.');return;}
   document.getElementById('generate-btn').disabled=true;
   document.getElementById('progress-wrap').style.display='block';
   document.getElementById('result').style.display='none';
+  document.getElementById('progress-fill').style.width='0%';
+  document.getElementById('progress-pct').textContent='0%';
+  document.getElementById('progress-label').textContent='Getting everything ready...';
   var fd=new FormData();
   selectedPhotos.forEach(function(f){fd.append('photos',f);});
   if(selectedLogo)fd.append('logo',selectedLogo);
   fd.append('address',document.getElementById('address').value);
   fd.append('price',document.getElementById('price').value);
-  fd.append('beds',document.getElementById('beds').value);
-  fd.append('baths',document.getElementById('baths').value);
+  fd.append('beds',String(selectedBeds));
+  fd.append('baths',String(selectedBaths));
   fd.append('sqft',document.getElementById('sqft').value);
   fd.append('tagline',document.getElementById('tagline').value);
   fd.append('agentName',document.getElementById('agentName').value);
   fd.append('agentPhone',document.getElementById('agentPhone').value);
   fd.append('musicMood',selectedMusic);
   fd.append('videoFormat',selectedFormat);
+  fd.append('transition',selectedTransition);
   try{
     var res=await fetch('/api/generate-video',{method:'POST',body:fd});
     var data=await res.json();
@@ -203,11 +282,12 @@ function pollStatus(){
       var res=await fetch('/api/status/'+currentJobId);
       var data=await res.json();
       document.getElementById('progress-fill').style.width=data.progress+'%';
+      document.getElementById('progress-pct').textContent=data.progress+'%';
       document.getElementById('progress-label').textContent=data.message||'Processing...';
       if(data.status==='complete'){clearInterval(iv);document.getElementById('result').style.display='block';document.getElementById('generate-btn').disabled=false;}
       else if(data.status==='error'){clearInterval(iv);alert('Error: '+data.message);document.getElementById('generate-btn').disabled=false;document.getElementById('progress-wrap').style.display='none';}
     }catch(e){clearInterval(iv);}
-  },2500);
+  },2000);
 }
 function downloadVideo(){
   var mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
