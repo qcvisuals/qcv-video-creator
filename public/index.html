@@ -25,14 +25,14 @@ body{font-family:Georgia,serif;background:#f5f5f3;color:#1a1a1a;}
 input[type=text]{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:Georgia,serif;background:#fff;}
 input:focus{outline:none;border-color:#1a1a1a;}
 .dd-wrap{position:relative;width:100%;}
-.dd-btn{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:14px;font-family:Georgia,serif;color:#1a1a1a;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:border-color 0.15s;}
-.dd-btn:hover{border-color:#1a1a1a;}
-.dd-btn.open{border-color:#F47920;border-bottom-left-radius:0;border-bottom-right-radius:0;}
+.dd-btn{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:14px;font-family:Georgia,serif;color:#1a1a1a;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;}
+.dd-btn:hover,.dd-btn.open{border-color:#F47920;}
+.dd-btn.open{border-bottom-left-radius:0;border-bottom-right-radius:0;}
 .dd-arrow{font-size:10px;color:#999;transition:transform 0.15s;}
 .dd-btn.open .dd-arrow{transform:rotate(180deg);}
-.dd-list{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #F47920;border-top:none;border-bottom-left-radius:6px;border-bottom-right-radius:6px;z-index:100;}
+.dd-list{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #F47920;border-top:none;border-bottom-left-radius:6px;border-bottom-right-radius:6px;z-index:100;max-height:200px;overflow-y:auto;}
 .dd-list.open{display:block;}
-.dd-item{padding:10px 14px;font-size:14px;font-family:Georgia,serif;color:#444;cursor:pointer;transition:background 0.1s;}
+.dd-item{padding:10px 14px;font-size:14px;font-family:Georgia,serif;color:#444;cursor:pointer;}
 .dd-item:hover{background:#f5f5f3;}
 .dd-item.active{background:#1a1a1a;color:#fff;}
 .upload-area{border:2px dashed #ddd;border-radius:8px;padding:30px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:12px;}
@@ -49,13 +49,18 @@ input:focus{outline:none;border-color:#1a1a1a;}
 .btn{width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-size:14px;letter-spacing:0.05em;cursor:pointer;font-family:Georgia,serif;margin-top:8px;transition:opacity 0.15s;}
 .btn:hover{opacity:0.8;}
 .btn:disabled{opacity:0.4;cursor:default;}
-.progress-wrap{display:none;margin-top:20px;}
-.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
-.progress-label{font-size:13px;color:#666;}
-.progress-pct{font-size:13px;font-weight:600;color:#F47920;}
-.progress-bar{background:#f0f0f0;border-radius:20px;height:10px;overflow:hidden;}
-.progress-fill{background:#F47920;height:100%;border-radius:20px;transition:width 0.5s ease;width:0%;}
-.progress-note{font-size:11px;color:#bbb;margin-top:8px;text-align:center;}
+.progress-wrap{display:none;margin-top:20px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:24px;}
+.progress-stage{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#F47920;font-weight:600;margin-bottom:10px;}
+.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.progress-label{font-size:14px;color:#1a1a1a;}
+.progress-pct{font-size:22px;font-weight:600;color:#F47920;}
+.progress-bar{background:#f0f0f0;border-radius:20px;height:12px;overflow:hidden;margin-bottom:14px;}
+.progress-fill{background:#F47920;height:100%;border-radius:20px;transition:width 0.4s ease;width:0%;}
+.steps{display:flex;gap:6px;flex-wrap:wrap;}
+.step{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid #ddd;color:#bbb;transition:all 0.3s;}
+.step.active{background:#F47920;color:#fff;border-color:#F47920;}
+.step.done{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+.progress-note{font-size:11px;color:#bbb;margin-top:12px;text-align:center;}
 .result{display:none;text-align:center;padding:32px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:20px;}
 .result h3{font-size:20px;font-weight:400;margin-bottom:8px;}
 .result p{font-size:14px;color:#888;margin-bottom:24px;}
@@ -65,12 +70,12 @@ input:focus{outline:none;border-color:#1a1a1a;}
 .gate-wrap{max-width:480px;margin:60px auto;padding:0 20px;}
 .gate-card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:48px 40px;text-align:center;}
 .gate-card h2{font-size:24px;font-weight:400;margin-bottom:8px;}
-.gate-card p{font-size:14px;color:#666;margin-bottom:28px;line-height:1.6;}
+.gate-card>p{font-size:14px;color:#666;margin-bottom:28px;line-height:1.6;}
 .gate-input{width:100%;background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:14px 16px;font-size:14px;color:#111;font-family:Georgia,serif;margin-bottom:12px;outline:none;}
 .gate-input:focus{border-color:#F47920;}
 .gate-btn{width:100%;padding:15px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-family:Georgia,serif;cursor:pointer;}
 .gate-btn:hover{background:#F47920;}
-.logo-preview-img{max-height:60px;max-width:180px;object-fit:contain;margin-top:8px;display:none;}
+.logo-prev{max-height:60px;max-width:180px;object-fit:contain;margin-top:8px;display:none;}
 </style>
 </head>
 <body>
@@ -83,139 +88,114 @@ input:focus{outline:none;border-color:#1a1a1a;}
     <div class="gate-card">
       <h2>Create Your Property Video</h2>
       <p>Professional listing videos with Ken Burns effects, text overlays, and your branding — ready in under 2 minutes.</p>
-      <input class="gate-input" type="text" id="gname" placeholder="Your Name" />
-      <input class="gate-input" type="email" id="gemail" placeholder="Your Email" />
+      <input class="gate-input" type="text" id="gname" placeholder="Your Name"/>
+      <input class="gate-input" type="email" id="gemail" placeholder="Your Email"/>
       <button class="gate-btn" onclick="gateSubmit()">Get Started Free</button>
     </div>
   </div>
 </div>
 <div id="main-content">
-  <div class="hero">
-    <h2>Property Video Creator</h2>
-    <p>Upload your listing photos, fill in the details, and download a branded property video in under 2 minutes.</p>
-  </div>
+  <div class="hero"><h2>Property Video Creator</h2><p>Upload your listing photos, fill in the details, and download a branded property video in under 2 minutes.</p></div>
   <div class="container">
     <div class="card">
-      <h3>Upload Photos</h3>
-      <p>Upload 8 to 10 listing photos. High resolution gives the best results.</p>
-      <div class="upload-area" onclick="document.getElementById('photos-input').click()">
-        <p>Click to upload listing photos</p><span>JPG or PNG · 8-10 photos</span>
-      </div>
-      <input type="file" id="photos-input" accept="image/*" multiple style="display:none;" onchange="handlePhotos(event)" />
-      <div class="photo-previews" id="photo-previews"></div>
+      <h3>Upload Photos</h3><p>Upload 8 to 10 listing photos. High resolution gives the best results.</p>
+      <div class="upload-area" onclick="document.getElementById('pi').click()"><p>Click to upload listing photos</p><span>JPG or PNG · 8-10 photos</span></div>
+      <input type="file" id="pi" accept="image/*" multiple style="display:none;" onchange="handlePhotos(event)"/>
+      <div class="photo-previews" id="pp"></div>
     </div>
     <div class="card">
-      <h3>Agent Logo</h3>
-      <p>Upload your brokerage or personal logo. PNG with transparent background works best.</p>
-      <div class="upload-area" onclick="document.getElementById('logo-input').click()">
-        <p>Click to upload agent logo</p><span>PNG recommended</span>
-      </div>
-      <input type="file" id="logo-input" accept="image/*" style="display:none;" onchange="handleLogo(event)" />
-      <img id="logo-preview" class="logo-preview-img" />
+      <h3>Agent Logo</h3><p>Upload your brokerage or personal logo. PNG with transparent background works best.</p>
+      <div class="upload-area" onclick="document.getElementById('li').click()"><p>Click to upload agent logo</p><span>PNG recommended</span></div>
+      <input type="file" id="li" accept="image/*" style="display:none;" onchange="handleLogo(event)"/>
+      <img id="lp" class="logo-prev"/>
     </div>
     <div class="card">
-      <h3>Property Details</h3>
-      <p>This information will appear as text overlays in your video.</p>
+      <h3>Property Details</h3><p>This information will appear as text overlays in your video.</p>
       <div class="grid2">
-        <div class="full"><div class="field-label">Property Address</div><input type="text" id="address" placeholder="123 Peachtree St NE, Atlanta, GA" /></div>
-        <div><div class="field-label">List Price</div><input type="text" id="price" placeholder="$1,250,000" /></div>
-        <div>
-          <div class="field-label">Bedrooms</div>
-          <div class="dd-wrap">
-            <button class="dd-btn" id="bed-btn" onclick="toggleDD('bed')"><span id="bed-label">4 Beds</span><span class="dd-arrow">▼</span></button>
-            <div class="dd-list" id="bed-list"></div>
-          </div>
-        </div>
-        <div>
-          <div class="field-label">Bathrooms</div>
-          <div class="dd-wrap">
-            <button class="dd-btn" id="bath-btn" onclick="toggleDD('bath')"><span id="bath-label">3 Baths</span><span class="dd-arrow">▼</span></button>
-            <div class="dd-list" id="bath-list"></div>
-          </div>
-        </div>
-        <div><div class="field-label">Square Footage</div><input type="text" id="sqft" placeholder="3,200 sq ft" /></div>
-        <div class="full"><div class="field-label">Custom Tagline</div><input type="text" id="tagline" placeholder="Just Listed — Stunning Views" /></div>
-        <div><div class="field-label">Agent Name</div><input type="text" id="agentName" placeholder="Sarah Johnson" /></div>
-        <div><div class="field-label">Agent Phone</div><input type="text" id="agentPhone" placeholder="(404) 555-0100" /></div>
+        <div class="full"><div class="field-label">Property Address</div><input type="text" id="address" placeholder="123 Peachtree St NE, Atlanta, GA"/></div>
+        <div><div class="field-label">List Price</div><input type="text" id="price" placeholder="$1,250,000"/></div>
+        <div><div class="field-label">Bedrooms</div><div class="dd-wrap"><button class="dd-btn" id="bed-btn" onclick="toggleDD('bed')"><span id="bed-label">4 Beds</span><span class="dd-arrow">&#9660;</span></button><div class="dd-list" id="bed-list"></div></div></div>
+        <div><div class="field-label">Bathrooms</div><div class="dd-wrap"><button class="dd-btn" id="bath-btn" onclick="toggleDD('bath')"><span id="bath-label">3 Baths</span><span class="dd-arrow">&#9660;</span></button><div class="dd-list" id="bath-list"></div></div></div>
+        <div><div class="field-label">Square Footage</div><input type="text" id="sqft" placeholder="3,200 sq ft"/></div>
+        <div class="full"><div class="field-label">Custom Tagline</div><input type="text" id="tagline" placeholder="Just Listed — Stunning Views"/></div>
+        <div><div class="field-label">Agent Name</div><input type="text" id="agentName" placeholder="Sarah Johnson"/></div>
+        <div><div class="field-label">Agent Phone</div><input type="text" id="agentPhone" placeholder="(404) 555-0100"/></div>
       </div>
     </div>
     <div class="card">
-      <h3>Transition Style</h3>
-      <p>Choose how photos transition from one to the next.</p>
-      <div class="option-grid-3" id="transition-grid">
-        <button class="opt-btn active" onclick="setOption('transition',this)">Fade<br><span style="font-size:10px;opacity:0.6;">Smooth &amp; Classic</span></button>
-        <button class="opt-btn" onclick="setOption('transition',this)">Cut<br><span style="font-size:10px;opacity:0.6;">Sharp &amp; Modern</span></button>
-        <button class="opt-btn" onclick="setOption('transition',this)">Dissolve<br><span style="font-size:10px;opacity:0.6;">Soft &amp; Elegant</span></button>
+      <h3>Transition Style</h3><p>How your photos move from one to the next.</p>
+      <div class="option-grid-3" id="tg">
+        <button class="opt-btn active" onclick="setOpt('t',this)">Fade<br><span style="font-size:10px;opacity:0.6;">Smooth &amp; Classic</span></button>
+        <button class="opt-btn" onclick="setOpt('t',this)">Cut<br><span style="font-size:10px;opacity:0.6;">Sharp &amp; Modern</span></button>
+        <button class="opt-btn" onclick="setOpt('t',this)">Dissolve<br><span style="font-size:10px;opacity:0.6;">Soft &amp; Elegant</span></button>
       </div>
     </div>
     <div class="card">
-      <h3>Music Mood</h3>
-      <p>Choose the background music style for your video.</p>
-      <div class="option-grid" id="music-grid">
-        <button class="opt-btn active" onclick="setOption('music',this)">Cinematic</button>
-        <button class="opt-btn" onclick="setOption('music',this)">Upbeat</button>
-        <button class="opt-btn" onclick="setOption('music',this)">Elegant</button>
-        <button class="opt-btn" onclick="setOption('music',this)">Dramatic</button>
+      <h3>Music Mood</h3><p>Choose the background music style for your video.</p>
+      <div class="option-grid" id="mg">
+        <button class="opt-btn active" onclick="setOpt('m',this)">Cinematic</button>
+        <button class="opt-btn" onclick="setOpt('m',this)">Upbeat</button>
+        <button class="opt-btn" onclick="setOpt('m',this)">Elegant</button>
+        <button class="opt-btn" onclick="setOpt('m',this)">Dramatic</button>
       </div>
     </div>
     <div class="card">
-      <h3>Video Format</h3>
-      <p>Choose your target platform and aspect ratio.</p>
-      <div class="option-grid" id="format-grid">
-        <button class="opt-btn active" onclick="setOption('format',this)">9x16 Reels</button>
-        <button class="opt-btn" onclick="setOption('format',this)">4x5 Feed</button>
-        <button class="opt-btn" onclick="setOption('format',this)">1x1 Square</button>
-        <button class="opt-btn" onclick="setOption('format',this)">16x9 YouTube</button>
+      <h3>Video Format</h3><p>Choose your target platform and aspect ratio.</p>
+      <div class="option-grid" id="fg">
+        <button class="opt-btn active" onclick="setOpt('f',this)">9x16<br><span style="font-size:10px;opacity:0.6;">Reels</span></button>
+        <button class="opt-btn" onclick="setOpt('f',this)">4x5<br><span style="font-size:10px;opacity:0.6;">Feed</span></button>
+        <button class="opt-btn" onclick="setOpt('f',this)">1x1<br><span style="font-size:10px;opacity:0.6;">Square</span></button>
+        <button class="opt-btn" onclick="setOpt('f',this)">16x9<br><span style="font-size:10px;opacity:0.6;">YouTube</span></button>
       </div>
     </div>
-    <button class="btn" id="generate-btn" onclick="generateVideo()">Generate My Property Video</button>
-    <div class="progress-wrap" id="progress-wrap">
-      <div class="progress-top">
-        <span class="progress-label" id="progress-label">Getting everything ready...</span>
-        <span class="progress-pct" id="progress-pct">0%</span>
+    <button class="btn" id="gb" onclick="generateVideo()">Generate My Property Video</button>
+    <div class="progress-wrap" id="pw">
+      <div class="progress-stage" id="ps">Uploading</div>
+      <div class="progress-top"><span class="progress-label" id="pl">Uploading your photos...</span><span class="progress-pct" id="pp2">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
+      <div class="steps">
+        <span class="step active" id="s-up">Uploading</span>
+        <span class="step" id="s-render">Rendering photos</span>
+        <span class="step" id="s-trans">Transitions</span>
+        <span class="step" id="s-logo">Logo</span>
+        <span class="step" id="s-music">Music</span>
+        <span class="step" id="s-done">Done</span>
       </div>
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="progress-note">Videos typically take 60–90 seconds to render. You can leave this page open.</div>
+      <div class="progress-note">Videos typically take 60-90 seconds to render.</div>
     </div>
     <div class="result" id="result">
       <h3>Your Video Is Ready</h3>
       <p>Your property video has been generated and is ready to download.</p>
-      <button class="download-btn" onclick="downloadVideo()">Download Video</button>
+      <button class="download-btn" onclick="dlVideo()">Download Video</button>
     </div>
   </div>
 </div>
 <script>
-var selectedPhotos=[],selectedLogo=null,selectedMusic='Cinematic',selectedFormat='9x16',selectedTransition='Fade',selectedBeds=4,selectedBaths=3,currentJobId=null;
-var formatMap={'9x16 Reels':'9x16','4x5 Feed':'4x5','1x1 Square':'1x1','16x9 YouTube':'16x9'};
+var photos=[],logo=null,music='Cinematic',fmt='9x16',trans='Fade',beds=4,baths=3,jobId=null;
+var fmtMap={'9x16':'9x16','4x5':'4x5','1x1':'1x1','16x9':'16x9'};
 
 function buildDD(id,type,def){
-  var list=document.getElementById(id+'-list');
-  list.innerHTML='';
+  var l=document.getElementById(id+'-list');l.innerHTML='';
   for(var i=1;i<=10;i++){
-    var div=document.createElement('div');
-    div.className='dd-item'+(i===def?' active':'');
-    div.textContent=i+' '+(type==='bed'?'Bed':'Bath')+(i===1?'':'s');
-    var val=i;
-    div.onclick=(function(v){return function(){selectDD(id,type,v);};})(val);
-    list.appendChild(div);
+    var d=document.createElement('div');d.className='dd-item'+(i===def?' active':'');
+    d.textContent=i+' '+(type==='bed'?'Bed':'Bath')+(i===1?'':'s');
+    (function(v){d.onclick=function(){selDD(id,type,v);};})(i);
+    l.appendChild(d);
   }
 }
 function toggleDD(id){
-  var btn=document.getElementById(id+'-btn');
-  var list=document.getElementById(id+'-list');
-  var isOpen=list.classList.contains('open');
-  document.querySelectorAll('.dd-list.open').forEach(function(l){l.classList.remove('open');});
-  document.querySelectorAll('.dd-btn.open').forEach(function(b){b.classList.remove('open');});
-  if(!isOpen){list.classList.add('open');btn.classList.add('open');}
+  var b=document.getElementById(id+'-btn'),l=document.getElementById(id+'-list');
+  var o=l.classList.contains('open');
+  document.querySelectorAll('.dd-list.open').forEach(function(x){x.classList.remove('open');});
+  document.querySelectorAll('.dd-btn.open').forEach(function(x){x.classList.remove('open');});
+  if(!o){l.classList.add('open');b.classList.add('open');}
 }
-function selectDD(id,type,val){
-  var label=val+' '+(type==='bed'?'Bed':'Bath')+(val===1?'':'s');
-  document.getElementById(id+'-label').textContent=label;
+function selDD(id,type,val){
+  document.getElementById(id+'-label').textContent=val+' '+(type==='bed'?'Bed':'Bath')+(val===1?'':'s');
   document.getElementById(id+'-list').querySelectorAll('.dd-item').forEach(function(i){i.classList.remove('active');if(parseInt(i.textContent)===val)i.classList.add('active');});
   document.getElementById(id+'-list').classList.remove('open');
   document.getElementById(id+'-btn').classList.remove('open');
-  if(type==='bed')selectedBeds=val;
-  else selectedBaths=val;
+  if(type==='bed')beds=val; else baths=val;
 }
 document.addEventListener('click',function(e){if(!e.target.closest('.dd-wrap')){document.querySelectorAll('.dd-list.open').forEach(function(l){l.classList.remove('open');});document.querySelectorAll('.dd-btn.open').forEach(function(b){b.classList.remove('open');});}});
 
@@ -225,74 +205,96 @@ function gateSubmit(){
   fetch('https://formspree.io/f/mwvwekvj',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,source:'QCV Video Creator'})});
   document.getElementById('gate').style.display='none';
   document.getElementById('main-content').style.display='block';
-  buildDD('bed','bed',4);
-  buildDD('bath','bath',3);
+  buildDD('bed','bed',4);buildDD('bath','bath',3);
 }
 function handlePhotos(e){
-  var files=Array.from(e.target.files);
-  if(files.length<8||files.length>10){alert('Please upload between 8 and 10 photos.');e.target.value='';return;}
-  selectedPhotos=files;
-  var wrap=document.getElementById('photo-previews');wrap.innerHTML='';
-  files.forEach(function(f){var img=document.createElement('img');img.className='photo-thumb';img.src=URL.createObjectURL(f);wrap.appendChild(img);});
+  var f=Array.from(e.target.files);
+  if(f.length<8||f.length>10){alert('Please upload between 8 and 10 photos.');e.target.value='';return;}
+  photos=f;var w=document.getElementById('pp');w.innerHTML='';
+  f.forEach(function(x){var i=document.createElement('img');i.className='photo-thumb';i.src=URL.createObjectURL(x);w.appendChild(i);});
 }
-function handleLogo(e){
-  selectedLogo=e.target.files[0];
-  if(selectedLogo){var img=document.getElementById('logo-preview');img.src=URL.createObjectURL(selectedLogo);img.style.display='block';}
-}
-function setOption(type,btn){
-  var grids={'music':'music-grid','format':'format-grid','transition':'transition-grid'};
-  document.getElementById(grids[type]).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('active');});
+function handleLogo(e){logo=e.target.files[0];if(logo){var i=document.getElementById('lp');i.src=URL.createObjectURL(logo);i.style.display='block';}}
+function setOpt(type,btn){
+  var g={t:'tg',m:'mg',f:'fg'}[type];
+  document.getElementById(g).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
-  if(type==='music')selectedMusic=btn.textContent.trim().split('\n')[0];
-  else if(type==='format')selectedFormat=formatMap[btn.textContent.trim().replace(/\s+/g,' ')]||'9x16';
-  else if(type==='transition')selectedTransition=btn.textContent.trim().split('\n')[0];
+  var txt=btn.textContent.trim().split('\n')[0].trim();
+  if(type==='t')trans=txt;
+  else if(type==='m')music=txt;
+  else fmt=fmtMap[txt]||'9x16';
 }
-async function generateVideo(){
-  if(selectedPhotos.length<8){alert('Please upload 8-10 listing photos first.');return;}
-  document.getElementById('generate-btn').disabled=true;
-  document.getElementById('progress-wrap').style.display='block';
+function setProg(pct,label,stage){
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pp2').textContent=pct+'%';
+  document.getElementById('pl').textContent=label;
+  if(stage)document.getElementById('ps').textContent=stage;
+}
+function setStep(s){
+  var all=['up','render','trans','logo','music','done'];
+  var found=false;
+  all.forEach(function(x){
+    var el=document.getElementById('s-'+x);if(!el)return;
+    el.classList.remove('active','done');
+    if(x===s){el.classList.add('active');found=true;}
+    else if(!found){el.classList.add('done');}
+  });
+}
+function generateVideo(){
+  if(photos.length<8){alert('Please upload 8-10 listing photos first.');return;}
+  document.getElementById('gb').disabled=true;
+  document.getElementById('pw').style.display='block';
   document.getElementById('result').style.display='none';
-  document.getElementById('progress-fill').style.width='0%';
-  document.getElementById('progress-pct').textContent='0%';
-  document.getElementById('progress-label').textContent='Getting everything ready...';
+  setProg(2,'Preparing your photos...','Uploading');setStep('up');
   var fd=new FormData();
-  selectedPhotos.forEach(function(f){fd.append('photos',f);});
-  if(selectedLogo)fd.append('logo',selectedLogo);
+  photos.forEach(function(f){fd.append('photos',f);});
+  if(logo)fd.append('logo',logo);
   fd.append('address',document.getElementById('address').value);
   fd.append('price',document.getElementById('price').value);
-  fd.append('beds',String(selectedBeds));
-  fd.append('baths',String(selectedBaths));
+  fd.append('beds',String(beds));fd.append('baths',String(baths));
   fd.append('sqft',document.getElementById('sqft').value);
   fd.append('tagline',document.getElementById('tagline').value);
   fd.append('agentName',document.getElementById('agentName').value);
   fd.append('agentPhone',document.getElementById('agentPhone').value);
-  fd.append('musicMood',selectedMusic);
-  fd.append('videoFormat',selectedFormat);
-  fd.append('transition',selectedTransition);
-  try{
-    var res=await fetch('/api/generate-video',{method:'POST',body:fd});
-    var data=await res.json();
-    if(data.error)throw new Error(data.error);
-    currentJobId=data.jobId;pollStatus();
-  }catch(err){alert('Error: '+err.message);document.getElementById('generate-btn').disabled=false;document.getElementById('progress-wrap').style.display='none';}
+  fd.append('musicMood',music);fd.append('videoFormat',fmt);fd.append('transition',trans);
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/generate-video');
+  xhr.upload.onprogress=function(e){
+    if(e.lengthComputable){
+      var p=Math.round(2+(e.loaded/e.total)*25);
+      setProg(p,'Uploading photos ('+Math.round(e.loaded/1024)+'KB / '+Math.round(e.total/1024)+'KB)...','Uploading');
+    }
+  };
+  xhr.upload.onload=function(){setProg(28,'Photos uploaded — starting render...','Rendering');setStep('render');};
+  xhr.onload=function(){
+    try{
+      var d=JSON.parse(xhr.responseText);
+      if(d.error){alert('Error: '+d.error);document.getElementById('gb').disabled=false;document.getElementById('pw').style.display='none';return;}
+      jobId=d.jobId;poll();
+    }catch(e){alert('Server error');document.getElementById('gb').disabled=false;}
+  };
+  xhr.onerror=function(){alert('Network error');document.getElementById('gb').disabled=false;};
+  xhr.send(fd);
 }
-function pollStatus(){
+function poll(){
   var iv=setInterval(async function(){
     try{
-      var res=await fetch('/api/status/'+currentJobId);
-      var data=await res.json();
-      document.getElementById('progress-fill').style.width=data.progress+'%';
-      document.getElementById('progress-pct').textContent=data.progress+'%';
-      document.getElementById('progress-label').textContent=data.message||'Processing...';
-      if(data.status==='complete'){clearInterval(iv);document.getElementById('result').style.display='block';document.getElementById('generate-btn').disabled=false;}
-      else if(data.status==='error'){clearInterval(iv);alert('Error: '+data.message);document.getElementById('generate-btn').disabled=false;document.getElementById('progress-wrap').style.display='none';}
+      var r=await fetch('/api/status/'+jobId);
+      var d=await r.json();
+      setProg(d.progress,d.message||'Processing...');
+      if(d.progress>=30&&d.progress<72)setStep('render');
+      else if(d.progress>=72&&d.progress<88)setStep('trans');
+      else if(d.progress>=88&&d.progress<94)setStep('logo');
+      else if(d.progress>=94&&d.progress<100)setStep('music');
+      else if(d.progress===100)setStep('done');
+      if(d.status==='complete'){clearInterval(iv);document.getElementById('result').style.display='block';document.getElementById('gb').disabled=false;}
+      else if(d.status==='error'){clearInterval(iv);alert('Error: '+d.message);document.getElementById('gb').disabled=false;document.getElementById('pw').style.display='none';}
     }catch(e){clearInterval(iv);}
   },2000);
 }
-function downloadVideo(){
+function dlVideo(){
   var mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  var url='/api/download/'+currentJobId;
-  if(mob){window.open(url);}
+  var url='/api/download/'+jobId;
+  if(mob)window.open(url);
   else{var a=document.createElement('a');a.href=url;a.download='property-video.mp4';document.body.appendChild(a);a.click();document.body.removeChild(a);}
 }
 </script>
