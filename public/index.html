@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QCV Video Creator</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Georgia,serif;background:#f5f5f3;color:#1a1a1a;}
+.header{background:#1a1a1a;padding:20px 40px;display:flex;align-items:center;gap:16px;}
+.header-logo{width:44px;height:44px;background:#F47920;border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.header-logo svg{width:26px;height:26px;fill:white;}
+.header h1{color:white;font-size:18px;font-weight:400;letter-spacing:0.04em;}
+.header h1 span{color:#F47920;}
+.hero{text-align:center;padding:48px 40px 32px;}
+.hero h2{font-size:28px;font-weight:400;margin-bottom:10px;}
+.hero p{font-size:15px;color:#666;max-width:500px;margin:0 auto;}
+.container{max-width:760px;margin:0 auto;padding:0 40px 80px;}
+.card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:32px;margin-bottom:20px;}
+.card h3{font-size:17px;font-weight:400;margin-bottom:6px;}
+.card p{font-size:13px;color:#888;margin-bottom:20px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.full{grid-column:1/-1;}
+.field-label{font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:#888;margin-bottom:6px;}
+input[type=text]{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:Georgia,serif;background:#fff;}
+input:focus{outline:none;border-color:#1a1a1a;}
+.upload-area{border:2px dashed #ddd;border-radius:8px;padding:30px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:12px;}
+.upload-area:hover{border-color:#F47920;}
+.upload-area p{font-size:14px;color:#888;margin-bottom:4px;}
+.upload-area span{font-size:12px;color:#bbb;}
+.photo-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.photo-thumb{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #ddd;}
+.option-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
+.opt-btn{padding:12px 8px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;font-family:Georgia,serif;color:#666;text-align:center;transition:all 0.15s;}
+.opt-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
+.opt-btn:hover:not(.active){border-color:#1a1a1a;color:#1a1a1a;}
+.btn{width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-size:14px;letter-spacing:0.05em;cursor:pointer;font-family:Georgia,serif;margin-top:8px;transition:opacity 0.15s;}
+.btn:hover{opacity:0.8;}
+.btn:disabled{opacity:0.4;cursor:default;}
+.progress-wrap{display:none;margin-top:20px;}
+.progress-label{font-size:13px;color:#666;margin-bottom:8px;}
+.progress-bar{background:#f0f0f0;border-radius:20px;height:8px;overflow:hidden;}
+.progress-fill{background:#F47920;height:100%;border-radius:20px;transition:width 0.5s ease;width:0%;}
+.result{display:none;text-align:center;padding:32px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:20px;}
+.result h3{font-size:20px;font-weight:400;margin-bottom:8px;}
+.result p{font-size:14px;color:#888;margin-bottom:24px;}
+.download-btn{display:inline-block;padding:14px 40px;background:#F47920;color:#fff;text-decoration:none;border-radius:6px;font-size:14px;letter-spacing:0.05em;font-family:Georgia,serif;cursor:pointer;border:none;}
+#gate{display:block;}
+#main-content{display:none;}
+.gate-wrap{max-width:480px;margin:60px auto;padding:0 20px;}
+.gate-card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:48px 40px;text-align:center;}
+.gate-card h2{font-size:24px;font-weight:400;margin-bottom:8px;}
+.gate-card p{font-size:14px;color:#666;margin-bottom:28px;line-height:1.6;}
+.gate-input{width:100%;background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:14px 16px;font-size:14px;color:#111;font-family:Georgia,serif;margin-bottom:12px;outline:none;}
+.gate-input:focus{border-color:#F47920;}
+.gate-btn{width:100%;padding:15px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-family:Georgia,serif;cursor:pointer;}
+.gate-btn:hover{background:#F47920;}
+.logo-preview-img{max-height:60px;max-width:180px;object-fit:contain;margin-top:8px;display:none;}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-logo"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+  <h1>QCV <span>Video Creator</span></h1>
+</div>
+<div id="gate">
+  <div class="gate-wrap">
+    <div class="gate-card">
+      <h2>Create Your Property Video</h2>
+      <p>Professional listing videos with Ken Burns effects, text overlays, and your branding — ready in 60 seconds.</p>
+      <input class="gate-input" type="text" id="gname" placeholder="Your Name" />
+      <input class="gate-input" type="email" id="gemail" placeholder="Your Email" />
+      <button class="gate-btn" onclick="gateSubmit()">Get Started Free</button>
+    </div>
+  </div>
+</div>
+<div id="main-content">
+  <div class="hero">
+    <h2>Property Video Creator</h2>
+    <p>Upload your listing photos, fill in the details, and download a branded property video in under 60 seconds.</p>
+  </div>
+  <div class="container">
+    <div class="card">
+      <h3>Upload Photos</h3>
+      <p>Upload 8 to 10 listing photos. Best results with high resolution images.</p>
+      <div class="upload-area" onclick="document.getElementById('photos-input').click()">
+        <p>Click to upload listing photos</p><span>JPG or PNG · 8-10 photos</span>
+      </div>
+      <input type="file" id="photos-input" accept="image/*" multiple style="display:none;" onchange="handlePhotos(event)" />
+      <div class="photo-previews" id="photo-previews"></div>
+    </div>
+    <div class="card">
+      <h3>Agent Logo</h3>
+      <p>Upload your brokerage or personal logo. PNG with transparent background works best.</p>
+      <div class="upload-area" onclick="document.getElementById('logo-input').click()">
+        <p>Click to upload agent logo</p><span>PNG recommended</span>
+      </div>
+      <input type="file" id="logo-input" accept="image/*" style="display:none;" onchange="handleLogo(event)" />
+      <img id="logo-preview" class="logo-preview-img" />
+    </div>
+    <div class="card">
+      <h3>Property Details</h3>
+      <p>This information will appear as text overlays in your video.</p>
+      <div class="grid2">
+        <div class="full"><div class="field-label">Property Address</div><input type="text" id="address" placeholder="123 Peachtree St NE, Atlanta, GA" /></div>
+        <div><div class="field-label">List Price</div><input type="text" id="price" placeholder="$1,250,000" /></div>
+        <div><div class="field-label">Beds</div><input type="text" id="beds" placeholder="4" /></div>
+        <div><div class="field-label">Baths</div><input type="text" id="baths" placeholder="3" /></div>
+        <div><div class="field-label">Square Footage</div><input type="text" id="sqft" placeholder="3,200 sq ft" /></div>
+        <div class="full"><div class="field-label">Custom Tagline</div><input type="text" id="tagline" placeholder="Just Listed - Stunning Views" /></div>
+        <div><div class="field-label">Agent Name</div><input type="text" id="agentName" placeholder="Sarah Johnson" /></div>
+        <div><div class="field-label">Agent Phone</div><input type="text" id="agentPhone" placeholder="(404) 555-0100" /></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Music Mood</h3>
+      <p>Choose the background music style for your video.</p>
+      <div class="option-grid" id="music-grid">
+        <button class="opt-btn active" onclick="setOption('music',this)">Cinematic</button>
+        <button class="opt-btn" onclick="setOption('music',this)">Upbeat</button>
+        <button class="opt-btn" onclick="setOption('music',this)">Elegant</button>
+        <button class="opt-btn" onclick="setOption('music',this)">Dramatic</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Video Format</h3>
+      <p>Choose your target platform and aspect ratio.</p>
+      <div class="option-grid" id="format-grid">
+        <button class="opt-btn active" onclick="setOption('format',this)">9x16 Reels</button>
+        <button class="opt-btn" onclick="setOption('format',this)">4x5 Feed</button>
+        <button class="opt-btn" onclick="setOption('format',this)">1x1 Square</button>
+        <button class="opt-btn" onclick="setOption('format',this)">16x9 YouTube</button>
+      </div>
+    </div>
+    <button class="btn" id="generate-btn" onclick="generateVideo()">Generate My Property Video</button>
+    <div class="progress-wrap" id="progress-wrap">
+      <div class="progress-label" id="progress-label">Processing...</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="result" id="result">
+      <h3>Your Video Is Ready</h3>
+      <p>Your property video has been generated and is ready to download.</p>
+      <button class="download-btn" onclick="downloadVideo()">Download Video</button>
+    </div>
+  </div>
+</div>
+<script>
+var selectedPhotos=[],selectedLogo=null,selectedMusic='Cinematic',selectedFormat='9x16',currentJobId=null;
+var formatMap={'9x16 Reels':'9x16','4x5 Feed':'4x5','1x1 Square':'1x1','16x9 YouTube':'16x9'};
+function gateSubmit(){
+  var n=document.getElementById('gname').value.trim(),e=document.getElementById('gemail').value.trim();
+  if(!n||!e){alert('Please enter your name and email.');return;}
+  fetch('https://formspree.io/f/mwvwekvj',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,source:'QCV Video Creator'})});
+  document.getElementById('gate').style.display='none';
+  document.getElementById('main-content').style.display='block';
+}
+function handlePhotos(e){
+  var files=Array.from(e.target.files);
+  if(files.length<8||files.length>10){alert('Please upload between 8 and 10 photos.');e.target.value='';return;}
+  selectedPhotos=files;
+  var wrap=document.getElementById('photo-previews');wrap.innerHTML='';
+  files.forEach(function(f){var img=document.createElement('img');img.className='photo-thumb';img.src=URL.createObjectURL(f);wrap.appendChild(img);});
+}
+function handleLogo(e){
+  selectedLogo=e.target.files[0];
+  if(selectedLogo){var img=document.getElementById('logo-preview');img.src=URL.createObjectURL(selectedLogo);img.style.display='block';}
+}
+function setOption(type,btn){
+  var g=type==='music'?'music-grid':'format-grid';
+  document.getElementById(g).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  if(type==='music')selectedMusic=btn.textContent.trim();
+  else selectedFormat=formatMap[btn.textContent.trim()]||'9x16';
+}
+async function generateVideo(){
+  if(selectedPhotos.length<8){alert('Please upload 8-10 listing photos first.');return;}
+  document.getElementById('generate-btn').disabled=true;
+  document.getElementById('progress-wrap').style.display='block';
+  document.getElementById('result').style.display='none';
+  var fd=new FormData();
+  selectedPhotos.forEach(function(f){fd.append('photos',f);});
+  if(selectedLogo)fd.append('logo',selectedLogo);
+  fd.append('address',document.getElementById('address').value);
+  fd.append('price',document.getElementById('price').value);
+  fd.append('beds',document.getElementById('beds').value);
+  fd.append('baths',document.getElementById('baths').value);
+  fd.append('sqft',document.getElementById('sqft').value);
+  fd.append('tagline',document.getElementById('tagline').value);
+  fd.append('agentName',document.getElementById('agentName').value);
+  fd.append('agentPhone',document.getElementById('agentPhone').value);
+  fd.append('musicMood',selectedMusic);
+  fd.append('videoFormat',selectedFormat);
+  try{
+    var res=await fetch('/api/generate-video',{method:'POST',body:fd});
+    var data=await res.json();
+    if(data.error)throw new Error(data.error);
+    currentJobId=data.jobId;pollStatus();
+  }catch(err){alert('Error: '+err.message);document.getElementById('generate-btn').disabled=false;document.getElementById('progress-wrap').style.display='none';}
+}
+function pollStatus(){
+  var iv=setInterval(async function(){
+    try{
+      var res=await fetch('/api/status/'+currentJobId);
+      var data=await res.json();
+      document.getElementById('progress-fill').style.width=data.progress+'%';
+      document.getElementById('progress-label').textContent=data.message||'Processing...';
+      if(data.status==='complete'){clearInterval(iv);document.getElementById('result').style.display='block';document.getElementById('generate-btn').disabled=false;}
+      else if(data.status==='error'){clearInterval(iv);alert('Error: '+data.message);document.getElementById('generate-btn').disabled=false;document.getElementById('progress-wrap').style.display='none';}
+    }catch(e){clearInterval(iv);}
+  },2500);
+}
+function downloadVideo(){
+  var mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  var url='/api/download/'+currentJobId;
+  if(mob){window.open(url);}
+  else{var a=document.createElement('a');a.href=url;a.download='property-video.mp4';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+}
+</script>
+</body>
+</html>
