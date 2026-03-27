@@ -1,0 +1,5 @@
+[phases.setup]
+nixPkgs = ["ffmpeg", "dejavu_fonts", "fontconfig"]
+
+[start]
+cmd = "node server.js"
