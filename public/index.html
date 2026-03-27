@@ -124,10 +124,11 @@ input:focus{outline:none;border-color:#1a1a1a;}
     </div>
     <div class="card">
       <h3>Transition Style</h3><p>How your photos move from one to the next.</p>
-      <div class="option-grid-3" id="tg">
-        <button class="opt-btn active" onclick="setOpt('t',this)">Fade<br><span style="font-size:10px;opacity:0.6;">Smooth &amp; Classic</span></button>
-        <button class="opt-btn" onclick="setOpt('t',this)">Cut<br><span style="font-size:10px;opacity:0.6;">Sharp &amp; Modern</span></button>
-        <button class="opt-btn" onclick="setOpt('t',this)">Dissolve<br><span style="font-size:10px;opacity:0.6;">Soft &amp; Elegant</span></button>
+      <div class="option-grid" id="tg">
+        <button class="opt-btn active" onclick="setOpt('t',this)">Cut<br><span style="font-size:10px;opacity:0.6;">Instant &amp; Sharp</span></button>
+        <button class="opt-btn" onclick="setOpt('t',this)">Fade<br><span style="font-size:10px;opacity:0.6;">Smooth Crossfade</span></button>
+        <button class="opt-btn" onclick="setOpt('t',this)">Slide<br><span style="font-size:10px;opacity:0.6;">Push Left</span></button>
+        <button class="opt-btn" onclick="setOpt('t',this)">Zoom<br><span style="font-size:10px;opacity:0.6;">Zoom In</span></button>
       </div>
     </div>
     <div class="card">
@@ -171,7 +172,7 @@ input:focus{outline:none;border-color:#1a1a1a;}
   </div>
 </div>
 <script>
-var photos=[],logo=null,music='Cinematic',fmt='9x16',trans='Fade',beds=4,baths=3,jobId=null;
+var photos=[],logo=null,music='Cinematic',fmt='9x16',trans='Cut',beds=4,baths=3,jobId=null;
 var fmtMap={'9x16':'9x16','4x5':'4x5','1x1':'1x1','16x9':'16x9'};
 
 function buildDD(id,type,def){
