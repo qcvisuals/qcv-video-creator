@@ -18,7 +18,7 @@ async function heygenGet(endpoint) {
     headers: { 'X-Api-Key': HEYGEN_KEY, 'Accept': 'application/json' }
   });
   const t = await r.text();
-  try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,200)); }
+  try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,300)); }
 }
 
 async function heygenPost(endpoint, body) {
@@ -28,37 +28,48 @@ async function heygenPost(endpoint, body) {
     body: JSON.stringify(body)
   });
   const t = await r.text();
-  try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,200)); }
+  try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,300)); }
 }
 
 async function uploadAsset(filePath, mimeType) {
   const fileBuffer = fs.readFileSync(filePath);
   const r = await fetch('https://upload.heygen.com/v1/asset', {
     method: 'POST',
-    headers: {
-      'X-Api-Key': HEYGEN_KEY,
-      'Content-Type': mimeType,
-      'Accept': 'application/json'
-    },
+    headers: { 'X-Api-Key': HEYGEN_KEY, 'Content-Type': mimeType, 'Accept': 'application/json' },
     body: fileBuffer
   });
   const t = await r.text();
-  let d;
-  try { d = JSON.parse(t); } catch(e) { throw new Error('Upload parse: ' + t.slice(0,300)); }
+  let d; try { d = JSON.parse(t); } catch(e) { throw new Error('Upload parse: ' + t.slice(0,300)); }
   if (d.error) throw new Error('Upload error: ' + JSON.stringify(d.error).slice(0,200));
   const id = d.data?.id || d.data?.asset_id || d.id;
   if (!id) throw new Error('No asset ID: ' + t.slice(0,300));
   return id;
 }
 
-async function createTalkingPhoto(photoId, audioId) {
-  const d = await heygenPost('/v1/talking_photo', {
-    talking_photo_id: photoId,
-    audio_type: 'audio',
-    audio_asset_id: audioId,
-    talking_style: 'expressive'
-  });
-  if (d.error) throw new Error('Talking photo: ' + JSON.stringify(d.error).slice(0,200));
+async function generateVideo(imageAssetId, audioAssetId) {
+  const body = {
+    video_inputs: [{
+      character: {
+        type: 'talking_image',
+        talking_image_asset_id: imageAssetId,
+        scale: 1.0,
+        talking_style: 'expressive'
+      },
+      voice: {
+        type: 'audio',
+        audio_asset_id: audioAssetId
+      },
+      background: {
+        type: 'color',
+        value: '#000000'
+      }
+    }],
+    dimension: { width: 1080, height: 1920 },
+    aspect_ratio: null,
+    caption: false
+  };
+  const d = await heygenPost('/v2/video/generate', body);
+  if (d.error) throw new Error('Generate error: ' + JSON.stringify(d.error).slice(0,200));
   const videoId = d.data?.video_id;
   if (!videoId) throw new Error('No video_id: ' + JSON.stringify(d).slice(0,300));
   return videoId;
@@ -93,17 +104,17 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     toClean.push(photo.path, voice.path);
     if (req.files['bgPhoto']?.[0]) toClean.push(req.files['bgPhoto'][0].path);
 
-    jobs[jobId] = { status:'processing', progress:25, message:'Uploading your photo to HeyGen...' };
+    jobs[jobId] = { status:'processing', progress:25, message:'Uploading your photo...' };
     const photoId = await uploadAsset(photo.path, photo.mimetype || 'image/jpeg');
 
-    jobs[jobId] = { status:'processing', progress:45, message:'Uploading your voice recording...' };
+    jobs[jobId] = { status:'processing', progress:45, message:'Uploading your voice...' };
     const audioMime = (voice.mimetype || 'audio/webm').replace('audio/webm','video/webm').replace('audio/ogg','video/ogg');
     const audioId = await uploadAsset(voice.path, audioMime);
 
     jobs[jobId] = { status:'processing', progress:62, message:'Generating talking avatar...' };
-    const videoId = await createTalkingPhoto(photoId, audioId);
+    const videoId = await generateVideo(photoId, audioId);
 
-    jobs[jobId] = { status:'processing', progress:70, message:'Rendering â 1-3 minutes...' };
+    jobs[jobId] = { status:'processing', progress:70, message:'Rendering — 1-3 minutes...' };
     const videoUrl = await pollVideo(videoId, jobId);
 
     jobs[jobId] = { status:'processing', progress:94, message:'Downloading your video...' };
