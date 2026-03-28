@@ -13,7 +13,7 @@ const upload = multer({ dest: '/tmp/uploads/', limits: { fileSize: 50 * 1024 * 1
 app.use(express.static(path.join(__dirname, 'public')));
 
 const HEYGEN_KEY = 'sk_V2_hgu_kJjvg9V1Rto_jBsGXV0qejoFst2XD8L8cIJBQnf4yNGC';
-const ELEVEN_KEY = 'sk_d09df28c46e9422b1fd3ad6729e3a3580a38f1b5ebc1bc3f';
+const ELEVEN_KEY = 'sk_3604d78d3395fa66ff1fae915602dc529e079653a1909298';
 const jobs = {};
 
 function convertToMp3(inputPath) {
@@ -151,7 +151,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     jobs[jobId] = {status:'processing',progress:68,message:'Generating talking avatar...'};
     const videoId = await generateVideo(imageId, audioId, aspectRatio);
 
-    jobs[jobId] = {status:'processing',progress:72,message:'Rendering — 1-3 minutes...'};
+    jobs[jobId] = {status:'processing',progress:72,message:'Rendering â 1-3 minutes...'};
     const videoUrl = await pollVideo(videoId, jobId);
 
     jobs[jobId] = {status:'processing',progress:95,message:'Downloading your video...'};
