@@ -19,7 +19,7 @@ async function heygenGet(endpoint) {
     headers: { 'X-Api-Key': HEYGEN_KEY, 'Accept': 'application/json' }
   });
   const t = await r.text();
-  try { return JSON.parse(t); } catch(e) { throw new Error('Parse error: ' + t.slice(0,200)); }
+  try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,200)); }
 }
 
 async function heygenPost(endpoint, body) {
@@ -29,22 +29,24 @@ async function heygenPost(endpoint, body) {
     body: JSON.stringify(body)
   });
   const t = await r.text();
-  try { return JSON.parse(t); } catch(e) { throw new Error('Parse error: ' + t.slice(0,200)); }
+  try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,200)); }
 }
 
 async function uploadFile(filePath, mimeType, filename) {
+  const fileBuffer = fs.readFileSync(filePath);
   const fd = new FormData();
-  fd.append('file', fs.createReadStream(filePath), { contentType: mimeType, filename });
+  fd.append('file', fileBuffer, { filename, contentType: mimeType });
   const r = await fetch('https://upload.heygen.com/v1/asset', {
     method: 'POST',
     headers: { 'X-Api-Key': HEYGEN_KEY, ...fd.getHeaders() },
     body: fd
   });
   const t = await r.text();
-  let d; try { d = JSON.parse(t); } catch(e) { throw new Error('Upload parse: ' + t.slice(0,300)); }
-  if (d.error) throw new Error('Upload error: ' + JSON.stringify(d.error));
-  const id = d.data?.id || d.data?.asset_id || d.id;
-  if (!id) throw new Error('No asset ID returned: ' + t.slice(0,300));
+  let d;
+  try { d = JSON.parse(t); } catch(e) { throw new Error('Upload parse: ' + t.slice(0,300)); }
+  if (d.error) throw new Error('Upload error: ' + JSON.stringify(d.error).slice(0,200));
+  const id = d.data?.id || d.data?.asset_id;
+  if (!id) throw new Error('No asset ID: ' + t.slice(0,300));
   return id;
 }
 
@@ -53,13 +55,10 @@ async function createTalkingPhoto(photoId, audioId) {
     talking_photo_id: photoId,
     audio_type: 'audio',
     audio_asset_id: audioId,
-    talking_style: 'expressive',
-    expression: 'default',
-    scale: 1.0,
-    voice_id: ''
+    talking_style: 'expressive'
   });
-  if (d.error) throw new Error('Talking photo error: ' + JSON.stringify(d.error));
-  const videoId = d.data?.video_id || d.video_id;
+  if (d.error) throw new Error('Talking photo error: ' + JSON.stringify(d.error).slice(0,200));
+  const videoId = d.data?.video_id;
   if (!videoId) throw new Error('No video_id: ' + JSON.stringify(d).slice(0,300));
   return videoId;
 }
@@ -93,10 +92,10 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     toClean.push(photo.path, voice.path);
     if (req.files['bgPhoto']?.[0]) toClean.push(req.files['bgPhoto'][0].path);
 
-    jobs[jobId] = { status:'processing', progress:25, message:'Uploading your photo...' };
+    jobs[jobId] = { status:'processing', progress:25, message:'Uploading your photo to HeyGen...' };
     const photoId = await uploadFile(photo.path, photo.mimetype || 'image/jpeg', 'photo.jpg');
 
-    jobs[jobId] = { status:'processing', progress:45, message:'Uploading your voice...' };
+    jobs[jobId] = { status:'processing', progress:45, message:'Uploading your voice recording...' };
     const audioId = await uploadFile(voice.path, voice.mimetype || 'audio/webm', 'voice.webm');
 
     jobs[jobId] = { status:'processing', progress:62, message:'Generating talking avatar...' };
