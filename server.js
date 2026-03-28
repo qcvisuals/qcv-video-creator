@@ -29,7 +29,7 @@ async function heygenGet(endpoint) {
     headers: {'X-Api-Key':HEYGEN_KEY,'Accept':'application/json'}
   });
   const t = await r.text();
-  try{return JSON.parse(t);}catch(e){throw new Error('Parse: '+t.slice(0,200));}
+  try{return JSON.parse(t);}catch(e){throw new Error('Parse: '+t.slice(0,300));}
 }
 
 async function heygenPost(endpoint, body) {
@@ -39,7 +39,7 @@ async function heygenPost(endpoint, body) {
     body:JSON.stringify(body)
   });
   const t = await r.text();
-  try{return JSON.parse(t);}catch(e){throw new Error('Parse: '+t.slice(0,200));}
+  try{return JSON.parse(t);}catch(e){throw new Error('Parse: '+t.slice(0,300));}
 }
 
 async function uploadAsset(filePath, mimeType) {
@@ -57,39 +57,15 @@ async function uploadAsset(filePath, mimeType) {
   return id;
 }
 
-async function createTalkingPhoto(imageAssetId) {
-  const d = await heygenPost('/v2/photo_avatar/photo/generate', {
-    name: 'QCV Agent Avatar',
+async function generateTalkingPhoto(imageAssetId, audioAssetId) {
+  const d = await heygenPost('/v1/talking_photo', {
     image_asset_id: imageAssetId,
-    attributes: { gender: 'neutral', age: 'young_adult', skin_tone: 'medium', ethnicity: 'other' }
+    audio_asset_id: audioAssetId,
+    talking_style: 'expressive',
+    expression: 'default',
+    scale: 1.0
   });
-  if(d.error) throw new Error('Photo avatar create: '+JSON.stringify(d.error).slice(0,200));
-  const talkingPhotoId = d.data?.talking_photo_id || d.data?.id;
-  if(!talkingPhotoId) throw new Error('No talking_photo_id: '+JSON.stringify(d).slice(0,300));
-  return talkingPhotoId;
-}
-
-async function generateVideo(talkingPhotoId, audioAssetId, aspectRatio) {
-  const isShort = aspectRatio !== '4x5';
-  const body = {
-    video_inputs: [{
-      character: {
-        type: 'talking_photo',
-        talking_photo_id: talkingPhotoId,
-        scale: 1.0,
-        talking_style: 'expressive'
-      },
-      voice: {
-        type: 'audio',
-        audio_asset_id: audioAssetId
-      },
-      background: { type: 'color', value: '#000000' }
-    }],
-    dimension: { width: 1080, height: isShort ? 1920 : 1350 },
-    caption: false
-  };
-  const d = await heygenPost('/v2/video/generate', body);
-  if(d.error) throw new Error('Generate error: '+JSON.stringify(d.error).slice(0,200));
+  if(d.error) throw new Error('Talking photo: '+JSON.stringify(d.error).slice(0,300));
   const videoId = d.data?.video_id;
   if(!videoId) throw new Error('No video_id: '+JSON.stringify(d).slice(0,300));
   return videoId;
@@ -122,25 +98,21 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     if(!voice) throw new Error('No voice uploaded');
     toClean.push(photo.path, voice.path);
     if(req.files['bgPhoto']?.[0]) toClean.push(req.files['bgPhoto'][0].path);
-    const {aspectRatio} = req.body;
 
     jobs[jobId] = {status:'processing',progress:18,message:'Converting audio...'};
     const mp3 = await convertToMp3(voice.path);
     toClean.push(mp3);
 
-    jobs[jobId] = {status:'processing',progress:28,message:'Uploading your photo...'};
-    const imageAssetId = await uploadAsset(photo.path, photo.mimetype||'image/jpeg');
+    jobs[jobId] = {status:'processing',progress:32,message:'Uploading your photo...'};
+    const imageId = await uploadAsset(photo.path, photo.mimetype||'image/jpeg');
 
-    jobs[jobId] = {status:'processing',progress:40,message:'Creating your avatar...'};
-    const talkingPhotoId = await createTalkingPhoto(imageAssetId);
+    jobs[jobId] = {status:'processing',progress:50,message:'Uploading your voice...'};
+    const audioId = await uploadAsset(mp3, 'audio/mpeg');
 
-    jobs[jobId] = {status:'processing',progress:52,message:'Uploading your voice...'};
-    const audioAssetId = await uploadAsset(mp3, 'audio/mpeg');
+    jobs[jobId] = {status:'processing',progress:64,message:'Generating talking avatar...'};
+    const videoId = await generateTalkingPhoto(imageId, audioId);
 
-    jobs[jobId] = {status:'processing',progress:64,message:'Generating talking avatar video...'};
-    const videoId = await generateVideo(talkingPhotoId, audioAssetId, aspectRatio);
-
-    jobs[jobId] = {status:'processing',progress:72,message:'Rendering Ã¢ÂÂ 1-3 minutes...'};
+    jobs[jobId] = {status:'processing',progress:72,message:'Rendering — 1-3 minutes...'};
     const videoUrl = await pollVideo(videoId, jobId);
 
     jobs[jobId] = {status:'processing',progress:94,message:'Downloading...'};
