@@ -51,7 +51,7 @@ async function generateVideo(imageAssetId, audioAssetId) {
     video_inputs: [{
       character: {
         type: 'talking_photo',
-        talking_photo_asset_id: imageAssetId,
+        talking_photo_id: imageAssetId,
         scale: 1.0,
         talking_style: 'expressive'
       },
@@ -114,7 +114,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     jobs[jobId] = { status:'processing', progress:62, message:'Generating talking avatar...' };
     const videoId = await generateVideo(photoId, audioId);
 
-    jobs[jobId] = { status:'processing', progress:70, message:'Rendering â 1-3 minutes...' };
+    jobs[jobId] = { status:'processing', progress:70, message:'Rendering Ã¢ÂÂ 1-3 minutes...' };
     const videoUrl = await pollVideo(videoId, jobId);
 
     jobs[jobId] = { status:'processing', progress:94, message:'Downloading your video...' };
