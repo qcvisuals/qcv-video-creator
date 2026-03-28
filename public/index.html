@@ -7,325 +7,241 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f0f;color:#fff;min-height:100vh}
-.header{background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:16px 24px;display:flex;align-items:center;gap:12px}
-.logo{font-size:18px;font-weight:700;color:#e07940;letter-spacing:-.5px}.logo span{color:#fff;font-weight:400}
+.header{background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:16px 24px;display:flex;align-items:center}
+.logo{font-size:18px;font-weight:700;color:#e07940}.logo span{color:#fff;font-weight:400}
 .container{max-width:720px;margin:0 auto;padding:32px 20px 80px}
 h2{font-size:22px;font-weight:600;margin-bottom:6px}
-.subtitle{color:#888;font-size:14px;margin-bottom:32px}
-.section{margin-bottom:28px}
-.stitle{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#e07940;margin-bottom:12px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.sub{color:#888;font-size:14px;margin-bottom:32px}
+.sec{margin-bottom:28px}
+.st{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#e07940;margin-bottom:12px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
 label{display:block;font-size:12px;color:#888;margin-bottom:5px}
-input[type=text],input[type=tel],select,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;outline:none;transition:border .2s}
+input,select,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;outline:none;transition:border .2s}
 input:focus,select:focus,textarea:focus{border-color:#e07940}
 select option{background:#1a1a1a}
-.upload-box{border:2px dashed #2a2a2a;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border .2s}
-.upload-box:hover{border-color:#e07940}.upload-box p{color:#888;font-size:13px;margin-top:6px}
-.upload-box .icon{font-size:28px}.upload-box input{display:none}
-.preview-wrap{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
-.preview-img{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #2a2a2a}
-.voice-section{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:20px}
-.voice-tabs{display:flex;gap:8px;margin-bottom:16px}
-.vtab{flex:1;padding:10px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:13px;cursor:pointer;transition:all .2s;text-align:center}
-.vtab.active{border-color:#e07940;color:#e07940;background:rgba(224,121,64,0.08)}
-.vtab-content{display:none}.vtab-content.show{display:block}
-.record-btn{width:100%;padding:14px;border:2px solid #e07940;border-radius:10px;background:transparent;color:#e07940;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
-.record-btn:hover{background:rgba(224,121,64,0.1)}
-.record-btn.recording{background:#e07940;color:#fff}
-.rec-dot{width:10px;height:10px;border-radius:50%;background:currentColor;display:none}
-.record-btn.recording .rec-dot{display:block;animation:pulse 1s infinite}
+textarea{resize:vertical}
+.ub{border:2px dashed #2a2a2a;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border .2s}
+.ub:hover{border-color:#e07940}.ub p{color:#888;font-size:13px;margin-top:6px}.ub .ic{font-size:28px}.ub input{display:none}
+.pw{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.pi{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #2a2a2a}
+.vs{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:20px}
+.vt{display:flex;gap:8px;margin-bottom:16px}
+.vtb{flex:1;padding:10px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:13px;cursor:pointer;text-align:center;transition:all .2s}
+.vtb.act{border-color:#e07940;color:#e07940;background:rgba(224,121,64,0.08)}
+.vc{display:none}.vc.show{display:block}
+.rb{width:100%;padding:14px;border:2px solid #e07940;border-radius:10px;background:transparent;color:#e07940;font-size:15px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s}
+.rb:hover{background:rgba(224,121,64,0.1)}.rb.rec{background:#e07940;color:#fff}
+.rd{width:10px;height:10px;border-radius:50%;background:currentColor;display:none}
+.rb.rec .rd{display:block;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.rec-timer{font-size:13px;color:#888;text-align:center;margin-top:8px;min-height:20px}
-.rec-preview{margin-top:12px;display:none}
-.rec-preview audio{width:100%}
-.redo-btn{margin-top:8px;width:100%;padding:8px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:12px;cursor:pointer}
-.frame-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.frame-opt{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;overflow:hidden;transition:border .2s}
-.frame-opt.selected{border-color:#e07940}
-.frame-opt svg{width:100%;display:block}
-.frame-label{font-size:10px;color:#888;text-align:center;padding:6px 0;background:#1a1a1a}
-.frame-opt.selected .frame-label{color:#e07940}
-.color-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.color-opt{cursor:pointer;border:2px solid transparent;border-radius:8px;overflow:hidden;transition:border .2s}
-.color-opt.selected{border-color:#e07940}
-.color-swatch{height:36px}.color-name{font-size:9px;text-align:center;padding:3px 0;background:#1a1a1a;color:#888}
-.ar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.ar-opt{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;background:#1a1a1a;transition:all .2s}
-.ar-opt.selected{border-color:#e07940}
-.ar-opt .ar-name{font-size:13px;font-weight:600;color:#fff}
-.ar-opt .ar-sub{font-size:10px;color:#888;margin-top:2px}
-.btn{width:100%;padding:14px;background:#e07940;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s;margin-top:8px}
+.rt{font-size:13px;color:#888;text-align:center;margin-top:8px;min-height:20px}
+.rp{margin-top:12px;display:none}.rp audio{width:100%}
+.redo{margin-top:8px;width:100%;padding:8px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:12px;cursor:pointer}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fo{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;overflow:hidden;transition:border .2s}
+.fo.sel{border-color:#e07940}.fo svg{width:100%;display:block}
+.fl{font-size:10px;color:#888;text-align:center;padding:6px 0;background:#1a1a1a}
+.fo.sel .fl{color:#e07940}
+.cg{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.co{cursor:pointer;border:2px solid transparent;border-radius:8px;overflow:hidden;transition:border .2s}
+.co.sel{border-color:#e07940}.cs{height:36px}.cn{font-size:9px;text-align:center;padding:3px 0;background:#1a1a1a;color:#888}
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ao{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;background:#1a1a1a;transition:all .2s}
+.ao.sel{border-color:#e07940}.an{font-size:13px;font-weight:600}.as{font-size:10px;color:#888;margin-top:2px}
+.btn{width:100%;padding:14px;background:#e07940;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
 .btn:hover{background:#c8622a}.btn:disabled{background:#444;cursor:not-allowed}
-.prog-wrap{display:none;margin-top:20px}
-.prog-bg{background:#2a2a2a;border-radius:8px;height:8px;overflow:hidden;margin:10px 0}
-.prog-fill{height:100%;background:#e07940;border-radius:8px;transition:width .3s;width:0%}
-.prog-msg{font-size:13px;color:#888;text-align:center}
-.result-wrap{display:none;margin-top:20px;text-align:center}
-.result-wrap video{width:100%;max-width:400px;border-radius:10px;margin-bottom:12px}
-.dl-btn{display:inline-block;padding:10px 28px;background:#e07940;color:#fff;border-radius:8px;font-weight:600;text-decoration:none;font-size:14px}
+.pw2{display:none;margin-top:20px}
+.pb{background:#2a2a2a;border-radius:8px;height:8px;overflow:hidden;margin:10px 0}
+.pf{height:100%;background:#e07940;border-radius:8px;transition:width .3s;width:0%}
+.pm{font-size:13px;color:#888;text-align:center}
+.rw{display:none;margin-top:20px;text-align:center}
+.rw video{width:100%;max-width:400px;border-radius:10px;margin-bottom:12px}
+.db{display:inline-block;padding:10px 28px;background:#e07940;color:#fff;border-radius:8px;font-weight:600;text-decoration:none;font-size:14px}
 .tip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px 16px;font-size:12px;color:#888;margin-bottom:20px;line-height:1.6}
 .tip strong{color:#e07940}
-.powered{font-size:10px;color:#555;text-align:center;margin-top:6px}
+.pow{font-size:10px;color:#555;text-align:center;margin-top:6px}
+.cc{font-size:11px;color:#555;text-align:right;margin-top:4px}
+.cc.warn{color:#e07940}
 </style>
 </head>
 <body>
 <div class="header"><div class="logo">QCV <span>Avatar Creator</span></div></div>
 <div class="container">
 <h2>AI Avatar Video Creator</h2>
-<p class="subtitle">Upload your headshot, record your script in your voice â get a professional talking avatar video powered by HeyGen.</p>
-<div class="tip"><strong>How it works:</strong> Upload your headshot + record your script in your own voice (30 seconds max). Pick your frame style and color. Hit generate â HeyGen animates your photo to speak in your exact voice.</div>
+<p class="sub">Upload your headshot, type your script, record your voice — get a professional talking avatar video.</p>
+<div class="tip"><strong>How it works:</strong> Upload your headshot + record 30 seconds of your voice + type your script. Your AI avatar will speak your exact script in your cloned voice.</div>
 
-<div class="section">
-<div class="stitle">Agent Info</div>
-<div class="grid2">
+<div class="sec">
+<div class="st">Agent Info</div>
+<div class="g2">
 <div><label>Agent Name</label><input type="text" id="agentName" placeholder="Jane Smith"></div>
 <div><label>Phone</label><input type="tel" id="agentPhone" placeholder="(404) 555-0100"></div>
 </div>
 <div style="margin-top:10px"><label>Brokerage</label><input type="text" id="brokerage" placeholder="Keller Williams Atlanta"></div>
 </div>
 
-<div class="section">
-<div class="stitle">Property Info</div>
-<div class="grid2">
+<div class="sec">
+<div class="st">Property Info</div>
+<div class="g2">
 <div><label>Address</label><input type="text" id="address" placeholder="142 Peachtree St NW"></div>
 <div><label>City, State</label><input type="text" id="cityState" placeholder="Atlanta, GA"></div>
 </div>
-<div class="grid3" style="margin-top:10px">
+<div class="g3" style="margin-top:10px">
 <div><label>Price</label><input type="text" id="price" placeholder="$485,000"></div>
-<div><label>Beds</label><select id="beds"><option value="">â</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
-<div><label>Baths</label><select id="baths"><option value="">â</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+<div><label>Beds</label><select id="beds"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+<div><label>Baths</label><select id="baths"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
 </div>
-<div class="grid2" style="margin-top:10px">
+<div class="g2" style="margin-top:10px">
 <div><label>Sq Ft</label><input type="text" id="sqft" placeholder="2,450"></div>
 <div><label>Occasion</label><select id="occasion"><option>Just Listed</option><option>For Sale</option><option>Open House</option><option>Just Sold</option><option>Price Reduced</option></select></div>
 </div>
 </div>
 
-<div class="section">
-<div class="stitle">Your Headshot</div>
-<div class="tip" style="margin-bottom:10px"><strong>Tips for best results:</strong> Use a front-facing, well-lit portrait. Clear background preferred. No sunglasses. The closer and cleaner the photo, the better HeyGen animates it.</div>
-<div class="upload-box" id="photoBox">
-<div class="icon">ð·</div>
-<p>Tap to upload your portrait photo</p>
-<p style="font-size:11px;color:#555;margin-top:4px">JPG or PNG â front-facing, well-lit</p>
-<input type="file" id="photoInput" accept="image/*">
-</div>
-<div class="preview-wrap" id="photoPreview"></div>
+<div class="sec">
+<div class="st">Your Script</div>
+<div class="tip" style="margin-bottom:10px"><strong>Type exactly what your avatar will say.</strong> Keep it to 3-4 sentences — about 20-30 seconds max.</div>
+<label>Script (what your avatar speaks)</label>
+<textarea id="scriptText" rows="4" maxlength="500" placeholder="Hi, I'm Jane Smith with Keller Williams Atlanta. I'm excited to share this beautiful newly listed home at 142 Peachtree Street, priced at $485,000. Call me today to schedule your private showing!"></textarea>
+<div class="cc" id="cc">0 / 500</div>
 </div>
 
-<div class="section">
-<div class="stitle">Background Photo <span style="font-size:10px;color:#555;font-weight:400;text-transform:none">(optional)</span></div>
-<div class="upload-box" id="bgBox">
-<div class="icon">ð </div>
-<p>Tap to upload your property or background photo</p>
-<input type="file" id="bgInput" accept="image/*">
-</div>
-<div class="preview-wrap" id="bgPreview"></div>
+<div class="sec">
+<div class="st">Your Headshot</div>
+<div class="tip" style="margin-bottom:10px"><strong>Best results:</strong> Front-facing, well-lit portrait. Clear background. No sunglasses.</div>
+<div class="ub" id="photoBox"><div class="ic">📷</div><p>Tap to upload your portrait photo</p><p style="font-size:11px;color:#555;margin-top:4px">JPG or PNG recommended</p><input type="file" id="photoInput" accept="image/*"></div>
+<div class="pw" id="photoPreview"></div>
 </div>
 
-<div class="section">
-<div class="stitle">Record Your Script</div>
-<div class="tip" style="margin-bottom:12px"><strong>Keep it to 20-30 seconds</strong> â 3 to 4 sentences max. Speak clearly, naturally, in a quiet room. This is the exact voice your avatar will use.</div>
-<div class="voice-section">
-<div class="voice-tabs">
-<button class="vtab active" id="tabRecordBtn" onclick="switchTab('record',this)">Record Now</button>
-<button class="vtab" id="tabUploadBtn" onclick="switchTab('upload',this)">Upload Audio File</button>
+<div class="sec">
+<div class="st">Background Photo <span style="font-size:10px;color:#555;font-weight:400;text-transform:none">(optional)</span></div>
+<div class="ub" id="bgBox"><div class="ic">🏠</div><p>Tap to upload a property or background photo</p><input type="file" id="bgInput" accept="image/*"></div>
+<div class="pw" id="bgPreview"></div>
 </div>
-<div class="vtab-content show" id="tab-record">
-<button class="record-btn" id="recordBtn" onclick="toggleRecord()">
-<div class="rec-dot"></div>
-<span id="recordBtnText">Tap to Record</span>
-</button>
-<div class="rec-timer" id="recTimer"></div>
-<div class="rec-preview" id="recPreview">
-<audio id="recAudio" controls></audio>
-<button class="redo-btn" onclick="redoRecording()">Record Again</button>
+
+<div class="sec">
+<div class="st">Record Your Voice Sample</div>
+<div class="tip" style="margin-bottom:12px"><strong>30-60 seconds of your natural voice.</strong> Just talk normally — read something, describe a property, anything. This is used to clone your voice.</div>
+<div class="vs">
+<div class="vt">
+<button class="vtb act" onclick="switchTab('record',this)">Record Now</button>
+<button class="vtb" onclick="switchTab('upload',this)">Upload Audio</button>
 </div>
+<div class="vc show" id="tab-record">
+<button class="rb" id="recordBtn" onclick="toggleRecord()"><div class="rd"></div><span id="rbt">Tap to Record</span></button>
+<div class="rt" id="recTimer"></div>
+<div class="rp" id="recPreview"><audio id="recAudio" controls></audio><button class="redo" onclick="redoRec()">Record Again</button></div>
 </div>
-<div class="vtab-content" id="tab-upload">
-<div class="upload-box" id="voiceBox">
-<div class="icon">ð¤</div>
-<p>Upload a 20-30 second recording (MP3 or WAV)</p>
-<input type="file" id="voiceInput" accept="audio/*">
-</div>
-<div id="voiceUploadPreview"></div>
+<div class="vc" id="tab-upload">
+<div class="ub" id="voiceBox"><div class="ic">🎤</div><p>Upload MP3 or WAV (30-60 seconds)</p><input type="file" id="voiceInput" accept="audio/*"></div>
+<div id="vup"></div>
 </div>
 </div>
 </div>
 
-<div class="section">
-<div class="stitle">Frame Style</div>
-<div class="frame-grid" id="frameGrid">
-<div class="frame-opt selected" data-frame="centered">
-<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg">
-<rect width="200" height="355" fill="#1a1a2e"/>
-<text x="100" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text>
-<rect x="16" y="26" width="168" height="105" rx="5" fill="#3a5a6a"/>
-<text x="100" y="84" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)" font-family="sans-serif">Background photo</text>
-<ellipse cx="100" cy="208" rx="30" ry="30" fill="#4a7060"/>
-<path d="M52 320 Q52 242 100 242 Q148 242 148 320" fill="#4a7060"/>
-<text x="100" y="215" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text>
-<rect x="40" y="330" width="120" height="1.5" fill="#e07940"/>
-<text x="100" y="345" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name Â· Brokerage</text>
-</svg>
-<div class="frame-label">Frame 1 â Centered</div>
+<div class="sec">
+<div class="st">Frame Style</div>
+<div class="fg">
+<div class="fo sel" data-frame="centered">
+<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="355" fill="#1a1a2e"/><text x="100" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text><rect x="16" y="26" width="168" height="105" rx="5" fill="#3a5a6a"/><text x="100" y="84" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)" font-family="sans-serif">Background photo</text><ellipse cx="100" cy="208" rx="30" ry="30" fill="#4a7060"/><path d="M52 320 Q52 242 100 242 Q148 242 148 320" fill="#4a7060"/><text x="100" y="215" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text><rect x="40" y="330" width="120" height="1.5" fill="#e07940"/><text x="100" y="345" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text></svg>
+<div class="fl">Frame 1 — Centered</div>
 </div>
-<div class="frame-opt" data-frame="split">
-<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg">
-<rect width="200" height="355" fill="#111"/>
-<text x="12" y="18" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text>
-<rect x="82" y="26" width="106" height="90" rx="5" fill="#3a5a6a"/>
-<text x="135" y="76" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="sans-serif">Background photo</text>
-<rect x="12" y="125" width="118" height="190" rx="5" fill="#2a3a4a" opacity="0.4"/>
-<ellipse cx="71" cy="190" rx="26" ry="26" fill="#4a6a7a"/>
-<path d="M28 314 Q28 220 71 220 Q114 220 114 314" fill="#4a6a7a"/>
-<text x="71" y="196" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text>
-<rect x="138" y="325" width="52" height="1.5" fill="#e07940"/>
-<text x="190" y="338" text-anchor="end" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text>
-<text x="190" y="349" text-anchor="end" font-size="6.5" fill="rgba(255,255,255,0.45)" font-family="sans-serif">Brokerage</text>
-</svg>
-<div class="frame-label">Frame 2 â Split</div>
+<div class="fo" data-frame="split">
+<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="355" fill="#111"/><text x="12" y="18" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text><rect x="82" y="26" width="106" height="90" rx="5" fill="#3a5a6a"/><text x="135" y="76" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="sans-serif">Background</text><rect x="12" y="125" width="118" height="190" rx="5" fill="#2a3a4a" opacity="0.4"/><ellipse cx="71" cy="190" rx="26" ry="26" fill="#4a6a7a"/><path d="M28 314 Q28 220 71 220 Q114 220 114 314" fill="#4a6a7a"/><text x="71" y="196" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text><rect x="138" y="325" width="52" height="1.5" fill="#e07940"/><text x="190" y="338" text-anchor="end" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text></svg>
+<div class="fl">Frame 2 — Split</div>
 </div>
 </div>
 </div>
 
-<div class="section">
-<div class="stitle">Background Color</div>
-<div class="color-grid" id="colorGrid"></div>
+<div class="sec">
+<div class="st">Background Color</div>
+<div class="cg" id="colorGrid"></div>
 </div>
 
-<div class="section">
-<div class="stitle">Aspect Ratio</div>
-<div class="ar-grid">
-<div class="ar-opt selected" data-ar="9x16" onclick="selAR='9x16';document.querySelectorAll('.ar-opt').forEach(x=>x.classList.remove('selected'));this.classList.add('selected')"><div class="ar-name">9:16</div><div class="ar-sub">Reels Â· TikTok Â· Stories</div></div>
-<div class="ar-opt" data-ar="4x5" onclick="selAR='4x5';document.querySelectorAll('.ar-opt').forEach(x=>x.classList.remove('selected'));this.classList.add('selected')"><div class="ar-name">4:5</div><div class="ar-sub">Instagram Feed</div></div>
+<div class="sec">
+<div class="st">Aspect Ratio</div>
+<div class="ag">
+<div class="ao sel" data-ar="9x16" onclick="selAR='9x16';document.querySelectorAll('.ao').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')"><div class="an">9:16</div><div class="as">Reels · TikTok · Stories</div></div>
+<div class="ao" data-ar="4x5" onclick="selAR='4x5';document.querySelectorAll('.ao').forEach(x=>x.classList.remove('sel'));this.classList.add('sel')"><div class="an">4:5</div><div class="as">Instagram Feed</div></div>
 </div>
 </div>
 
-<button class="btn" id="generateBtn" disabled>Generate Avatar Video</button>
-<div class="powered">Powered by HeyGen AI</div>
-<div class="prog-wrap" id="progWrap">
-<div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
-<div class="prog-msg" id="progMsg">Starting...</div>
-</div>
-<div class="result-wrap" id="resultWrap">
-<video id="resultVideo" controls playsinline></video><br>
-<a class="dl-btn" id="dlBtn" download="qcv-avatar-video.mp4">Download Video</a>
-</div>
+<button class="btn" id="genBtn" disabled>Generate Avatar Video</button>
+<div class="pow">Powered by ElevenLabs + HeyGen AI</div>
+<div class="pw2" id="progWrap"><div class="pb"><div class="pf" id="progFill"></div></div><div class="pm" id="progMsg">Starting...</div></div>
+<div class="rw" id="resultWrap"><video id="rv" controls playsinline></video><br><a class="db" id="dlBtn" download="qcv-avatar-video.mp4">Download Video</a></div>
 </div>
 
 <script>
-const COLORS=[
-{name:'Midnight',hex:'#1a1a2e',text:'#ffffff',accent:'#e07940'},
-{name:'True Black',hex:'#0a0a0a',text:'#ffffff',accent:'#e07940'},
-{name:'QCV Orange',hex:'#e07940',text:'#ffffff',accent:'#ffffff'},
-{name:'Warm Cream',hex:'#f0ebe0',text:'#1a1a1a',accent:'#c8a06e'},
-{name:'Navy',hex:'#0f1e35',text:'#ffffff',accent:'#5ba3c9'},
-];
+const COLORS=[{name:'Midnight',hex:'#1a1a2e'},{name:'True Black',hex:'#0a0a0a'},{name:'QCV Orange',hex:'#e07940'},{name:'Warm Cream',hex:'#f0ebe0'},{name:'Navy',hex:'#0f1e35'}];
 let selColor=COLORS[0],selFrame='centered',selAR='9x16';
 let photoFile=null,bgFile=null,voiceBlob=null,voiceFile=null;
-let mediaRecorder=null,recChunks=[],recInterval=null,recSeconds=0,isRecording=false;
+let mr=null,rc=[],ri=null,rs=0,isRec=false;
 
 const cg=document.getElementById('colorGrid');
 COLORS.forEach((c,i)=>{
-const el=document.createElement('div');
-el.className='color-opt'+(i===0?' selected':'');
-el.innerHTML='<div class="color-swatch" style="background:'+c.hex+'"></div><div class="color-name">'+c.name+'</div>';
-el.onclick=()=>{document.querySelectorAll('.color-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selColor=c;};
+const el=document.createElement('div');el.className='co'+(i===0?' sel':'');
+el.innerHTML='<div class="cs" style="background:'+c.hex+'"></div><div class="cn">'+c.name+'</div>';
+el.onclick=()=>{document.querySelectorAll('.co').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');selColor=c;};
 cg.appendChild(el);
 });
 
-document.querySelectorAll('.frame-opt').forEach(el=>{
-el.onclick=()=>{document.querySelectorAll('.frame-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selFrame=el.dataset.frame;};
-});
+document.querySelectorAll('.fo').forEach(el=>{el.onclick=()=>{document.querySelectorAll('.fo').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');selFrame=el.dataset.frame;};});
 
-function switchTab(t,btn){
-document.querySelectorAll('.vtab').forEach(x=>x.classList.remove('active'));
-document.querySelectorAll('.vtab-content').forEach(x=>x.classList.remove('show'));
-btn.classList.add('active');
-document.getElementById('tab-'+t).classList.add('show');
-}
+function switchTab(t,btn){document.querySelectorAll('.vtb').forEach(x=>x.classList.remove('act'));document.querySelectorAll('.vc').forEach(x=>x.classList.remove('show'));btn.classList.add('act');document.getElementById('tab-'+t).classList.add('show');}
 
-function setupUpload(boxId,inputId,previewId,type){
-const box=document.getElementById(boxId);
-const inp=document.getElementById(inputId);
-const prev=document.getElementById(previewId);
+function setupUpload(bid,iid,pid,type){
+const box=document.getElementById(bid),inp=document.getElementById(iid),prev=document.getElementById(pid);
 if(!box||!inp)return;
 box.onclick=()=>inp.click();
-inp.onchange=()=>{if(inp.files[0])handleFile(inp.files[0],type,prev);};
-function handleFile(f,t,p){
-if(t==='photo'){photoFile=f;const img=document.createElement('img');img.className='preview-img';img.src=URL.createObjectURL(f);p.innerHTML='';p.appendChild(img);}
-else if(t==='bg'){bgFile=f;const img=document.createElement('img');img.className='preview-img';img.src=URL.createObjectURL(f);p.innerHTML='';p.appendChild(img);}
-else if(t==='voice'){voiceFile=f;voiceBlob=null;p.innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:8px"></audio>';}
+inp.onchange=()=>{if(inp.files[0])handle(inp.files[0],type,prev);};
+function handle(f,t,p){
+if(t==='photo'){photoFile=f;const img=document.createElement('img');img.className='pi';img.src=URL.createObjectURL(f);p.innerHTML='';p.appendChild(img);}
+else if(t==='bg'){bgFile=f;const img=document.createElement('img');img.className='pi';img.src=URL.createObjectURL(f);p.innerHTML='';p.appendChild(img);}
+else{voiceFile=f;voiceBlob=null;p.innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:8px"></audio>';}
 checkReady();
 }
 }
 setupUpload('photoBox','photoInput','photoPreview','photo');
 setupUpload('bgBox','bgInput','bgPreview','bg');
-setupUpload('voiceBox','voiceInput','voiceUploadPreview','voice');
+setupUpload('voiceBox','voiceInput','vup','voice');
+
+const sTA=document.getElementById('scriptText'),ccEl=document.getElementById('cc');
+sTA.oninput=()=>{const n=sTA.value.length;ccEl.textContent=n+' / 500';ccEl.className='cc'+(n>400?' warn':'');checkReady();};
 
 async function toggleRecord(){
-if(isRecording){stopRecording();return;}
+if(isRec){stopRec();return;}
 try{
 const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-mediaRecorder=new MediaRecorder(stream);
-recChunks=[];
-mediaRecorder.ondataavailable=e=>{if(e.data.size>0)recChunks.push(e.data);};
-mediaRecorder.onstop=()=>{
-stream.getTracks().forEach(t=>t.stop());
-voiceBlob=new Blob(recChunks,{type:'audio/webm'});
-voiceFile=null;
-document.getElementById('recAudio').src=URL.createObjectURL(voiceBlob);
-document.getElementById('recPreview').style.display='block';
-checkReady();
-};
-mediaRecorder.start();
-isRecording=true;recSeconds=0;
-document.getElementById('recordBtn').classList.add('recording');
-document.getElementById('recordBtnText').textContent='Recording... Tap to Stop';
-recInterval=setInterval(()=>{
-recSeconds++;
-const m=Math.floor(recSeconds/60).toString().padStart(2,'0');
-const s=(recSeconds%60).toString().padStart(2,'0');
-document.getElementById('recTimer').textContent=m+':'+s;
-if(recSeconds>=60)stopRecording();
-},1000);
-}catch(e){alert('Microphone access denied. Please allow microphone access and try again.');}
+mr=new MediaRecorder(stream);rc=[];
+mr.ondataavailable=e=>{if(e.data.size>0)rc.push(e.data);};
+mr.onstop=()=>{stream.getTracks().forEach(t=>t.stop());voiceBlob=new Blob(rc,{type:'audio/webm'});voiceFile=null;document.getElementById('recAudio').src=URL.createObjectURL(voiceBlob);document.getElementById('recPreview').style.display='block';checkReady();};
+mr.start();isRec=true;rs=0;
+document.getElementById('recordBtn').classList.add('rec');
+document.getElementById('rbt').textContent='Recording... Tap to Stop';
+ri=setInterval(()=>{rs++;const m=String(Math.floor(rs/60)).padStart(2,'0'),s=String(rs%60).padStart(2,'0');document.getElementById('recTimer').textContent=m+':'+s;if(rs>=60)stopRec();},1000);
+}catch(e){alert('Microphone access denied. Please allow microphone and try again.');}
 }
-
-function stopRecording(){
-if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
-isRecording=false;clearInterval(recInterval);
-document.getElementById('recordBtn').classList.remove('recording');
-document.getElementById('recordBtnText').textContent='Tap to Record';
-}
-
-function redoRecording(){
-voiceBlob=null;
-document.getElementById('recPreview').style.display='none';
-document.getElementById('recTimer').textContent='';
-checkReady();
-}
+function stopRec(){if(mr&&mr.state!=='inactive')mr.stop();isRec=false;clearInterval(ri);document.getElementById('recordBtn').classList.remove('rec');document.getElementById('rbt').textContent='Tap to Record';}
+function redoRec(){voiceBlob=null;document.getElementById('recPreview').style.display='none';document.getElementById('recTimer').textContent='';checkReady();}
 
 function checkReady(){
 const hasVoice=voiceBlob||voiceFile;
-document.getElementById('generateBtn').disabled=!(photoFile&&hasVoice);
+const hasScript=document.getElementById('scriptText').value.trim().length>10;
+document.getElementById('genBtn').disabled=!(photoFile&&hasVoice&&hasScript);
 }
 
-document.getElementById('generateBtn').onclick=async()=>{
-const btn=document.getElementById('generateBtn');
-const progWrap=document.getElementById('progWrap');
-const progFill=document.getElementById('progFill');
-const progMsg=document.getElementById('progMsg');
-const resultWrap=document.getElementById('resultWrap');
-btn.disabled=true;progWrap.style.display='block';resultWrap.style.display='none';
+document.getElementById('genBtn').onclick=async()=>{
+const btn=document.getElementById('genBtn');
+const pw=document.getElementById('progWrap'),pf=document.getElementById('progFill'),pm=document.getElementById('progMsg'),rw=document.getElementById('resultWrap');
+btn.disabled=true;pw.style.display='block';rw.style.display='none';
 const fd=new FormData();
 fd.append('photo',photoFile);
 if(bgFile)fd.append('bgPhoto',bgFile);
 if(voiceBlob)fd.append('voice',voiceBlob,'recording.webm');
 else if(voiceFile)fd.append('voice',voiceFile);
-const scriptVal=document.getElementById('scriptText')?document.getElementById('scriptText').value:'';fd.append('script',scriptVal);fd.append('agentName',document.getElementById('agentName').value);
+fd.append('script',document.getElementById('scriptText').value);
+fd.append('agentName',document.getElementById('agentName').value);
 fd.append('agentPhone',document.getElementById('agentPhone').value);
 fd.append('brokerage',document.getElementById('brokerage').value);
 fd.append('address',document.getElementById('address').value);
@@ -337,17 +253,12 @@ fd.append('sqft',document.getElementById('sqft').value);
 fd.append('occasion',document.getElementById('occasion').value);
 fd.append('frame',selFrame);
 fd.append('bgColor',selColor.hex);
-fd.append('textColor',selColor.text);
-fd.append('accentColor',selColor.accent);
 fd.append('aspectRatio',selAR);
 const xhr=new XMLHttpRequest();
 xhr.open('POST','/generate');
-xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*20);progFill.style.width=p+'%';progMsg.textContent='Uploading... '+p+'%';}};
-xhr.onload=()=>{
-if(xhr.status===200){const {jobId}=JSON.parse(xhr.responseText);poll(jobId,progFill,progMsg,resultWrap,btn);}
-else{progMsg.textContent='Upload failed. Try again.';btn.disabled=false;}
-};
-xhr.onerror=()=>{progMsg.textContent='Network error.';btn.disabled=false;};
+xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*20);pf.style.width=p+'%';pm.textContent='Uploading... '+p+'%';}};
+xhr.onload=()=>{if(xhr.status===200){const {jobId}=JSON.parse(xhr.responseText);poll(jobId,pf,pm,rw,btn);}else{pm.textContent='Upload failed.';btn.disabled=false;}};
+xhr.onerror=()=>{pm.textContent='Network error.';btn.disabled=false;};
 xhr.send(fd);
 };
 
@@ -356,7 +267,7 @@ const iv=setInterval(async()=>{
 try{
 const d=await fetch('/progress/'+jobId).then(r=>r.json());
 fill.style.width=d.progress+'%';msg.textContent=d.message||'Processing...';
-if(d.status==='done'){clearInterval(iv);fill.style.width='100%';msg.textContent='Done!';rw.style.display='block';document.getElementById('resultVideo').src='/download/'+jobId;document.getElementById('dlBtn').href='/download/'+jobId;btn.disabled=false;}
+if(d.status==='done'){clearInterval(iv);fill.style.width='100%';msg.textContent='Done!';rw.style.display='block';document.getElementById('rv').src='/download/'+jobId;document.getElementById('dlBtn').href='/download/'+jobId;btn.disabled=false;}
 else if(d.status==='error'){clearInterval(iv);msg.textContent='Error: '+(d.error||'Something went wrong');btn.disabled=false;}
 }catch(e){clearInterval(iv);msg.textContent='Connection lost.';}
 },2500);
