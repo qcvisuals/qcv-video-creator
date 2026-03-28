@@ -11,56 +11,73 @@ const PORT = process.env.PORT || 3000;
 const upload = multer({ dest: '/tmp/uploads/', limits: { fileSize: 50 * 1024 * 1024 } });
 app.use(express.static(path.join(__dirname, 'public')));
 
-const HIGGSFIELD_KEY = '2f155db1e04d8929ce01ac26402d525fc80c96fbac0cbebc274c3d2acffc4d48';
+const HEYGEN_KEY = 'sk_V2_hgu_kJjvg9V1Rto_jBsGXV0qejoFst2XD8L8cIJBQnf4yNGC';
 const jobs = {};
 
-async function uploadAsset(filePath, mimeType, assetType) {
+async function heygenRequest(endpoint, method, body) {
+  const opts = {
+    method,
+    headers: { 'X-Api-Key': HEYGEN_KEY, 'Content-Type': 'application/json', 'Accept': 'application/json' }
+  };
+  if (body) opts.body = JSON.stringify(body);
+  const r = await fetch('https://api.heygen.com' + endpoint, opts);
+  const text = await r.text();
+  try { return JSON.parse(text); } catch(e) { throw new Error('HeyGen parse error: ' + text.slice(0,300)); }
+}
+
+async function uploadVoice(voicePath, mimeType) {
   const fd = new FormData();
-  fd.append('file', fs.createReadStream(filePath), { contentType: mimeType, filename: assetType === 'audio' ? 'audio.webm' : 'photo.jpg' });
-  const r = await fetch('https://cloud.higgsfield.ai/api/v1/assets/upload', {
+  fd.append('file', fs.createReadStream(voicePath), { contentType: mimeType || 'audio/webm', filename: 'voice.webm' });
+  const r = await fetch('https://api.heygen.com/v1/asset', {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + HIGGSFIELD_KEY, ...fd.getHeaders() },
+    headers: { 'X-Api-Key': HEYGEN_KEY, ...fd.getHeaders() },
     body: fd
   });
   const text = await r.text();
-  let d; try { d = JSON.parse(text); } catch(e) { throw new Error('Upload parse error: ' + text.slice(0,200)); }
-  if (!d.id && !d.asset_id) throw new Error('Upload failed: ' + JSON.stringify(d).slice(0,200));
-  return d.id || d.asset_id;
+  let d; try { d = JSON.parse(text); } catch(e) { throw new Error('Voice upload parse: ' + text.slice(0,200)); }
+  if (!d.data?.id) throw new Error('Voice upload failed: ' + JSON.stringify(d).slice(0,200));
+  return d.data.id;
 }
 
-async function generateAvatar(imageAssetId, audioAssetId) {
-  const body = { model: 'kling-avatar', image_asset_id: imageAssetId, audio_asset_id: audioAssetId };
-  const r = await fetch('https://cloud.higgsfield.ai/api/v1/generate', {
+async function uploadPhoto(photoPath, mimeType) {
+  const fd = new FormData();
+  fd.append('file', fs.createReadStream(photoPath), { contentType: mimeType || 'image/jpeg', filename: 'photo.jpg' });
+  const r = await fetch('https://api.heygen.com/v1/asset', {
     method: 'POST',
-    headers: { 'Authorization': 'Bearer ' + HIGGSFIELD_KEY, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    headers: { 'X-Api-Key': HEYGEN_KEY, ...fd.getHeaders() },
+    body: fd
   });
   const text = await r.text();
-  let d; try { d = JSON.parse(text); } catch(e) { throw new Error('Generate parse error: ' + text.slice(0,200)); }
-  if (!d.id) throw new Error('Generate failed: ' + JSON.stringify(d).slice(0,300));
-  return d.id;
+  let d; try { d = JSON.parse(text); } catch(e) { throw new Error('Photo upload parse: ' + text.slice(0,200)); }
+  if (!d.data?.id) throw new Error('Photo upload failed: ' + JSON.stringify(d).slice(0,200));
+  return d.data.id;
 }
 
-async function pollGeneration(genId, jobId) {
+async function createTalkingPhoto(photoAssetId, audioAssetId) {
+  const d = await heygenRequest('/v1/talking_photo', 'POST', {
+    talking_photo_id: photoAssetId,
+    audio_type: 'audio',
+    audio_asset_id: audioAssetId,
+    talking_style: 'expressive'
+  });
+  if (!d.data?.video_id) throw new Error('Talking photo failed: ' + JSON.stringify(d).slice(0,300));
+  return d.data.video_id;
+}
+
+async function pollVideo(videoId, jobId) {
   const start = Date.now();
   let attempt = 0;
-  while (Date.now() - start < 420000) {
-    await new Promise(r => setTimeout(r, 8000));
+  while (Date.now() - start < 360000) {
+    await new Promise(r => setTimeout(r, 6000));
     attempt++;
-    try {
-      const r = await fetch('https://cloud.higgsfield.ai/api/v1/generate/' + genId, {
-        headers: { 'Authorization': 'Bearer ' + HIGGSFIELD_KEY }
-      });
-      const d = await r.json();
-      const pct = Math.min(75 + attempt * 2, 92);
-      jobs[jobId] = { status: 'processing', progress: pct, message: 'Rendering avatar... (' + Math.round((Date.now()-start)/1000) + 's)' };
-      if (d.status === 'completed' && d.output_url) return d.output_url;
-      if (d.status === 'failed') throw new Error('Generation failed: ' + (d.error || JSON.stringify(d)));
-    } catch(e) {
-      if (e.message.includes('Generation failed')) throw e;
-    }
+    const d = await heygenRequest('/v1/video_status.get?video_id=' + videoId, 'GET');
+    const status = d.data?.status;
+    const pct = Math.min(70 + attempt * 3, 93);
+    jobs[jobId] = { status: 'processing', progress: pct, message: 'Rendering avatar... (' + Math.round((Date.now()-start)/1000) + 's)' };
+    if (status === 'completed' && d.data?.video_url) return d.data.video_url;
+    if (status === 'failed') throw new Error('Video failed: ' + (d.data?.error || JSON.stringify(d).slice(0,200)));
   }
-  throw new Error('Timed out after 7 minutes');
+  throw new Error('Timed out after 6 minutes');
 }
 
 app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',maxCount:1},{name:'voice',maxCount:1}]), async (req, res) => {
@@ -76,21 +93,20 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     toClean.push(photo.path, voice.path);
     if (req.files['bgPhoto']?.[0]) toClean.push(req.files['bgPhoto'][0].path);
 
-    jobs[jobId] = { status: 'processing', progress: 30, message: 'Uploading your photo...' };
-    const imageId = await uploadAsset(photo.path, photo.mimetype || 'image/jpeg', 'image');
+    jobs[jobId] = { status: 'processing', progress: 25, message: 'Uploading your photo to HeyGen...' };
+    const photoAssetId = await uploadPhoto(photo.path, photo.mimetype);
 
-    jobs[jobId] = { status: 'processing', progress: 50, message: 'Uploading your voice recording...' };
-    const audioId = await uploadAsset(voice.path, voice.mimetype || 'audio/webm', 'audio');
+    jobs[jobId] = { status: 'processing', progress: 45, message: 'Uploading your voice recording...' };
+    const audioAssetId = await uploadVoice(voice.path, voice.mimetype);
 
-    jobs[jobId] = { status: 'processing', progress: 65, message: 'Sending to Higgsfield...' };
-    const genId = await generateAvatar(imageId, audioId);
+    jobs[jobId] = { status: 'processing', progress: 60, message: 'Generating your talking avatar...' };
+    const videoId = await createTalkingPhoto(photoAssetId, audioAssetId);
 
-    jobs[jobId] = { status: 'processing', progress: 75, message: 'Generating your avatar — 2-4 minutes...' };
-    const videoUrl = await pollGeneration(genId, jobId);
+    jobs[jobId] = { status: 'processing', progress: 70, message: 'Rendering — 1-3 minutes...' };
+    const videoUrl = await pollVideo(videoId, jobId);
 
-    jobs[jobId] = { status: 'processing', progress: 93, message: 'Downloading your video...' };
-    const videoRes = await fetch(videoUrl);
-    const buf = Buffer.from(await videoRes.arrayBuffer());
+    jobs[jobId] = { status: 'processing', progress: 94, message: 'Downloading your video...' };
+    const buf = Buffer.from(await fetch(videoUrl).then(r => r.arrayBuffer()));
     const out = '/tmp/avatar-' + jobId + '.mp4';
     fs.writeFileSync(out, buf);
 
@@ -116,4 +132,4 @@ app.get('/download/:id', (req, res) => {
   res.download(j.outputPath, 'qcv-avatar-video.mp4');
 });
 
-app.listen(PORT, () => console.log('QCV Avatar Creator running on port ' + PORT));
+app.listen(PORT, () => console.log('QCV HeyGen Avatar Creator running on port ' + PORT));
