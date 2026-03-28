@@ -61,7 +61,7 @@ async function createTalkingPhoto(imageAssetId) {
   const d = await heygenPost('/v2/photo_avatar/photo/generate', {
     name: 'QCV Agent Avatar',
     image_asset_id: imageAssetId,
-    attributes: { gender: 'neutral' }
+    attributes: { gender: 'neutral', age: 'young_adult', skin_tone: 'medium', ethnicity: 'other' }
   });
   if(d.error) throw new Error('Photo avatar create: '+JSON.stringify(d.error).slice(0,200));
   const talkingPhotoId = d.data?.talking_photo_id || d.data?.id;
@@ -140,7 +140,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     jobs[jobId] = {status:'processing',progress:64,message:'Generating talking avatar video...'};
     const videoId = await generateVideo(talkingPhotoId, audioAssetId, aspectRatio);
 
-    jobs[jobId] = {status:'processing',progress:72,message:'Rendering â 1-3 minutes...'};
+    jobs[jobId] = {status:'processing',progress:72,message:'Rendering Ã¢ÂÂ 1-3 minutes...'};
     const videoUrl = await pollVideo(videoId, jobId);
 
     jobs[jobId] = {status:'processing',progress:94,message:'Downloading...'};
