@@ -143,10 +143,10 @@ input:focus{outline:none;border-color:#1a1a1a;}
     <div class="card">
       <h3>Video Format</h3><p>Choose your target platform and aspect ratio.</p>
       <div class="option-grid" id="fg">
-        <button class="opt-btn active" onclick="setOpt('f',this)">9x16<br><span style="font-size:10px;opacity:0.6;">Reels</span></button>
-        <button class="opt-btn" onclick="setOpt('f',this)">4x5<br><span style="font-size:10px;opacity:0.6;">Feed</span></button>
-        <button class="opt-btn" onclick="setOpt('f',this)">1x1<br><span style="font-size:10px;opacity:0.6;">Square</span></button>
-        <button class="opt-btn" onclick="setOpt('f',this)">16x9<br><span style="font-size:10px;opacity:0.6;">YouTube</span></button>
+        <button class="opt-btn active" data-fmt="9x16" onclick="setOpt('f',this)">9x16<br><span style="font-size:10px;opacity:0.6;">Reels</span></button>
+        <button class="opt-btn" data-fmt="4x5" onclick="setOpt('f',this)">4x5<br><span style="font-size:10px;opacity:0.6;">Feed</span></button>
+        <button class="opt-btn" data-fmt="1x1" onclick="setOpt('f',this)">1x1<br><span style="font-size:10px;opacity:0.6;">Square</span></button>
+        <button class="opt-btn" data-fmt="16x9" onclick="setOpt('f',this)">16x9<br><span style="font-size:10px;opacity:0.6;">YouTube</span></button>
       </div>
     </div>
     <button class="btn" id="gb" onclick="generateVideo()">Generate My Property Video</button>
@@ -222,7 +222,7 @@ function setOpt(type,btn){
   var txt=btn.textContent.trim().split('\n')[0].trim();
   if(type==='t')trans=txt;
   else if(type==='m')music=txt;
-  else fmt=fmtMap[txt]||'9x16';
+  else fmt=btn.dataset.fmt||'9x16';
 }
 function setProg(pct,label,stage){
   document.getElementById('pf').style.width=pct+'%';
