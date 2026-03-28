@@ -97,13 +97,13 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     const photoId = await uploadAsset(photo.path, photo.mimetype || 'image/jpeg');
 
     jobs[jobId] = { status:'processing', progress:45, message:'Uploading your voice recording...' };
-    const audioMime = voice.mimetype || 'audio/webm';
+    const audioMime = (voice.mimetype || 'audio/webm').replace('audio/webm','video/webm').replace('audio/ogg','video/ogg');
     const audioId = await uploadAsset(voice.path, audioMime);
 
     jobs[jobId] = { status:'processing', progress:62, message:'Generating talking avatar...' };
     const videoId = await createTalkingPhoto(photoId, audioId);
 
-    jobs[jobId] = { status:'processing', progress:70, message:'Rendering — 1-3 minutes...' };
+    jobs[jobId] = { status:'processing', progress:70, message:'Rendering â 1-3 minutes...' };
     const videoUrl = await pollVideo(videoId, jobId);
 
     jobs[jobId] = { status:'processing', progress:94, message:'Downloading your video...' };
