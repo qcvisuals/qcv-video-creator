@@ -1,232 +1,200 @@
 const express = require('express');
 const multer = require('multer');
-const { v4: uuidv4 } = require('uuid');
-const cors = require('cors');
+const ffmpeg = require('fluent-ffmpeg');
 const path = require('path');
 const fs = require('fs');
-const { spawn } = require('child_process');
+const { v4: uuidv4 } = require('uuid');
+
 const app = express();
-app.use(cors());
-app.use(express.json());
-const PORT = process.env.PORT || 8080;
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
-const OUTPUTS_DIR = path.join(__dirname, 'outputs');
-const MUSIC_DIR = path.join(__dirname, 'music');
-[UPLOADS_DIR, OUTPUTS_DIR, MUSIC_DIR].forEach(d => fs.mkdirSync(d, { recursive: true }));
-const jobs = new Map();
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const jobId = req.jobId || (req.jobId = uuidv4());
-    const dir = path.join(UPLOADS_DIR, jobId);
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => cb(null, Date.now() + '_' + file.originalname.replace(/[^a-zA-Z0-9._]/g, '_'))
-});
-const upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
+const PORT = process.env.PORT || 3000;
+const upload = multer({ dest: '/tmp/uploads/' });
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.post('/api/generate-video', (req, res, next) => { req.jobId = uuidv4(); next(); },
-  upload.fields([{ name: 'photos', maxCount: 10 }, { name: 'logo', maxCount: 1 }]),
-  async (req, res) => {
-    try {
-      const jobId = req.jobId;
-      const { address, price, beds, baths, sqft, tagline, agentName, agentPhone, musicMood, videoFormat, transition } = req.body;
-      const photos = (req.files['photos'] || []).map(f => f.path).sort();
-      const logoFile = req.files['logo'] ? req.files['logo'][0].path : null;
-      if (!photos.length) return res.status(400).json({ error: 'At least 1 photo required' });
-      jobs.set(jobId, { status: 'processing', progress: 30, message: 'Photos received — starting render...' });
-      res.json({ jobId });
-      processVideo({ jobId, photos, logoFile, address, price, beds, baths, sqft, tagline, agentName, agentPhone, musicMood, videoFormat, transition: transition || 'Fade' });
-    } catch (err) { res.status(500).json({ error: err.message }); }
-  }
-);
+const jobs = {};
 
-app.get('/api/status/:jobId', (req, res) => {
-  const job = jobs.get(req.params.jobId);
-  if (!job) return res.status(404).json({ error: 'Job not found' });
-  res.json({ status: job.status, progress: job.progress, message: job.message });
-});
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `${r}/${g}/${b}`;
+}
 
-app.get('/api/download/:jobId', (req, res) => {
-  const job = jobs.get(req.params.jobId);
-  if (!job || job.status !== 'complete') return res.status(404).json({ error: 'Video not ready' });
-  if (!fs.existsSync(job.outputPath)) return res.status(404).json({ error: 'File not found' });
-  res.setHeader('Content-Disposition', 'attachment; filename="property-video.mp4"');
-  res.setHeader('Content-Type', 'video/mp4');
-  res.download(job.outputPath, 'property-video.mp4');
-});
+function getDimensions(aspectRatio) {
+  const map = { '9x16': [1080,1920], '4x5': [1080,1350], '1x1': [1080,1080], '16x9': [1920,1080] };
+  return map[aspectRatio] || [1080,1920];
+}
 
-async function processVideo({ jobId, photos, logoFile, address, price, beds, baths, sqft, tagline, agentName, agentPhone, musicMood, videoFormat, transition }) {
-  const update = (status, progress, message) => jobs.set(jobId, { ...jobs.get(jobId), status, progress, message });
+function getPhotosPerFrame(layout) {
+  const map = { 'hero-pair': 3, 'side-by-side': 2, 'feature-stack': 3, 'grid-2x2': 4 };
+  return map[layout] || 3;
+}
+
+app.post('/generate', upload.array('photos', 25), async (req, res) => {
+  const jobId = uuidv4();
+  jobs[jobId] = { status: 'processing', progress: 40, message: 'Photos received, building video...' };
+  res.json({ jobId });
+
+  const { agentName, agentPhone, brokerage, address, cityState, price, beds, baths, sqft, occasion,
+          bgColor, textColor, accentColor, layout, textPosition, aspectRatio, numFrames, transition } = req.body;
+
+  const [W, H] = getDimensions(aspectRatio || '9x16');
+  const photosPerFrame = getPhotosPerFrame(layout || 'hero-pair');
+  const photos = req.files;
+  const numF = Math.min(parseInt(numFrames) || 3, Math.ceil(photos.length / photosPerFrame));
+  const outputPath = `/tmp/output-${jobId}.mp4`;
+  const frameDuration = 3;
+
   try {
-    const workDir = path.join(UPLOADS_DIR, jobId);
-    const outputPath = path.join(OUTPUTS_DIR, jobId + '.mp4');
-    const formats = { '9x16': { w: 1080, h: 1920 }, '4x5': { w: 1080, h: 1350 }, '1x1': { w: 1080, h: 1080 }, '16x9': { w: 1920, h: 1080 } };
-    const { w, h } = formats[videoFormat] || formats['9x16'];
-    const DUR = 3.0;
-    const FPS = 30;
-    const FRAMES = Math.round(DUR * FPS);
-    const PRESET = 'ultrafast';
+    jobs[jobId].progress = 45;
+    jobs[jobId].message = 'Preparing frames...';
 
-    // Phase 1: Render each photo as a segment with Ken Burns + text overlay
-    const segments = [];
-    for (let i = 0; i < photos.length; i++) {
-      const pct = Math.round(30 + (i / photos.length) * 35);
-      update('processing', pct, 'Rendering photo ' + (i + 1) + ' of ' + photos.length + '...');
-      const segOut = path.join(workDir, 'seg_' + String(i).padStart(3, '0') + '.mp4');
-      const zoompan = 'zoompan=z=\'min(zoom+0.0006,1.06)\':x=\'iw/2-(iw/zoom/2)\':y=\'ih/2-(ih/zoom/2)\':d=' + FRAMES + ':s=' + w + 'x' + h + ':fps=' + FPS;
-      // Scale preserving aspect ratio, pad to fill target dimensions, then zoompan
-      const scaleW = w * 2;
-      const scaleH = h * 2;
-      let vf = 'scale=' + scaleW + ':' + scaleH + ':force_original_aspect_ratio=increase,crop=' + scaleW + ':' + scaleH + ',' + zoompan;
-      const txt = getTextOverlay(i, address, price, beds, baths, sqft, tagline, w, h);
-      if (txt) vf += ',' + txt;
-      await runFFmpeg([
-        '-loop', '1', '-t', String(DUR), '-i', photos[i],
-        '-vf', vf,
-        '-c:v', 'libx264', '-preset', PRESET, '-pix_fmt', 'yuv420p',
-        '-r', String(FPS), '-t', String(DUR), '-an', '-y', segOut
-      ]);
-      segments.push(segOut);
+    const bg = hexToRgb(bgColor || '#1a1a1a');
+    const tc = hexToRgb(textColor || '#ffffff');
+    const ac = hexToRgb(accentColor || '#e07940');
+
+    const pad = Math.round(W * 0.04);
+    const textH = Math.round(H * 0.18);
+    const photoAreaH = H - textH - pad * 2;
+    const photoAreaW = W - pad * 2;
+    const photoAreaY = textPosition === 'bottom' ? pad : textPosition === 'top' ? H - photoAreaH - pad : Math.round(H * 0.12);
+    const textAreaY = textPosition === 'bottom' ? photoAreaY + photoAreaH + Math.round(pad * 0.5)
+                    : textPosition === 'top' ? pad
+                    : Math.round(H * 0.12) + photoAreaH + Math.round(pad * 0.3);
+
+    const frameFiles = [];
+
+    for (let f = 0; f < numF; f++) {
+      jobs[jobId].progress = 45 + Math.round((f / numF) * 40);
+      jobs[jobId].message = `Building frame ${f+1} of ${numF}...`;
+
+      const framePhotos = photos.slice(f * photosPerFrame, f * photosPerFrame + photosPerFrame);
+      if (framePhotos.length === 0) break;
+
+      const framePath = `/tmp/frame-${jobId}-${f}.mp4`;
+      frameFiles.push(framePath);
+
+      // Build photo layout filter
+      let filterComplex = '';
+      let overlayChain = '';
+      const gap = Math.round(W * 0.015);
+
+      if (layout === 'side-by-side') {
+        const pw = Math.round((photoAreaW - gap) / 2);
+        const ph = photoAreaH;
+        filterComplex = framePhotos.slice(0,2).map((p,i) => {
+          const x = pad + i * (pw + gap);
+          return `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in${i}] scale=${pw}:${ph}:force_original_aspect_ratio=cover,crop=${pw}:${ph} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p${i}];`;
+        }).join('');
+        filterComplex += `color=${bg}:${W}x${H},format=yuv420p [vbg${f}];`;
+        filterComplex += `[vbg${f}][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p0] overlay=${pad}:${photoAreaY} [vo${f}0];`;
+        if (framePhotos.length > 1) filterComplex += `[vo${f}0][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p1] overlay=${pad + pw + gap}:${photoAreaY} [vfinal${f}];`;
+        else filterComplex += `[vo${f}0] copy [vfinal${f}];`;
+      } else if (layout === 'grid-2x2') {
+        const pw = Math.round((photoAreaW - gap) / 2);
+        const ph = Math.round((photoAreaH - gap) / 2);
+        filterComplex = framePhotos.slice(0,4).map((p,i) => {
+          return `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in${i}] scale=${pw}:${ph}:force_original_aspect_ratio=cover,crop=${pw}:${ph} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p${i}];`;
+        }).join('');
+        filterComplex += `color=${bg}:${W}x${H},format=yuv420p [vbg${f}];`;
+        const positions = [[pad,photoAreaY],[pad+pw+gap,photoAreaY],[pad,photoAreaY+ph+gap],[pad+pw+gap,photoAreaY+ph+gap]];
+        filterComplex += `[vbg${f}][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p0] overlay=${positions[0][0]}:${positions[0][1]} [vo${f}0];`;
+        for (let i=1; i<Math.min(framePhotos.length,4); i++) {
+          filterComplex += `[vo${f}${i-1}][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p${i}] overlay=${positions[i][0]}:${positions[i][1]} ${i<Math.min(framePhotos.length,4)-1 ? '[vo'+f+i+'];' : '[vfinal'+f+'];'}`;
+        }
+        if (framePhotos.length === 1) filterComplex += `[vo${f}0] copy [vfinal${f}];`;
+      } else if (layout === 'feature-stack') {
+        const mainW = Math.round(photoAreaW * 0.6);
+        const stackW = photoAreaW - mainW - gap;
+        const stackH = Math.round((photoAreaH - gap) / 2);
+        filterComplex = `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in0] scale=${mainW}:${photoAreaH}:force_original_aspect_ratio=cover,crop=${mainW}:${photoAreaH} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p0];`;
+        if (framePhotos.length > 1) filterComplex += `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in1] scale=${stackW}:${stackH}:force_original_aspect_ratio=cover,crop=${stackW}:${stackH} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p1];`;
+        if (framePhotos.length > 2) filterComplex += `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in2] scale=${stackW}:${stackH}:force_original_aspect_ratio=cover,crop=${stackW}:${stackH} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p2];`;
+        filterComplex += `color=${bg}:${W}x${H},format=yuv420p [vbg${f}];`;
+        filterComplex += `[vbg${f}][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p0] overlay=${pad}:${photoAreaY} [vo${f}0];`;
+        if (framePhotos.length > 1) {
+          filterComplex += `[vo${f}0][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p1] overlay=${pad+mainW+gap}:${photoAreaY} [vo${f}1];`;
+          if (framePhotos.length > 2) filterComplex += `[vo${f}1][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p2] overlay=${pad+mainW+gap}:${photoAreaY+stackH+gap} [vfinal${f}];`;
+          else filterComplex += `[vo${f}1] copy [vfinal${f}];`;
+        } else filterComplex += `[vo${f}0] copy [vfinal${f}];`;
+      } else {
+        // hero-pair default
+        const heroH = Math.round(photoAreaH * 0.58);
+        const pairH = photoAreaH - heroH - gap;
+        const pairW = Math.round((photoAreaW - gap) / 2);
+        filterComplex = `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in0] scale=${photoAreaW}:${heroH}:force_original_aspect_ratio=cover,crop=${photoAreaW}:${heroH} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p0];`;
+        if (framePhotos.length > 1) filterComplex += `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in1] scale=${pairW}:${pairH}:force_original_aspect_ratio=cover,crop=${pairW}:${pairH} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p1];`;
+        if (framePhotos.length > 2) filterComplex += `[v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}in2] scale=${pairW}:${pairH}:force_original_aspect_ratio=cover,crop=${pairW}:${pairH} [v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p2];`;
+        filterComplex += `color=${bg}:${W}x${H},format=yuv420p [vbg${f}];`;
+        filterComplex += `[vbg${f}][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p0] overlay=${pad}:${photoAreaY} [vo${f}0];`;
+        if (framePhotos.length > 1) {
+          filterComplex += `[vo${f}0][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p1] overlay=${pad}:${photoAreaY+heroH+gap} [vo${f}1];`;
+          if (framePhotos.length > 2) filterComplex += `[vo${f}1][v:class f extends HTMLElement{async connectedCallback(){p("concurrency-error")}}p2] overlay=${pad+pairW+gap}:${photoAreaY+heroH+gap} [vfinal${f}];`;
+          else filterComplex += `[vo${f}1] copy [vfinal${f}];`;
+        } else filterComplex += `[vo${f}0] copy [vfinal${f}];`;
+      }
+
+      // Text overlays on background
+      const priceText = price || '';
+      const addressText = (address || '') + (cityState ? ', ' + cityState : '');
+      const detailText = [beds ? beds + ' bd' : '', baths ? baths + ' ba' : '', sqft ? sqft + ' sqft' : ''].filter(Boolean).join('  ·  ');
+      const agentText = [agentName, agentPhone, brokerage].filter(Boolean).join('  |  ');
+      const fs1 = Math.round(W * 0.042);
+      const fs2 = Math.round(W * 0.028);
+      const fs3 = Math.round(W * 0.024);
+      const ty1 = textAreaY + Math.round(textH * 0.18);
+      const ty2 = ty1 + Math.round(fs1 * 1.5);
+      const ty3 = ty2 + Math.round(fs2 * 1.6);
+      const ty4 = ty3 + Math.round(fs3 * 1.8);
+
+      // Remove trailing semicolon from filter if present, add text
+      filterComplex = filterComplex.replace(/[vfinal${f}];$/, `[vfinal${f}]`);
+      filterComplex += `, drawtext=text='':x=0:y=0`;
+      filterComplex += `, drawtext=text='${occasion || 'For Sale'}':x=(W-tw)/2:y=${ty1}:fontsize=${fs3}:fontcolor=${ac}:font=Sans:alpha='if(gte(t,0.3),min(1,(t-0.3)/0.4),0)'`;
+      filterComplex += `, drawtext=text='${priceText.replace(/'/g,'')}':x=(W-tw)/2:y=${ty2}:fontsize=${fs1}:fontcolor=${tc}:font=Sans Bold:alpha='if(gte(t,0.5),min(1,(t-0.5)/0.4),0)'`;
+      filterComplex += `, drawtext=text='${addressText.replace(/'/g,'')}':x=(W-tw)/2:y=${ty3}:fontsize=${fs2}:fontcolor=${tc}:font=Sans:alpha='if(gte(t,0.7),min(1,(t-0.7)/0.4),0)'`;
+      if (detailText) filterComplex += `, drawtext=text='${detailText}':x=(W-tw)/2:y=${ty4}:fontsize=${fs3}:fontcolor=${tc}:font=Sans:alpha='if(gte(t,0.9),min(1,(t-0.9)/0.4),0)'`;
+
+      await new Promise((resolve, reject) => {
+        let cmd = ffmpeg().outputOptions(['-t', frameDuration, '-r', '30', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p']);
+        framePhotos.forEach(p => cmd = cmd.input(p.path).inputOptions(['-loop', '1', '-t', frameDuration]));
+        const cleanFilter = filterComplex.replace(/v:${f}in/g, (_, i) => 'v' + f + 'in').replace(/v:${f}p/g, 'v' + f + 'p');
+        cmd.complexFilter(filterComplex).map('[vfinal' + f + ']').output(framePath).on('end', resolve).on('error', reject).run();
+      });
     }
 
-    // Phase 2: End card
-    update('processing', 68, 'Building end card...');
-    const endCard = path.join(workDir, 'endcard.mp4');
-    await runFFmpeg([
-      '-f', 'lavfi', '-i', 'color=c=black:s=' + w + 'x' + h + ':d=3:r=' + FPS,
-      '-vf', buildEndCard(agentName, agentPhone, w, h),
-      '-c:v', 'libx264', '-preset', PRESET, '-pix_fmt', 'yuv420p',
-      '-t', '3', '-an', '-y', endCard
-    ]);
-    segments.push(endCard);
+    jobs[jobId].progress = 88;
+    jobs[jobId].message = 'Assembling final video...';
 
-    // Phase 3: Apply transitions by processing pairs sequentially
-    update('processing', 74, 'Applying ' + transition + ' transitions...');
-    const finalVideo = await applyTransitionsPairwise(segments, transition, workDir, PRESET, FPS, DUR);
+    // Concat all frames
+    const concatList = `/tmp/concat-${jobId}.txt`;
+    fs.writeFileSync(concatList, frameFiles.map(f => `file '${f}'`).join('\n'));
 
-    // Phase 4: Add logo watermark
-    update('processing', 86, 'Adding logo...');
-    let videoWithLogo = finalVideo;
-    if (logoFile && fs.existsSync(logoFile)) {
-      const logoOut = path.join(workDir, 'with_logo.mp4');
-      const ls = Math.round(w * 0.12);
-      const pad = Math.round(w * 0.03);
-      await runFFmpeg([
-        '-i', finalVideo, '-i', logoFile,
-        '-filter_complex', '[1:v]scale=' + ls + ':-1[logo];[0:v][logo]overlay=W-w-' + pad + ':H-h-' + pad,
-        '-c:v', 'libx264', '-preset', PRESET, '-pix_fmt', 'yuv420p', '-an', '-y', logoOut
-      ]);
-      videoWithLogo = logoOut;
-    }
-
-    // Phase 5: Add music
-    update('processing', 93, 'Adding music...');
-    const musicFile = path.join(MUSIC_DIR, getMusicFile(musicMood));
-    if (fs.existsSync(musicFile)) {
-      await runFFmpeg([
-        '-i', videoWithLogo, '-i', musicFile,
-        '-filter_complex', '[1:a]volume=0.4[a]',
-        '-map', '0:v', '-map', '[a]',
-        '-c:v', 'copy', '-c:a', 'aac', '-shortest', '-y', outputPath
-      ]);
-    } else {
-      fs.copyFileSync(videoWithLogo, outputPath);
-    }
-
-    jobs.set(jobId, { ...jobs.get(jobId), status: 'complete', progress: 100, message: 'Your video is ready!', outputPath });
-    setTimeout(() => { try { fs.rmSync(workDir, { recursive: true, force: true }); } catch (e) {} }, 3600000);
-  } catch (err) {
-    console.error('Processing error:', err.message);
-    jobs.set(jobId, { status: 'error', progress: 0, message: err.message.slice(0, 200) });
-  }
-}
-
-// Apply transitions pairwise — merge clip A + clip B, then result + clip C, etc.
-async function applyTransitionsPairwise(segments, transition, workDir, preset, fps, dur) {
-  if (transition === 'Cut' || segments.length === 1) {
-    // Hard cut — simple concat
-    const listFile = path.join(workDir, 'cutlist.txt');
-    fs.writeFileSync(listFile, segments.map(s => "file '" + s + "'").join('\n'));
-    const out = path.join(workDir, 'cut_final.mp4');
-    await runFFmpeg(['-f', 'concat', '-safe', '0', '-i', listFile, '-c', 'copy', '-y', out]);
-    return out;
-  }
-
-  // For Fade and Slide/Zoom: process pairs one at a time
-  const xfadeMap = {
-    'Fade': { type: 'fade', dur: 0.5 },
-    'Slide': { type: 'slideleft', dur: 0.5 },
-    'Zoom': { type: 'zoomin', dur: 0.5 }
-  };
-  const xf = xfadeMap[transition] || xfadeMap['Fade'];
-  const fadeDur = xf.dur;
-  const clipDur = dur;
-
-  let current = segments[0];
-  for (let i = 1; i < segments.length; i++) {
-    const next = segments[i];
-    const merged = path.join(workDir, 'merge_' + i + '.mp4');
-    // offset = total duration of current video minus fade overlap
-    // We know each original segment is clipDur seconds, end card is 3s
-    const currentDur = (i === 1) ? clipDur : clipDur; // approximate
-    const offset = Math.max(0.1, (i * clipDur) - (fadeDur * i));
-    await runFFmpeg([
-      '-i', current,
-      '-i', next,
-      '-filter_complex',
-      '[0:v][1:v]xfade=transition=' + xf.type + ':duration=' + fadeDur + ':offset=' + offset.toFixed(3) + '[v]',
-      '-map', '[v]',
-      '-c:v', 'libx264', '-preset', preset, '-pix_fmt', 'yuv420p', '-r', String(fps), '-an', '-y', merged
-    ]);
-    current = merged;
-  }
-  return current;
-}
-
-function getTextOverlay(i, address, price, beds, baths, sqft, tagline, w, h) {
-  const fs2 = Math.round(w * 0.04);
-  const pad = Math.round(w * 0.05);
-  const fade = "alpha='if(lt(t,0.5),t/0.5,1)'";
-  const clean = s => (s || '').replace(/[':=\\]/g, '');
-  if (i === 0 && (address || price)) {
-    return "drawtext=text='" + clean(address) + "':fontsize=" + fs2 + ":fontcolor=white:x=" + pad + ":y=h-" + (pad * 4) + ":" + fade + ":shadowcolor=black:shadowx=2:shadowy=2," +
-           "drawtext=text='" + clean(price) + "':fontsize=" + Math.round(fs2 * 1.3) + ":fontcolor=white:x=" + pad + ":y=h-" + (pad * 2) + ":" + fade + ":shadowcolor=black:shadowx=2:shadowy=2";
-  }
-  if (i === 1 && (beds || baths || sqft)) {
-    return "drawtext=text='" + clean(beds) + "bd / " + clean(baths) + "ba  " + clean(sqft) + "':fontsize=" + fs2 + ":fontcolor=white:x=" + pad + ":y=h-" + (pad * 2) + ":" + fade + ":shadowcolor=black:shadowx=2:shadowy=2";
-  }
-  if (i === 2 && tagline) {
-    return "drawtext=text='" + clean(tagline) + "':fontsize=" + Math.round(fs2 * 1.2) + ":fontcolor=white:x=(w-tw)/2:y=h-" + (pad * 2) + ":" + fade + ":shadowcolor=black:shadowx=2:shadowy=2";
-  }
-  return null;
-}
-
-function buildEndCard(agentName, agentPhone, w, h) {
-  const fs2 = Math.round(w * 0.04);
-  const pad = Math.round(w * 0.05);
-  const clean = s => (s || '').replace(/[':=\\]/g, '');
-  return "drawtext=text='" + clean(agentName) + "':fontsize=" + Math.round(fs2 * 1.2) + ":fontcolor=white:x=(w-tw)/2:y=h/2-" + pad + "," +
-         "drawtext=text='" + clean(agentPhone) + "':fontsize=" + fs2 + ":fontcolor=#F47920:x=(w-tw)/2:y=h/2," +
-         "drawtext=text='Powered by Quality Capture Visuals':fontsize=" + Math.round(fs2 * 0.7) + ":fontcolor=#aaaaaa:x=(w-tw)/2:y=h/2+" + pad + "," +
-         "drawtext=text='qualitycapturevisuals.com':fontsize=" + Math.round(fs2 * 0.7) + ":fontcolor=#aaaaaa:x=(w-tw)/2:y=h/2+" + (pad * 2);
-}
-
-function getMusicFile(mood) {
-  return ({ 'Cinematic': 'cinematic.mp3', 'Upbeat': 'upbeat.mp3', 'Elegant': 'elegant.mp3', 'Dramatic': 'dramatic.mp3' })[mood] || 'cinematic.mp3';
-}
-
-function runFFmpeg(args) {
-  return new Promise((resolve, reject) => {
-    const ff = spawn('ffmpeg', ['-y', ...args]);
-    let stderr = '';
-    ff.stderr.on('data', d => stderr += d.toString());
-    ff.on('close', code => {
-      if (code === 0) resolve();
-      else reject(new Error('FFmpeg exit ' + code + ': ' + stderr.slice(-500)));
+    await new Promise((resolve, reject) => {
+      ffmpeg().input(concatList).inputOptions(['-f', 'concat', '-safe', '0'])
+        .outputOptions(['-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p'])
+        .output(outputPath).on('end', resolve).on('error', reject).run();
     });
-  });
-}
+
+    frameFiles.forEach(f => { try { fs.unlinkSync(f); } catch(e) {} });
+    try { fs.unlinkSync(concatList); } catch(e) {}
+    req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch(e) {} });
+
+    jobs[jobId] = { status: 'done', progress: 100, message: 'Video ready!', outputPath };
+  } catch (err) {
+    console.error('Error:', err);
+    jobs[jobId] = { status: 'error', progress: 0, error: err.message };
+  }
+});
+
+app.get('/progress/:jobId', (req, res) => {
+  const job = jobs[req.params.jobId];
+  if (!job) return res.status(404).json({ error: 'Job not found' });
+  res.json(job);
+});
+
+app.get('/download/:jobId', (req, res) => {
+  const job = jobs[req.params.jobId];
+  if (!job || job.status !== 'done') return res.status(404).json({ error: 'Not ready' });
+  res.download(job.outputPath, 'qcv-property-video.mp4');
+});
 
 app.listen(PORT, () => console.log('QCV Video Creator running on port ' + PORT));
