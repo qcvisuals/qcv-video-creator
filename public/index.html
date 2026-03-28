@@ -5,299 +5,350 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QCV Video Creator</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Georgia,serif;background:#f5f5f3;color:#1a1a1a;}
-.header{background:#1a1a1a;padding:20px 40px;display:flex;align-items:center;gap:16px;}
-.header-logo{width:44px;height:44px;background:#F47920;border-radius:8px;display:flex;align-items:center;justify-content:center;}
-.header-logo svg{width:26px;height:26px;fill:white;}
-.header h1{color:white;font-size:18px;font-weight:400;letter-spacing:0.04em;}
-.header h1 span{color:#F47920;}
-.hero{text-align:center;padding:48px 40px 32px;}
-.hero h2{font-size:28px;font-weight:400;margin-bottom:10px;}
-.hero p{font-size:15px;color:#666;max-width:500px;margin:0 auto;}
-.container{max-width:760px;margin:0 auto;padding:0 40px 80px;}
-.card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:32px;margin-bottom:20px;}
-.card h3{font-size:17px;font-weight:400;margin-bottom:6px;}
-.card p{font-size:13px;color:#888;margin-bottom:20px;}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.full{grid-column:1/-1;}
-.field-label{font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:#888;margin-bottom:6px;}
-input[type=text]{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:Georgia,serif;background:#fff;}
-input:focus{outline:none;border-color:#1a1a1a;}
-.dd-wrap{position:relative;width:100%;}
-.dd-btn{width:100%;padding:10px 14px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:14px;font-family:Georgia,serif;color:#1a1a1a;cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;}
-.dd-btn:hover,.dd-btn.open{border-color:#F47920;}
-.dd-btn.open{border-bottom-left-radius:0;border-bottom-right-radius:0;}
-.dd-arrow{font-size:10px;color:#999;transition:transform 0.15s;}
-.dd-btn.open .dd-arrow{transform:rotate(180deg);}
-.dd-list{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #F47920;border-top:none;border-bottom-left-radius:6px;border-bottom-right-radius:6px;z-index:100;max-height:200px;overflow-y:auto;}
-.dd-list.open{display:block;}
-.dd-item{padding:10px 14px;font-size:14px;font-family:Georgia,serif;color:#444;cursor:pointer;}
-.dd-item:hover{background:#f5f5f3;}
-.dd-item.active{background:#1a1a1a;color:#fff;}
-.upload-area{border:2px dashed #ddd;border-radius:8px;padding:30px;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:12px;}
-.upload-area:hover{border-color:#F47920;}
-.upload-area p{font-size:14px;color:#888;margin-bottom:4px;}
-.upload-area span{font-size:12px;color:#bbb;}
-.photo-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-.photo-thumb{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #ddd;}
-.option-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:4px;}
-.option-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:4px;}
-.opt-btn{padding:12px 8px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;font-family:Georgia,serif;color:#666;text-align:center;transition:all 0.15s;line-height:1.4;}
-.opt-btn.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
-.opt-btn:hover:not(.active){border-color:#1a1a1a;color:#1a1a1a;}
-.btn{width:100%;padding:14px;background:#1a1a1a;color:#fff;border:none;border-radius:6px;font-size:14px;letter-spacing:0.05em;cursor:pointer;font-family:Georgia,serif;margin-top:8px;transition:opacity 0.15s;}
-.btn:hover{opacity:0.8;}
-.btn:disabled{opacity:0.4;cursor:default;}
-.progress-wrap{display:none;margin-top:20px;background:#fff;border:1px solid #ddd;border-radius:8px;padding:24px;}
-.progress-stage{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#F47920;font-weight:600;margin-bottom:10px;}
-.progress-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.progress-label{font-size:14px;color:#1a1a1a;}
-.progress-pct{font-size:22px;font-weight:600;color:#F47920;}
-.progress-bar{background:#f0f0f0;border-radius:20px;height:12px;overflow:hidden;margin-bottom:14px;}
-.progress-fill{background:#F47920;height:100%;border-radius:20px;transition:width 0.4s ease;width:0%;}
-.steps{display:flex;gap:6px;flex-wrap:wrap;}
-.step{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid #ddd;color:#bbb;transition:all 0.3s;}
-.step.active{background:#F47920;color:#fff;border-color:#F47920;}
-.step.done{background:#1a1a1a;color:#fff;border-color:#1a1a1a;}
-.progress-note{font-size:11px;color:#bbb;margin-top:12px;text-align:center;}
-.result{display:none;text-align:center;padding:32px;background:#fff;border:1px solid #ddd;border-radius:8px;margin-top:20px;}
-.result h3{font-size:20px;font-weight:400;margin-bottom:8px;}
-.result p{font-size:14px;color:#888;margin-bottom:24px;}
-.download-btn{display:inline-block;padding:14px 40px;background:#F47920;color:#fff;text-decoration:none;border-radius:6px;font-size:14px;letter-spacing:0.05em;font-family:Georgia,serif;cursor:pointer;border:none;}
-#gate{display:block;}
-#main-content{display:none;}
-.gate-wrap{max-width:480px;margin:60px auto;padding:0 20px;}
-.gate-card{background:#fff;border:1px solid #ddd;border-radius:12px;padding:48px 40px;text-align:center;}
-.gate-card h2{font-size:24px;font-weight:400;margin-bottom:8px;}
-.gate-card>p{font-size:14px;color:#666;margin-bottom:28px;line-height:1.6;}
-.gate-input{width:100%;background:#f9f9f9;border:1px solid #ddd;border-radius:8px;padding:14px 16px;font-size:14px;color:#111;font-family:Georgia,serif;margin-bottom:12px;outline:none;}
-.gate-input:focus{border-color:#F47920;}
-.gate-btn{width:100%;padding:15px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:13px;letter-spacing:0.08em;text-transform:uppercase;font-family:Georgia,serif;cursor:pointer;}
-.gate-btn:hover{background:#F47920;}
-.logo-prev{max-height:60px;max-width:180px;object-fit:contain;margin-top:8px;display:none;}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #fff; min-height: 100vh; }
+  .header { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
+  .logo { font-size: 18px; font-weight: 700; color: #e07940; letter-spacing: -0.5px; }
+  .logo span { color: #fff; font-weight: 400; }
+  .container { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
+  h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .subtitle { color: #888; font-size: 14px; margin-bottom: 32px; }
+
+  .section { margin-bottom: 28px; }
+  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #e07940; margin-bottom: 12px; }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  input[type=text], input[type=tel], input[type=number], select, textarea {
+    width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
+    color: #fff; padding: 10px 14px; font-size: 14px; outline: none; transition: border 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: #e07940; }
+  select option { background: #1a1a1a; }
+  label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
+
+  .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .color-opt { cursor: pointer; border-radius: 8px; overflow: hidden; border: 2px solid transparent; transition: border 0.2s; }
+  .color-opt.selected { border-color: #e07940; }
+  .color-swatch { height: 40px; }
+  .color-name { font-size: 9px; text-align: center; padding: 4px 2px; background: #1a1a1a; color: #888; }
+
+  .layout-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .layout-opt { cursor: pointer; border: 2px solid #2a2a2a; border-radius: 8px; padding: 8px; text-align: center; transition: border 0.2s; background: #1a1a1a; }
+  .layout-opt.selected { border-color: #e07940; }
+  .layout-preview { width: 100%; aspect-ratio: 9/12; background: #2a2a2a; border-radius: 4px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; padding: 4px; position: relative; overflow: hidden; }
+  .layout-name { font-size: 10px; color: #888; }
+  .layout-opt.selected .layout-name { color: #e07940; }
+
+  .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pos-opt { cursor: pointer; border: 2px solid #2a2a2a; border-radius: 8px; padding: 10px; text-align: center; font-size: 12px; color: #888; background: #1a1a1a; transition: all 0.2s; }
+  .pos-opt.selected { border-color: #e07940; color: #e07940; }
+
+  .upload-area { border: 2px dashed #2a2a2a; border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: border 0.2s; }
+  .upload-area:hover, .upload-area.dragover { border-color: #e07940; }
+  .upload-area p { color: #888; font-size: 14px; margin-top: 8px; }
+  .upload-area .icon { font-size: 32px; }
+  .photo-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #2a2a2a; }
+
+  .btn { width: 100%; padding: 14px; background: #e07940; border: none; border-radius: 10px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
+  .btn:hover { background: #c8622a; }
+  .btn:disabled { background: #444; cursor: not-allowed; }
+
+  .progress-wrap { display: none; margin-top: 20px; }
+  .progress-bar-bg { background: #2a2a2a; border-radius: 8px; height: 8px; overflow: hidden; margin: 10px 0; }
+  .progress-bar-fill { height: 100%; background: #e07940; border-radius: 8px; transition: width 0.3s; width: 0%; }
+  .progress-msg { font-size: 13px; color: #888; text-align: center; }
+  .result-wrap { display: none; margin-top: 20px; text-align: center; }
+  .result-wrap video { width: 100%; border-radius: 10px; margin-bottom: 12px; }
+  .dl-btn { display: inline-block; padding: 10px 28px; background: #e07940; color: #fff; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 14px; }
 </style>
 </head>
 <body>
+
 <div class="header">
-  <div class="header-logo"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
-  <h1>QCV <span>Video Creator</span></h1>
+  <div class="logo">QCV <span>Video Creator</span></div>
 </div>
-<div id="gate">
-  <div class="gate-wrap">
-    <div class="gate-card">
-      <h2>Create Your Property Video</h2>
-      <p>Professional listing videos with Ken Burns effects, text overlays, and your branding — ready in under 2 minutes.</p>
-      <input class="gate-input" type="text" id="gname" placeholder="Your Name"/>
-      <input class="gate-input" type="email" id="gemail" placeholder="Your Email"/>
-      <button class="gate-btn" onclick="gateSubmit()">Get Started Free</button>
+
+<div class="container">
+  <h2>Property Video Creator</h2>
+  <p class="subtitle">Upload photos, pick your style, generate a professional property video.</p>
+
+  <div class="section">
+    <div class="section-title">Agent Info</div>
+    <div class="grid-2">
+      <div><label>Agent Name</label><input type="text" id="agentName" placeholder="Jane Smith"></div>
+      <div><label>Phone</label><input type="tel" id="agentPhone" placeholder="(404) 555-0100"></div>
+    </div>
+    <div style="margin-top:10px"><label>Brokerage</label><input type="text" id="brokerage" placeholder="Keller Williams Atlanta"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Property Info</div>
+    <div class="grid-2">
+      <div><label>Address</label><input type="text" id="address" placeholder="142 Peachtree St NW"></div>
+      <div><label>City, State</label><input type="text" id="cityState" placeholder="Atlanta, GA"></div>
+    </div>
+    <div class="grid-3" style="margin-top:10px">
+      <div><label>Price</label><input type="text" id="price" placeholder="$485,000"></div>
+      <div><label>Beds</label><select id="beds"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+      <div><label>Baths</label><select id="baths"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+    </div>
+    <div class="grid-2" style="margin-top:10px">
+      <div><label>Sq Ft</label><input type="text" id="sqft" placeholder="2,450"></div>
+      <div><label>Occasion</label><select id="occasion"><option>For Sale</option><option>Just Listed</option><option>Open House</option><option>Just Sold</option><option>Price Reduced</option></select></div>
     </div>
   </div>
-</div>
-<div id="main-content">
-  <div class="hero"><h2>Property Video Creator</h2><p>Upload your listing photos, fill in the details, and download a branded property video in under 2 minutes.</p></div>
-  <div class="container">
-    <div class="card">
-      <h3>Upload Photos</h3><p>Upload 8 to 10 listing photos. High resolution gives the best results.</p>
-      <div class="upload-area" onclick="document.getElementById('pi').click()"><p>Click to upload listing photos</p><span>JPG or PNG · 8-10 photos</span></div>
-      <input type="file" id="pi" accept="image/*" multiple style="display:none;" onchange="handlePhotos(event)"/>
-      <div class="photo-previews" id="pp"></div>
-    </div>
-    <div class="card">
-      <h3>Agent Logo</h3><p>Upload your brokerage or personal logo. PNG with transparent background works best.</p>
-      <div class="upload-area" onclick="document.getElementById('li').click()"><p>Click to upload agent logo</p><span>PNG recommended</span></div>
-      <input type="file" id="li" accept="image/*" style="display:none;" onchange="handleLogo(event)"/>
-      <img id="lp" class="logo-prev"/>
-    </div>
-    <div class="card">
-      <h3>Property Details</h3><p>This information will appear as text overlays in your video.</p>
-      <div class="grid2">
-        <div class="full"><div class="field-label">Property Address</div><input type="text" id="address" placeholder="123 Peachtree St NE, Atlanta, GA"/></div>
-        <div><div class="field-label">List Price</div><input type="text" id="price" placeholder="$1,250,000"/></div>
-        <div><div class="field-label">Bedrooms</div><div class="dd-wrap"><button class="dd-btn" id="bed-btn" onclick="toggleDD('bed')"><span id="bed-label">4 Beds</span><span class="dd-arrow">&#9660;</span></button><div class="dd-list" id="bed-list"></div></div></div>
-        <div><div class="field-label">Bathrooms</div><div class="dd-wrap"><button class="dd-btn" id="bath-btn" onclick="toggleDD('bath')"><span id="bath-label">3 Baths</span><span class="dd-arrow">&#9660;</span></button><div class="dd-list" id="bath-list"></div></div></div>
-        <div><div class="field-label">Square Footage</div><input type="text" id="sqft" placeholder="3,200 sq ft"/></div>
-        <div class="full"><div class="field-label">Custom Tagline</div><input type="text" id="tagline" placeholder="Just Listed — Stunning Views"/></div>
-        <div><div class="field-label">Agent Name</div><input type="text" id="agentName" placeholder="Sarah Johnson"/></div>
-        <div><div class="field-label">Agent Phone</div><input type="text" id="agentPhone" placeholder="(404) 555-0100"/></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Transition Style</h3><p>How your photos move from one to the next.</p>
-      <div class="option-grid" id="tg">
-        <button class="opt-btn active" onclick="setOpt('t',this)">Cut<br><span style="font-size:10px;opacity:0.6;">Instant &amp; Sharp</span></button>
-        <button class="opt-btn" onclick="setOpt('t',this)">Fade<br><span style="font-size:10px;opacity:0.6;">Smooth Crossfade</span></button>
-        <button class="opt-btn" onclick="setOpt('t',this)">Slide<br><span style="font-size:10px;opacity:0.6;">Push Left</span></button>
-        <button class="opt-btn" onclick="setOpt('t',this)">Zoom<br><span style="font-size:10px;opacity:0.6;">Zoom In</span></button>
-      </div>
-    </div>
-    
-    <div class="card">
-      <h3>Video Format</h3><p>Choose your target platform and aspect ratio.</p>
-      <div class="option-grid" id="fg">
-        <button class="opt-btn active" data-fmt="9x16" onclick="setOpt('f',this)">9x16<br><span style="font-size:10px;opacity:0.6;">Reels</span></button>
-        <button class="opt-btn" data-fmt="4x5" onclick="setOpt('f',this)">4x5<br><span style="font-size:10px;opacity:0.6;">Feed</span></button>
-        <button class="opt-btn" data-fmt="1x1" onclick="setOpt('f',this)">1x1<br><span style="font-size:10px;opacity:0.6;">Square</span></button>
-        <button class="opt-btn" data-fmt="16x9" onclick="setOpt('f',this)">16x9<br><span style="font-size:10px;opacity:0.6;">YouTube</span></button>
-      </div>
-    </div>
-    <button class="btn" id="gb" onclick="generateVideo()">Generate My Property Video</button>
-    <div class="progress-wrap" id="pw">
-      <div class="progress-stage" id="ps">Uploading</div>
-      <div class="progress-top"><span class="progress-label" id="pl">Uploading your photos...</span><span class="progress-pct" id="pp2">0%</span></div>
-      <div class="progress-bar"><div class="progress-fill" id="pf"></div></div>
-      <div class="steps">
-        <span class="step active" id="s-up">Uploading</span>
-        <span class="step" id="s-render">Rendering photos</span>
-        <span class="step" id="s-trans">Transitions</span>
-        <span class="step" id="s-logo">Logo</span>
-        <span class="step" id="s-music">Music</span>
-        <span class="step" id="s-done">Done</span>
-      </div>
-      <div class="progress-note">Videos typically take 60-90 seconds to render.</div>
-    </div>
-    <div class="result" id="result">
-      <h3>Your Video Is Ready</h3>
-      <p>Your property video has been generated and is ready to download.</p>
-      <button class="download-btn" onclick="dlVideo()">Download Video</button>
+
+  <div class="section">
+    <div class="section-title">Background Color</div>
+    <div class="color-grid" id="colorGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Photo Grid Layout</div>
+    <div class="layout-grid" id="layoutGrid"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Text Position</div>
+    <div class="pos-grid" id="posGrid">
+      <div class="pos-opt" data-pos="top">Top</div>
+      <div class="pos-opt selected" data-pos="middle">Middle</div>
+      <div class="pos-opt" data-pos="bottom">Bottom</div>
     </div>
   </div>
+
+  <div class="section">
+    <div class="section-title">Video Settings</div>
+    <div class="grid-3">
+      <div>
+        <label>Aspect Ratio</label>
+        <select id="aspectRatio">
+          <option value="9x16">9:16 — Reels/TikTok</option>
+          <option value="4x5">4:5 — Instagram</option>
+          <option value="1x1">1:1 — Square</option>
+          <option value="16x9">16:9 — YouTube</option>
+        </select>
+      </div>
+      <div>
+        <label>Number of Frames</label>
+        <select id="numFrames">
+          <option value="2">2 frames</option><option value="3">3 frames</option><option value="4">4 frames</option><option value="5">5 frames</option><option value="6">6 frames</option><option value="7">7 frames</option><option value="8">8 frames</option><option value="9">9 frames</option>
+        </select>
+      </div>
+      <div>
+        <label>Transition</label>
+        <select id="transition">
+          <option value="fade">Fade</option>
+          <option value="cut">Cut</option>
+          <option value="slide">Slide</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Upload Photos</div>
+    <div class="upload-area" id="uploadArea">
+      <div class="icon">📷</div>
+      <p>Click to upload or drag & drop photos</p>
+      <p style="font-size:12px;margin-top:4px;color:#555">JPG, PNG — up to 25 photos</p>
+      <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+    </div>
+    <div class="photo-thumbs" id="thumbs"></div>
+  </div>
+
+  <button class="btn" id="generateBtn" disabled>Generate Video</button>
+
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-msg" id="progressMsg">Starting...</div>
+  </div>
+  <div class="result-wrap" id="resultWrap">
+    <video id="resultVideo" controls playsinline></video>
+    <a class="dl-btn" id="dlBtn" download="qcv-property-video.mp4">Download Video</a>
+  </div>
 </div>
+
 <script>
-var photos=[],logo=null,music='Cinematic',fmt='9x16',trans='Cut',beds=4,baths=3,jobId=null;
-var fmtMap={'9x16':'9x16','4x5':'4x5','1x1':'1x1','16x9':'16x9'};
+const COLORS = [
+  { name: 'Charcoal', hex: '#1a1a1a', text: '#ffffff', accent: '#e07940' },
+  { name: 'Warm Cream', hex: '#f0ebe0', text: '#1a1a1a', accent: '#c8a06e' },
+  { name: 'QCV Orange', hex: '#e07940', text: '#ffffff', accent: '#ffffff' },
+  { name: 'Slate Blue', hex: '#1c2b35', text: '#ffffff', accent: '#5ba3c9' },
+  { name: 'Forest Green', hex: '#2d4a3e', text: '#ffffff', accent: '#7ec8a0' },
+  { name: 'Navy', hex: '#0f1e35', text: '#ffffff', accent: '#5ba3c9' },
+  { name: 'Burgundy', hex: '#5c1f2e', text: '#ffffff', accent: '#e0a0a0' },
+  { name: 'Sand/Tan', hex: '#c8b89a', text: '#1a1a1a', accent: '#8a6a40' },
+  { name: 'Pure White', hex: '#f5f5f5', text: '#1a1a1a', accent: '#e07940' },
+  { name: 'True Black', hex: '#0a0a0a', text: '#ffffff', accent: '#e07940' },
+];
 
-function buildDD(id,type,def){
-  var l=document.getElementById(id+'-list');l.innerHTML='';
-  for(var i=1;i<=10;i++){
-    var d=document.createElement('div');d.className='dd-item'+(i===def?' active':'');
-    d.textContent=i+' '+(type==='bed'?'Bed':'Bath')+(i===1?'':'s');
-    (function(v){d.onclick=function(){selDD(id,type,v);};})(i);
-    l.appendChild(d);
-  }
-}
-function toggleDD(id){
-  var b=document.getElementById(id+'-btn'),l=document.getElementById(id+'-list');
-  var o=l.classList.contains('open');
-  document.querySelectorAll('.dd-list.open').forEach(function(x){x.classList.remove('open');});
-  document.querySelectorAll('.dd-btn.open').forEach(function(x){x.classList.remove('open');});
-  if(!o){l.classList.add('open');b.classList.add('open');}
-}
-function selDD(id,type,val){
-  document.getElementById(id+'-label').textContent=val+' '+(type==='bed'?'Bed':'Bath')+(val===1?'':'s');
-  document.getElementById(id+'-list').querySelectorAll('.dd-item').forEach(function(i){i.classList.remove('active');if(parseInt(i.textContent)===val)i.classList.add('active');});
-  document.getElementById(id+'-list').classList.remove('open');
-  document.getElementById(id+'-btn').classList.remove('open');
-  if(type==='bed')beds=val; else baths=val;
-}
-document.addEventListener('click',function(e){if(!e.target.closest('.dd-wrap')){document.querySelectorAll('.dd-list.open').forEach(function(l){l.classList.remove('open');});document.querySelectorAll('.dd-btn.open').forEach(function(b){b.classList.remove('open');});}});
+const LAYOUTS = [
+  { id: 'hero-pair', name: 'Hero + Pair', cols: 1, rows: 2, desc: '1 big + 2 small' },
+  { id: 'side-by-side', name: 'Side by Side', cols: 2, rows: 1, desc: '2 equal' },
+  { id: 'feature-stack', name: 'Feature + Stack', cols: 2, rows: 2, desc: 'Big left + 2 right' },
+  { id: 'grid-2x2', name: '2×2 Grid', cols: 2, rows: 2, desc: '4 photos' },
+];
 
-function gateSubmit(){
-  var n=document.getElementById('gname').value.trim(),e=document.getElementById('gemail').value.trim();
-  if(!n||!e){alert('Please enter your name and email.');return;}
-  fetch('https://formspree.io/f/mwvwekvj',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,source:'QCV Video Creator'})});
-  showMain();
-}
-function showMain(){
-  document.getElementById('gate').style.display='none';
-  document.getElementById('main-content').style.display='block';
-  buildDD('bed','bed',4);buildDD('bath','bath',3);
-}
-function checkUrlParams(){
-  var p=new URLSearchParams(window.location.search);
-  var n=p.get('name'),e=p.get('email');
-  if(n&&e){showMain();}
-}
-window.addEventListener('load',checkUrlParams);
-function handlePhotos(e){
-  var f=Array.from(e.target.files);
-  if(f.length<8||f.length>10){alert('Please upload between 8 and 10 photos.');e.target.value='';return;}
-  photos=f;var w=document.getElementById('pp');w.innerHTML='';
-  f.forEach(function(x){var i=document.createElement('img');i.className='photo-thumb';i.src=URL.createObjectURL(x);w.appendChild(i);});
-}
-function handleLogo(e){logo=e.target.files[0];if(logo){var i=document.getElementById('lp');i.src=URL.createObjectURL(logo);i.style.display='block';}}
-function setOpt(type,btn){
-  var g={t:'tg',m:'mg',f:'fg'}[type];
-  document.getElementById(g).querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  var txt=btn.textContent.trim().split('\n')[0].trim();
-  if(type==='t')trans=txt;
-  else if(type==='m')music=txt;
-  else fmt=btn.dataset.fmt||'9x16';
-}
-function setProg(pct,label,stage){
-  document.getElementById('pf').style.width=pct+'%';
-  document.getElementById('pp2').textContent=pct+'%';
-  document.getElementById('pl').textContent=label;
-  if(stage)document.getElementById('ps').textContent=stage;
-}
-function setStep(s){
-  var all=['up','render','trans','logo','music','done'];
-  var found=false;
-  all.forEach(function(x){
-    var el=document.getElementById('s-'+x);if(!el)return;
-    el.classList.remove('active','done');
-    if(x===s){el.classList.add('active');found=true;}
-    else if(!found){el.classList.add('done');}
+let selectedColor = COLORS[0];
+let selectedLayout = LAYOUTS[0];
+let selectedPos = 'middle';
+let uploadedFiles = [];
+
+// Build color grid
+const colorGrid = document.getElementById('colorGrid');
+COLORS.forEach((c, i) => {
+  const el = document.createElement('div');
+  el.className = 'color-opt' + (i === 0 ? ' selected' : '');
+  el.innerHTML = `<div class="color-swatch" style="background:${c.hex};border:1px solid rgba(255,255,255,0.08)"></div><div class="color-name">${c.name}</div>`;
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.color-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedColor = c;
   });
+  colorGrid.appendChild(el);
+});
+
+// Build layout grid
+const layoutGrid = document.getElementById('layoutGrid');
+LAYOUTS.forEach((l, i) => {
+  const el = document.createElement('div');
+  el.className = 'layout-opt' + (i === 0 ? ' selected' : '');
+  let preview = '';
+  if (l.id === 'hero-pair') preview = `<div style="flex:1.4;background:#333;border-radius:2px"></div><div style="display:flex;gap:2px;flex:1"><div style="flex:1;background:#444;border-radius:2px"></div><div style="flex:1;background:#444;border-radius:2px"></div></div>`;
+  else if (l.id === 'side-by-side') preview = `<div style="display:flex;gap:2px;flex:1"><div style="flex:1;background:#333;border-radius:2px"></div><div style="flex:1;background:#444;border-radius:2px"></div></div>`;
+  else if (l.id === 'feature-stack') preview = `<div style="display:flex;gap:2px;flex:1"><div style="flex:1.4;background:#333;border-radius:2px"></div><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="flex:1;background:#444;border-radius:2px"></div><div style="flex:1;background:#444;border-radius:2px"></div></div></div>`;
+  else preview = `<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;flex:1"><div style="background:#333;border-radius:2px"></div><div style="background:#444;border-radius:2px"></div><div style="background:#444;border-radius:2px"></div><div style="background:#333;border-radius:2px"></div></div>`;
+  el.innerHTML = `<div class="layout-preview" style="display:flex;flex-direction:column;">${preview}</div><div class="layout-name">${l.name}</div>`;
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.layout-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedLayout = l;
+  });
+  layoutGrid.appendChild(el);
+});
+
+// Position selector
+document.querySelectorAll('.pos-opt').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.pos-opt').forEach(x => x.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPos = el.dataset.pos;
+  });
+});
+
+// File upload
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const thumbs = document.getElementById('thumbs');
+const generateBtn = document.getElementById('generateBtn');
+
+uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+function handleFiles(files) {
+  uploadedFiles = [...uploadedFiles, ...Array.from(files)].slice(0, 25);
+  thumbs.innerHTML = '';
+  uploadedFiles.forEach(f => {
+    const img = document.createElement('img');
+    img.className = 'thumb';
+    img.src = URL.createObjectURL(f);
+    thumbs.appendChild(img);
+  });
+  generateBtn.disabled = uploadedFiles.length < 2;
 }
-function generateVideo(){
-  if(photos.length<8){alert('Please upload 8-10 listing photos first.');return;}
-  document.getElementById('gb').disabled=true;
-  document.getElementById('pw').style.display='block';
-  document.getElementById('result').style.display='none';
-  setProg(2,'Preparing your photos...','Uploading');setStep('up');
-  var fd=new FormData();
-  photos.forEach(function(f){fd.append('photos',f);});
-  if(logo)fd.append('logo',logo);
-  fd.append('address',document.getElementById('address').value);
-  fd.append('price',document.getElementById('price').value);
-  fd.append('beds',String(beds));fd.append('baths',String(baths));
-  fd.append('sqft',document.getElementById('sqft').value);
-  fd.append('tagline',document.getElementById('tagline').value);
-  fd.append('agentName',document.getElementById('agentName').value);
-  fd.append('agentPhone',document.getElementById('agentPhone').value);
-  fd.append('musicMood','Cinematic');fd.append('videoFormat',fmt);fd.append('transition',trans);
-  var xhr=new XMLHttpRequest();
-  xhr.open('POST','/api/generate-video');
-  xhr.upload.onprogress=function(e){
-    if(e.lengthComputable){
-      var p=Math.round(2+(e.loaded/e.total)*25);
-      setProg(p,'Uploading photos ('+Math.round(e.loaded/1024)+'KB / '+Math.round(e.total/1024)+'KB)...','Uploading');
+
+// URL params — pre-fill agent info
+const params = new URLSearchParams(window.location.search);
+if (params.get('name')) document.getElementById('agentName').value = params.get('name');
+if (params.get('email')) { /* store silently */ }
+
+// Generate
+generateBtn.addEventListener('click', async () => {
+  const progressWrap = document.getElementById('progressWrap');
+  const progressFill = document.getElementById('progressFill');
+  const progressMsg = document.getElementById('progressMsg');
+  const resultWrap = document.getElementById('resultWrap');
+
+  progressWrap.style.display = 'block';
+  resultWrap.style.display = 'none';
+  generateBtn.disabled = true;
+
+  const formData = new FormData();
+  uploadedFiles.forEach(f => formData.append('photos', f));
+  formData.append('agentName', document.getElementById('agentName').value);
+  formData.append('agentPhone', document.getElementById('agentPhone').value);
+  formData.append('brokerage', document.getElementById('brokerage').value);
+  formData.append('address', document.getElementById('address').value);
+  formData.append('cityState', document.getElementById('cityState').value);
+  formData.append('price', document.getElementById('price').value);
+  formData.append('beds', document.getElementById('beds').value);
+  formData.append('baths', document.getElementById('baths').value);
+  formData.append('sqft', document.getElementById('sqft').value);
+  formData.append('occasion', document.getElementById('occasion').value);
+  formData.append('bgColor', selectedColor.hex);
+  formData.append('textColor', selectedColor.text);
+  formData.append('accentColor', selectedColor.accent);
+  formData.append('colorName', selectedColor.name);
+  formData.append('layout', selectedLayout.id);
+  formData.append('textPosition', selectedPos);
+  formData.append('aspectRatio', document.getElementById('aspectRatio').value);
+  formData.append('numFrames', document.getElementById('numFrames').value);
+  formData.append('transition', document.getElementById('transition').value);
+
+  // XHR for upload progress
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/generate');
+
+  xhr.upload.onprogress = e => {
+    if (e.lengthComputable) {
+      const pct = Math.round((e.loaded / e.total) * 40);
+      progressFill.style.width = pct + '%';
+      progressMsg.textContent = 'Uploading photos... ' + pct + '%';
     }
   };
-  xhr.upload.onload=function(){setProg(28,'Photos uploaded — starting render...','Rendering');setStep('render');};
-  xhr.onload=function(){
-    try{
-      var d=JSON.parse(xhr.responseText);
-      if(d.error){alert('Error: '+d.error);document.getElementById('gb').disabled=false;document.getElementById('pw').style.display='none';return;}
-      jobId=d.jobId;poll();
-    }catch(e){alert('Server error');document.getElementById('gb').disabled=false;}
+
+  xhr.onload = () => {
+    if (xhr.status === 200) {
+      const jobId = JSON.parse(xhr.responseText).jobId;
+      pollProgress(jobId, progressFill, progressMsg, resultWrap);
+    } else {
+      progressMsg.textContent = 'Upload failed. Please try again.';
+      generateBtn.disabled = false;
+    }
   };
-  xhr.onerror=function(){alert('Network error');document.getElementById('gb').disabled=false;};
-  xhr.send(fd);
-}
-function poll(){
-  var iv=setInterval(async function(){
-    try{
-      var r=await fetch('/api/status/'+jobId);
-      var d=await r.json();
-      setProg(d.progress,d.message||'Processing...');
-      if(d.progress>=30&&d.progress<72)setStep('render');
-      else if(d.progress>=72&&d.progress<88)setStep('trans');
-      else if(d.progress>=88&&d.progress<94)setStep('logo');
-      else if(d.progress>=94&&d.progress<100)setStep('music');
-      else if(d.progress===100)setStep('done');
-      if(d.status==='complete'){clearInterval(iv);document.getElementById('result').style.display='block';document.getElementById('gb').disabled=false;}
-      else if(d.status==='error'){clearInterval(iv);alert('Error: '+d.message);document.getElementById('gb').disabled=false;document.getElementById('pw').style.display='none';}
-    }catch(e){clearInterval(iv);}
-  },2000);
-}
-function dlVideo(){
-  var mob=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  var url='/api/download/'+jobId;
-  if(mob)window.open(url);
-  else{var a=document.createElement('a');a.href=url;a.download='property-video.mp4';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+  xhr.onerror = () => { progressMsg.textContent = 'Network error.'; generateBtn.disabled = false; };
+  xhr.send(formData);
+});
+
+function pollProgress(jobId, fill, msg, resultWrap) {
+  const interval = setInterval(async () => {
+    try {
+      const r = await fetch('/progress/' + jobId);
+      const d = await r.json();
+      fill.style.width = d.progress + '%';
+      msg.textContent = d.message || 'Processing...';
+      if (d.status === 'done') {
+        clearInterval(interval);
+        fill.style.width = '100%';
+        msg.textContent = 'Done!';
+        resultWrap.style.display = 'block';
+        document.getElementById('resultVideo').src = '/download/' + jobId;
+        document.getElementById('dlBtn').href = '/download/' + jobId;
+        document.getElementById('generateBtn').disabled = false;
+      } else if (d.status === 'error') {
+        clearInterval(interval);
+        msg.textContent = 'Error: ' + (d.error || 'Something went wrong.');
+        document.getElementById('generateBtn').disabled = false;
+      }
+    } catch(e) { clearInterval(interval); msg.textContent = 'Connection lost.'; }
+  }, 1500);
 }
 </script>
 </body>
