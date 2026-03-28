@@ -76,7 +76,10 @@ async function processVideo({ jobId, photos, logoFile, address, price, beds, bat
       update('processing', pct, 'Rendering photo ' + (i + 1) + ' of ' + photos.length + '...');
       const segOut = path.join(workDir, 'seg_' + String(i).padStart(3, '0') + '.mp4');
       const zoompan = 'zoompan=z=\'min(zoom+0.0006,1.06)\':x=\'iw/2-(iw/zoom/2)\':y=\'ih/2-(ih/zoom/2)\':d=' + FRAMES + ':s=' + w + 'x' + h + ':fps=' + FPS;
-      let vf = 'scale=' + (w * 2) + ':' + (h * 2) + ',' + zoompan;
+      // Scale preserving aspect ratio, pad to fill target dimensions, then zoompan
+      const scaleW = w * 2;
+      const scaleH = h * 2;
+      let vf = 'scale=' + scaleW + ':' + scaleH + ':force_original_aspect_ratio=increase,crop=' + scaleW + ':' + scaleH + ',' + zoompan;
       const txt = getTextOverlay(i, address, price, beds, baths, sqft, tagline, w, h);
       if (txt) vf += ',' + txt;
       await runFFmpeg([
