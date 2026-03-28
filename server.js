@@ -4,7 +4,6 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const fetch = (...args) => import('node-fetch').then(({default:f}) => f(...args));
-const FormData = require('form-data');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,20 +31,22 @@ async function heygenPost(endpoint, body) {
   try { return JSON.parse(t); } catch(e) { throw new Error('Parse: ' + t.slice(0,200)); }
 }
 
-async function uploadFile(filePath, mimeType, filename) {
+async function uploadAsset(filePath, mimeType) {
   const fileBuffer = fs.readFileSync(filePath);
-  const fd = new FormData();
-  fd.append('file', fileBuffer, { filename, contentType: mimeType });
   const r = await fetch('https://upload.heygen.com/v1/asset', {
     method: 'POST',
-    headers: { 'X-Api-Key': HEYGEN_KEY, ...fd.getHeaders() },
-    body: fd
+    headers: {
+      'X-Api-Key': HEYGEN_KEY,
+      'Content-Type': mimeType,
+      'Accept': 'application/json'
+    },
+    body: fileBuffer
   });
   const t = await r.text();
   let d;
   try { d = JSON.parse(t); } catch(e) { throw new Error('Upload parse: ' + t.slice(0,300)); }
   if (d.error) throw new Error('Upload error: ' + JSON.stringify(d.error).slice(0,200));
-  const id = d.data?.id || d.data?.asset_id;
+  const id = d.data?.id || d.data?.asset_id || d.id;
   if (!id) throw new Error('No asset ID: ' + t.slice(0,300));
   return id;
 }
@@ -57,7 +58,7 @@ async function createTalkingPhoto(photoId, audioId) {
     audio_asset_id: audioId,
     talking_style: 'expressive'
   });
-  if (d.error) throw new Error('Talking photo error: ' + JSON.stringify(d.error).slice(0,200));
+  if (d.error) throw new Error('Talking photo: ' + JSON.stringify(d.error).slice(0,200));
   const videoId = d.data?.video_id;
   if (!videoId) throw new Error('No video_id: ' + JSON.stringify(d).slice(0,300));
   return videoId;
@@ -93,10 +94,11 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     if (req.files['bgPhoto']?.[0]) toClean.push(req.files['bgPhoto'][0].path);
 
     jobs[jobId] = { status:'processing', progress:25, message:'Uploading your photo to HeyGen...' };
-    const photoId = await uploadFile(photo.path, photo.mimetype || 'image/jpeg', 'photo.jpg');
+    const photoId = await uploadAsset(photo.path, photo.mimetype || 'image/jpeg');
 
     jobs[jobId] = { status:'processing', progress:45, message:'Uploading your voice recording...' };
-    const audioId = await uploadFile(voice.path, voice.mimetype || 'audio/webm', 'voice.webm');
+    const audioMime = voice.mimetype || 'audio/webm';
+    const audioId = await uploadAsset(voice.path, audioMime);
 
     jobs[jobId] = { status:'processing', progress:62, message:'Generating talking avatar...' };
     const videoId = await createTalkingPhoto(photoId, audioId);
