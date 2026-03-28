@@ -3,352 +3,312 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>QCV Video Creator</title>
+<title>QCV Avatar Creator</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #fff; min-height: 100vh; }
-  .header { background: #1a1a1a; border-bottom: 1px solid #2a2a2a; padding: 16px 24px; display: flex; align-items: center; gap: 12px; }
-  .logo { font-size: 18px; font-weight: 700; color: #e07940; letter-spacing: -0.5px; }
-  .logo span { color: #fff; font-weight: 400; }
-  .container { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
-  h2 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-  .subtitle { color: #888; font-size: 14px; margin-bottom: 32px; }
-
-  .section { margin-bottom: 28px; }
-  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #e07940; margin-bottom: 12px; }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-
-  input[type=text], input[type=tel], input[type=number], select, textarea {
-    width: 100%; background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
-    color: #fff; padding: 10px 14px; font-size: 14px; outline: none; transition: border 0.2s;
-  }
-  input:focus, select:focus, textarea:focus { border-color: #e07940; }
-  select option { background: #1a1a1a; }
-  label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
-
-  .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-  .color-opt { cursor: pointer; border-radius: 8px; overflow: hidden; border: 2px solid transparent; transition: border 0.2s; }
-  .color-opt.selected { border-color: #e07940; }
-  .color-swatch { height: 40px; }
-  .color-name { font-size: 9px; text-align: center; padding: 4px 2px; background: #1a1a1a; color: #888; }
-
-  .layout-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-  .layout-opt { cursor: pointer; border: 2px solid #2a2a2a; border-radius: 8px; padding: 8px; text-align: center; transition: border 0.2s; background: #1a1a1a; }
-  .layout-opt.selected { border-color: #e07940; }
-  .layout-preview { width: 100%; aspect-ratio: 9/12; background: #2a2a2a; border-radius: 4px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 2px; padding: 4px; position: relative; overflow: hidden; }
-  .layout-name { font-size: 10px; color: #888; }
-  .layout-opt.selected .layout-name { color: #e07940; }
-
-  .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .pos-opt { cursor: pointer; border: 2px solid #2a2a2a; border-radius: 8px; padding: 10px; text-align: center; font-size: 12px; color: #888; background: #1a1a1a; transition: all 0.2s; }
-  .pos-opt.selected { border-color: #e07940; color: #e07940; }
-
-  .upload-area { border: 2px dashed #2a2a2a; border-radius: 12px; padding: 32px; text-align: center; cursor: pointer; transition: border 0.2s; }
-  .upload-area:hover, .upload-area.dragover { border-color: #e07940; }
-  .upload-area p { color: #888; font-size: 14px; margin-top: 8px; }
-  .upload-area .icon { font-size: 32px; }
-  .photo-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .thumb { width: 70px; height: 70px; object-fit: cover; border-radius: 6px; border: 1px solid #2a2a2a; }
-
-  .btn { width: 100%; padding: 14px; background: #e07940; border: none; border-radius: 10px; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; margin-top: 8px; }
-  .btn:hover { background: #c8622a; }
-  .btn:disabled { background: #444; cursor: not-allowed; }
-
-  .progress-wrap { display: none; margin-top: 20px; }
-  .progress-bar-bg { background: #2a2a2a; border-radius: 8px; height: 8px; overflow: hidden; margin: 10px 0; }
-  .progress-bar-fill { height: 100%; background: #e07940; border-radius: 8px; transition: width 0.3s; width: 0%; }
-  .progress-msg { font-size: 13px; color: #888; text-align: center; }
-  .result-wrap { display: none; margin-top: 20px; text-align: center; }
-  .result-wrap video { width: 100%; border-radius: 10px; margin-bottom: 12px; }
-  .dl-btn { display: inline-block; padding: 10px 28px; background: #e07940; color: #fff; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 14px; }
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f0f;color:#fff;min-height:100vh}
+.header{background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:16px 24px;display:flex;align-items:center;gap:12px}
+.logo{font-size:18px;font-weight:700;color:#e07940;letter-spacing:-.5px}
+.logo span{color:#fff;font-weight:400}
+.container{max-width:720px;margin:0 auto;padding:32px 20px 80px}
+h2{font-size:22px;font-weight:600;margin-bottom:6px}
+.subtitle{color:#888;font-size:14px;margin-bottom:32px}
+.section{margin-bottom:28px}
+.stitle{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#e07940;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+label{display:block;font-size:12px;color:#888;margin-bottom:5px}
+input[type=text],input[type=tel],select,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;outline:none;transition:border .2s}
+input:focus,select:focus,textarea:focus{border-color:#e07940}
+select option{background:#1a1a1a}
+textarea{resize:vertical;min-height:100px}
+.char-count{font-size:11px;color:#555;text-align:right;margin-top:4px}
+.char-count.warn{color:#e07940}
+.upload-box{border:2px dashed #2a2a2a;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border .2s;position:relative}
+.upload-box:hover,.upload-box.drag{border-color:#e07940}
+.upload-box p{color:#888;font-size:13px;margin-top:6px}
+.upload-box .icon{font-size:28px}
+.upload-box input{display:none}
+.preview-wrap{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
+.preview-img{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #2a2a2a}
+.preview-audio{width:100%;margin-top:8px}
+.frame-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.frame-opt{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;overflow:hidden;transition:border .2s;position:relative}
+.frame-opt.selected{border-color:#e07940}
+.frame-opt svg{width:100%;display:block}
+.frame-label{font-size:10px;color:#888;text-align:center;padding:6px 0;background:#1a1a1a}
+.frame-opt.selected .frame-label{color:#e07940}
+.color-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.color-opt{cursor:pointer;border:2px solid transparent;border-radius:8px;overflow:hidden;transition:border .2s}
+.color-opt.selected{border-color:#e07940}
+.color-swatch{height:36px}
+.color-name{font-size:9px;text-align:center;padding:3px 0;background:#1a1a1a;color:#888}
+.ar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ar-opt{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;background:#1a1a1a;transition:all .2s}
+.ar-opt.selected{border-color:#e07940}
+.ar-opt .ar-name{font-size:13px;font-weight:600;color:#fff}
+.ar-opt .ar-sub{font-size:10px;color:#888;margin-top:2px}
+.btn{width:100%;padding:14px;background:#e07940;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s;margin-top:8px}
+.btn:hover{background:#c8622a}
+.btn:disabled{background:#444;cursor:not-allowed}
+.prog-wrap{display:none;margin-top:20px}
+.prog-bg{background:#2a2a2a;border-radius:8px;height:8px;overflow:hidden;margin:10px 0}
+.prog-fill{height:100%;background:#e07940;border-radius:8px;transition:width .3s;width:0%}
+.prog-msg{font-size:13px;color:#888;text-align:center}
+.result-wrap{display:none;margin-top:20px;text-align:center}
+.result-wrap video{width:100%;max-width:400px;border-radius:10px;margin-bottom:12px}
+.dl-btn{display:inline-block;padding:10px 28px;background:#e07940;color:#fff;border-radius:8px;font-weight:600;text-decoration:none;font-size:14px}
+.notice{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px 16px;font-size:12px;color:#888;margin-bottom:20px;line-height:1.6}
+.notice strong{color:#e07940}
 </style>
 </head>
 <body>
+<div class="header"><div class="logo">QCV <span>Avatar Creator</span></div></div>
+<div class="container">
+<h2>AI Avatar Video Creator</h2>
+<p class="subtitle">Upload your photo and voice — we generate a professional talking avatar video.</p>
 
-<div class="header">
-  <div class="logo">QCV <span>Video Creator</span></div>
+<div class="notice"><strong>How it works:</strong> Upload your headshot + a 30-60 second voice recording. Type your script (max 30 seconds of speech). Pick your frame style, color, and aspect ratio. Hit generate — your AI avatar video is ready in minutes.</div>
+
+<div class="section">
+<div class="stitle">Agent Info</div>
+<div class="grid2">
+<div><label>Agent Name</label><input type="text" id="agentName" placeholder="Jane Smith"></div>
+<div><label>Phone</label><input type="tel" id="agentPhone" placeholder="(404) 555-0100"></div>
+</div>
+<div style="margin-top:10px"><label>Brokerage</label><input type="text" id="brokerage" placeholder="Keller Williams Atlanta"></div>
 </div>
 
-<div class="container">
-  <h2>Property Video Creator</h2>
-  <p class="subtitle">Upload photos, pick your style, generate a professional property video.</p>
+<div class="section">
+<div class="stitle">Property Info</div>
+<div class="grid2">
+<div><label>Address</label><input type="text" id="address" placeholder="142 Peachtree St NW"></div>
+<div><label>City, State</label><input type="text" id="cityState" placeholder="Atlanta, GA"></div>
+</div>
+<div class="grid3" style="margin-top:10px">
+<div><label>Price</label><input type="text" id="price" placeholder="$485,000"></div>
+<div><label>Beds</label><select id="beds"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+<div><label>Baths</label><select id="baths"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
+</div>
+<div class="grid2" style="margin-top:10px">
+<div><label>Sq Ft</label><input type="text" id="sqft" placeholder="2,450"></div>
+<div><label>Occasion</label><select id="occasion"><option>Just Listed</option><option>For Sale</option><option>Open House</option><option>Just Sold</option><option>Price Reduced</option></select></div>
+</div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Agent Info</div>
-    <div class="grid-2">
-      <div><label>Agent Name</label><input type="text" id="agentName" placeholder="Jane Smith"></div>
-      <div><label>Phone</label><input type="tel" id="agentPhone" placeholder="(404) 555-0100"></div>
-    </div>
-    <div style="margin-top:10px"><label>Brokerage</label><input type="text" id="brokerage" placeholder="Keller Williams Atlanta"></div>
-  </div>
+<div class="section">
+<div class="stitle">Upload Your Headshot</div>
+<div class="upload-box" id="photoBox">
+<div class="icon">📷</div>
+<p>Click to upload your portrait photo</p>
+<p style="font-size:11px;color:#555;margin-top:4px">Front-facing, well-lit, no sunglasses</p>
+<input type="file" id="photoInput" accept="image/*">
+</div>
+<div class="preview-wrap" id="photoPreview"></div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Property Info</div>
-    <div class="grid-2">
-      <div><label>Address</label><input type="text" id="address" placeholder="142 Peachtree St NW"></div>
-      <div><label>City, State</label><input type="text" id="cityState" placeholder="Atlanta, GA"></div>
-    </div>
-    <div class="grid-3" style="margin-top:10px">
-      <div><label>Price</label><input type="text" id="price" placeholder="$485,000"></div>
-      <div><label>Beds</label><select id="beds"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
-      <div><label>Baths</label><select id="baths"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select></div>
-    </div>
-    <div class="grid-2" style="margin-top:10px">
-      <div><label>Sq Ft</label><input type="text" id="sqft" placeholder="2,450"></div>
-      <div><label>Occasion</label><select id="occasion"><option>For Sale</option><option>Just Listed</option><option>Open House</option><option>Just Sold</option><option>Price Reduced</option></select></div>
-    </div>
-  </div>
+<div class="section">
+<div class="stitle">Upload Background Photo</div>
+<div class="upload-box" id="bgBox">
+<div class="icon">🏠</div>
+<p>Click to upload your property or background photo</p>
+<input type="file" id="bgInput" accept="image/*">
+</div>
+<div class="preview-wrap" id="bgPreview"></div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Background Color</div>
-    <div class="color-grid" id="colorGrid"></div>
-  </div>
+<div class="section">
+<div class="stitle">Upload Voice Sample</div>
+<div class="upload-box" id="voiceBox">
+<div class="icon">🎤</div>
+<p>Upload a 30-60 second voice recording (MP3 or WAV)</p>
+<p style="font-size:11px;color:#555;margin-top:4px">Record yourself talking naturally — no script needed</p>
+<input type="file" id="voiceInput" accept="audio/*">
+</div>
+<div id="voicePreview"></div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Photo Grid Layout</div>
-    <div class="layout-grid" id="layoutGrid"></div>
-  </div>
+<div class="section">
+<div class="stitle">Your Script</div>
+<label>What should your avatar say? (max 30 seconds — keep it to 3-4 sentences)</label>
+<textarea id="script" placeholder="Hi, I'm Jane Smith with Keller Williams Atlanta. I'm excited to share this stunning newly listed home at 142 Peachtree Street. Call me today to schedule your private showing." maxlength="500"></textarea>
+<div class="char-count" id="charCount">0 / 500</div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Text Position</div>
-    <div class="pos-grid" id="posGrid">
-      <div class="pos-opt" data-pos="top">Top</div>
-      <div class="pos-opt selected" data-pos="middle">Middle</div>
-      <div class="pos-opt" data-pos="bottom">Bottom</div>
-    </div>
-  </div>
+<div class="section">
+<div class="stitle">Frame Style</div>
+<div class="frame-grid" id="frameGrid">
+<div class="frame-opt selected" data-frame="centered">
+<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="355" fill="#1a1a2e"/>
+<text x="100" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text>
+<rect x="16" y="26" width="168" height="105" rx="5" fill="#3a5a6a"/>
+<text x="100" y="84" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)" font-family="sans-serif">Background photo</text>
+<ellipse cx="100" cy="208" rx="30" ry="30" fill="#4a7060"/>
+<path d="M52 320 Q52 242 100 242 Q148 242 148 320" fill="#4a7060"/>
+<text x="100" y="215" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text>
+<rect x="40" y="330" width="120" height="1.5" fill="#e07940"/>
+<text x="100" y="345" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name · Brokerage</text>
+</svg>
+<div class="frame-label">Frame 1 — Centered</div>
+</div>
+<div class="frame-opt" data-frame="split">
+<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="355" fill="#111"/>
+<text x="12" y="18" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text>
+<rect x="82" y="26" width="106" height="90" rx="5" fill="#3a5a6a"/>
+<text x="135" y="76" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="sans-serif">Background photo</text>
+<rect x="12" y="125" width="118" height="190" rx="5" fill="#2a3a4a" opacity="0.4"/>
+<ellipse cx="71" cy="190" rx="26" ry="26" fill="#4a6a7a"/>
+<path d="M28 314 Q28 220 71 220 Q114 220 114 314" fill="#4a6a7a"/>
+<text x="71" y="196" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text>
+<rect x="138" y="325" width="52" height="1.5" fill="#e07940"/>
+<text x="190" y="338" text-anchor="end" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text>
+<text x="190" y="349" text-anchor="end" font-size="6.5" fill="rgba(255,255,255,0.45)" font-family="sans-serif">Brokerage</text>
+</svg>
+<div class="frame-label">Frame 2 — Split</div>
+</div>
+</div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Video Settings</div>
-    <div class="grid-3">
-      <div>
-        <label>Aspect Ratio</label>
-        <select id="aspectRatio">
-          <option value="9x16">9:16 — Reels/TikTok</option>
-          <option value="4x5">4:5 — Instagram</option>
-          <option value="1x1">1:1 — Square</option>
-          <option value="16x9">16:9 — YouTube</option>
-        </select>
-      </div>
-      <div>
-        <label>Number of Frames</label>
-        <select id="numFrames">
-          <option value="2">2 frames</option><option value="3">3 frames</option><option value="4">4 frames</option><option value="5">5 frames</option><option value="6">6 frames</option><option value="7">7 frames</option><option value="8">8 frames</option><option value="9">9 frames</option>
-        </select>
-      </div>
-      <div>
-        <label>Transition</label>
-        <select id="transition">
-          <option value="fade">Fade</option>
-          <option value="cut">Cut</option>
-          <option value="slide">Slide</option>
-        </select>
-      </div>
-    </div>
-  </div>
+<div class="section">
+<div class="stitle">Background Color</div>
+<div class="color-grid" id="colorGrid"></div>
+</div>
 
-  <div class="section">
-    <div class="section-title">Upload Photos</div>
-    <div class="upload-area" id="uploadArea">
-      <div class="icon">📷</div>
-      <p>Click to upload or drag & drop photos</p>
-      <p style="font-size:12px;margin-top:4px;color:#555">JPG, PNG — up to 25 photos</p>
-      <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
-    </div>
-    <div class="photo-thumbs" id="thumbs"></div>
-  </div>
+<div class="section">
+<div class="stitle">Aspect Ratio</div>
+<div class="ar-grid" id="arGrid">
+<div class="ar-opt selected" data-ar="9x16"><div class="ar-name">9:16</div><div class="ar-sub">Reels · TikTok · Stories</div></div>
+<div class="ar-opt" data-ar="4x5"><div class="ar-name">4:5</div><div class="ar-sub">Instagram Feed</div></div>
+</div>
+</div>
 
-  <button class="btn" id="generateBtn" disabled>Generate Video</button>
-
-  <div class="progress-wrap" id="progressWrap">
-    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-    <div class="progress-msg" id="progressMsg">Starting...</div>
-  </div>
-  <div class="result-wrap" id="resultWrap">
-    <video id="resultVideo" controls playsinline></video>
-    <a class="dl-btn" id="dlBtn" download="qcv-property-video.mp4">Download Video</a>
-  </div>
+<button class="btn" id="generateBtn" disabled>Generate Avatar Video</button>
+<div class="prog-wrap" id="progWrap">
+<div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
+<div class="prog-msg" id="progMsg">Starting...</div>
+</div>
+<div class="result-wrap" id="resultWrap">
+<video id="resultVideo" controls playsinline></video>
+<a class="dl-btn" id="dlBtn" download="qcv-avatar-video.mp4">Download Video</a>
+</div>
 </div>
 
 <script>
-const COLORS = [
-  { name: 'Charcoal', hex: '#1a1a1a', text: '#ffffff', accent: '#e07940' },
-  { name: 'Warm Cream', hex: '#f0ebe0', text: '#1a1a1a', accent: '#c8a06e' },
-  { name: 'QCV Orange', hex: '#e07940', text: '#ffffff', accent: '#ffffff' },
-  { name: 'Slate Blue', hex: '#1c2b35', text: '#ffffff', accent: '#5ba3c9' },
-  { name: 'Forest Green', hex: '#2d4a3e', text: '#ffffff', accent: '#7ec8a0' },
-  { name: 'Navy', hex: '#0f1e35', text: '#ffffff', accent: '#5ba3c9' },
-  { name: 'Burgundy', hex: '#5c1f2e', text: '#ffffff', accent: '#e0a0a0' },
-  { name: 'Sand/Tan', hex: '#c8b89a', text: '#1a1a1a', accent: '#8a6a40' },
-  { name: 'Pure White', hex: '#f5f5f5', text: '#1a1a1a', accent: '#e07940' },
-  { name: 'True Black', hex: '#0a0a0a', text: '#ffffff', accent: '#e07940' },
+const COLORS=[
+{name:'Midnight',hex:'#1a1a2e',text:'#ffffff',accent:'#e07940'},
+{name:'True Black',hex:'#0a0a0a',text:'#ffffff',accent:'#e07940'},
+{name:'QCV Orange',hex:'#e07940',text:'#ffffff',accent:'#ffffff'},
+{name:'Warm Cream',hex:'#f0ebe0',text:'#1a1a1a',accent:'#c8a06e'},
+{name:'Navy',hex:'#0f1e35',text:'#ffffff',accent:'#5ba3c9'},
 ];
+let selColor=COLORS[0],selFrame='centered',selAR='9x16';
+let photoFile=null,bgFile=null,voiceFile=null;
 
-const LAYOUTS = [
-  { id: 'hero-pair', name: 'Hero + Pair', cols: 1, rows: 2, desc: '1 big + 2 small' },
-  { id: 'side-by-side', name: 'Side by Side', cols: 2, rows: 1, desc: '2 equal' },
-  { id: 'feature-stack', name: 'Feature + Stack', cols: 2, rows: 2, desc: 'Big left + 2 right' },
-  { id: 'grid-2x2', name: '2×2 Grid', cols: 2, rows: 2, desc: '4 photos' },
-];
-
-let selectedColor = COLORS[0];
-let selectedLayout = LAYOUTS[0];
-let selectedPos = 'middle';
-let uploadedFiles = [];
-
-// Build color grid
-const colorGrid = document.getElementById('colorGrid');
-COLORS.forEach((c, i) => {
-  const el = document.createElement('div');
-  el.className = 'color-opt' + (i === 0 ? ' selected' : '');
-  el.innerHTML = `<div class="color-swatch" style="background:${c.hex};border:1px solid rgba(255,255,255,0.08)"></div><div class="color-name">${c.name}</div>`;
-  el.addEventListener('click', () => {
-    document.querySelectorAll('.color-opt').forEach(x => x.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedColor = c;
-  });
-  colorGrid.appendChild(el);
+const colorGrid=document.getElementById('colorGrid');
+COLORS.forEach((c,i)=>{
+const el=document.createElement('div');
+el.className='color-opt'+(i===0?' selected':'');
+el.innerHTML='<div class="color-swatch" style="background:'+c.hex+';border:1px solid rgba(255,255,255,0.08)"></div><div class="color-name">'+c.name+'</div>';
+el.onclick=()=>{document.querySelectorAll('.color-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selColor=c;};
+colorGrid.appendChild(el);
 });
 
-// Build layout grid
-const layoutGrid = document.getElementById('layoutGrid');
-LAYOUTS.forEach((l, i) => {
-  const el = document.createElement('div');
-  el.className = 'layout-opt' + (i === 0 ? ' selected' : '');
-  let preview = '';
-  if (l.id === 'hero-pair') preview = `<div style="flex:1.4;background:#333;border-radius:2px"></div><div style="display:flex;gap:2px;flex:1"><div style="flex:1;background:#444;border-radius:2px"></div><div style="flex:1;background:#444;border-radius:2px"></div></div>`;
-  else if (l.id === 'side-by-side') preview = `<div style="display:flex;gap:2px;flex:1"><div style="flex:1;background:#333;border-radius:2px"></div><div style="flex:1;background:#444;border-radius:2px"></div></div>`;
-  else if (l.id === 'feature-stack') preview = `<div style="display:flex;gap:2px;flex:1"><div style="flex:1.4;background:#333;border-radius:2px"></div><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="flex:1;background:#444;border-radius:2px"></div><div style="flex:1;background:#444;border-radius:2px"></div></div></div>`;
-  else preview = `<div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;flex:1"><div style="background:#333;border-radius:2px"></div><div style="background:#444;border-radius:2px"></div><div style="background:#444;border-radius:2px"></div><div style="background:#333;border-radius:2px"></div></div>`;
-  el.innerHTML = `<div class="layout-preview" style="display:flex;flex-direction:column;">${preview}</div><div class="layout-name">${l.name}</div>`;
-  el.addEventListener('click', () => {
-    document.querySelectorAll('.layout-opt').forEach(x => x.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedLayout = l;
-  });
-  layoutGrid.appendChild(el);
+document.querySelectorAll('.frame-opt').forEach(el=>{
+el.onclick=()=>{document.querySelectorAll('.frame-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selFrame=el.dataset.frame;};
 });
 
-// Position selector
-document.querySelectorAll('.pos-opt').forEach(el => {
-  el.addEventListener('click', () => {
-    document.querySelectorAll('.pos-opt').forEach(x => x.classList.remove('selected'));
-    el.classList.add('selected');
-    selectedPos = el.dataset.pos;
-  });
+document.querySelectorAll('.ar-opt').forEach(el=>{
+el.onclick=()=>{document.querySelectorAll('.ar-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selAR=el.dataset.ar;};
 });
 
-// File upload
-const uploadArea = document.getElementById('uploadArea');
-const fileInput = document.getElementById('fileInput');
-const thumbs = document.getElementById('thumbs');
-const generateBtn = document.getElementById('generateBtn');
+function setupUpload(boxId,inputId,previewId,type){
+const box=document.getElementById(boxId);
+const input=document.getElementById(inputId);
+const preview=document.getElementById(previewId);
+box.onclick=()=>input.click();
+box.ondragover=e=>{e.preventDefault();box.classList.add('drag');};
+box.ondragleave=()=>box.classList.remove('drag');
+box.ondrop=e=>{e.preventDefault();box.classList.remove('drag');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);};
+input.onchange=()=>{if(input.files[0])handleFile(input.files[0]);};
+function handleFile(f){
+if(type==='photo'){photoFile=f;const img=document.createElement('img');img.className='preview-img';img.src=URL.createObjectURL(f);preview.innerHTML='';preview.appendChild(img);}
+else if(type==='bg'){bgFile=f;const img=document.createElement('img');img.className='preview-img';img.src=URL.createObjectURL(f);preview.innerHTML='';preview.appendChild(img);}
+else if(type==='voice'){voiceFile=f;preview.innerHTML='<audio class="preview-audio" controls src="'+URL.createObjectURL(f)+'"></audio>';}
+checkReady();
+}
+}
+setupUpload('photoBox','photoInput','photoPreview','photo');
+setupUpload('bgBox','bgInput','bgPreview','bg');
+setupUpload('voiceBox','voiceInput','voicePreview','voice');
 
-uploadArea.addEventListener('click', () => fileInput.click());
-uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('dragover'); });
-uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-uploadArea.addEventListener('drop', e => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
-fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+const scriptTA=document.getElementById('script');
+const charCount=document.getElementById('charCount');
+scriptTA.oninput=()=>{
+const n=scriptTA.value.length;
+charCount.textContent=n+' / 500';
+charCount.className='char-count'+(n>400?' warn':'');
+checkReady();
+};
 
-function handleFiles(files) {
-  uploadedFiles = [...uploadedFiles, ...Array.from(files)].slice(0, 25);
-  thumbs.innerHTML = '';
-  uploadedFiles.forEach(f => {
-    const img = document.createElement('img');
-    img.className = 'thumb';
-    img.src = URL.createObjectURL(f);
-    thumbs.appendChild(img);
-  });
-  generateBtn.disabled = uploadedFiles.length < 2;
+function checkReady(){
+document.getElementById('generateBtn').disabled=!(photoFile&&voiceFile&&scriptTA.value.trim().length>10);
 }
 
-// URL params — pre-fill agent info
-const params = new URLSearchParams(window.location.search);
-if (params.get('name')) document.getElementById('agentName').value = params.get('name');
-if (params.get('email')) { /* store silently */ }
+const params=new URLSearchParams(window.location.search);
+if(params.get('name'))document.getElementById('agentName').value=params.get('name');
 
-// Generate
-generateBtn.addEventListener('click', async () => {
-  const progressWrap = document.getElementById('progressWrap');
-  const progressFill = document.getElementById('progressFill');
-  const progressMsg = document.getElementById('progressMsg');
-  const resultWrap = document.getElementById('resultWrap');
+document.getElementById('generateBtn').onclick=async()=>{
+const btn=document.getElementById('generateBtn');
+const progWrap=document.getElementById('progWrap');
+const progFill=document.getElementById('progFill');
+const progMsg=document.getElementById('progMsg');
+const resultWrap=document.getElementById('resultWrap');
+btn.disabled=true;progWrap.style.display='block';resultWrap.style.display='none';
+const fd=new FormData();
+fd.append('photo',photoFile);
+if(bgFile)fd.append('bgPhoto',bgFile);
+fd.append('voice',voiceFile);
+fd.append('script',scriptTA.value);
+fd.append('agentName',document.getElementById('agentName').value);
+fd.append('agentPhone',document.getElementById('agentPhone').value);
+fd.append('brokerage',document.getElementById('brokerage').value);
+fd.append('address',document.getElementById('address').value);
+fd.append('cityState',document.getElementById('cityState').value);
+fd.append('price',document.getElementById('price').value);
+fd.append('beds',document.getElementById('beds').value);
+fd.append('baths',document.getElementById('baths').value);
+fd.append('sqft',document.getElementById('sqft').value);
+fd.append('occasion',document.getElementById('occasion').value);
+fd.append('frame',selFrame);
+fd.append('bgColor',selColor.hex);
+fd.append('textColor',selColor.text);
+fd.append('accentColor',selColor.accent);
+fd.append('aspectRatio',selAR);
+const xhr=new XMLHttpRequest();
+xhr.open('POST','/generate');
+xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*30);progFill.style.width=p+'%';progMsg.textContent='Uploading... '+p+'%';}};
+xhr.onload=()=>{
+if(xhr.status===200){
+const {jobId}=JSON.parse(xhr.responseText);
+poll(jobId,progFill,progMsg,resultWrap,btn);
+}else{progMsg.textContent='Upload failed.';btn.disabled=false;}
+};
+xhr.onerror=()=>{progMsg.textContent='Network error.';btn.disabled=false;};
+xhr.send(fd);
+};
 
-  progressWrap.style.display = 'block';
-  resultWrap.style.display = 'none';
-  generateBtn.disabled = true;
-
-  const formData = new FormData();
-  uploadedFiles.forEach(f => formData.append('photos', f));
-  formData.append('agentName', document.getElementById('agentName').value);
-  formData.append('agentPhone', document.getElementById('agentPhone').value);
-  formData.append('brokerage', document.getElementById('brokerage').value);
-  formData.append('address', document.getElementById('address').value);
-  formData.append('cityState', document.getElementById('cityState').value);
-  formData.append('price', document.getElementById('price').value);
-  formData.append('beds', document.getElementById('beds').value);
-  formData.append('baths', document.getElementById('baths').value);
-  formData.append('sqft', document.getElementById('sqft').value);
-  formData.append('occasion', document.getElementById('occasion').value);
-  formData.append('bgColor', selectedColor.hex);
-  formData.append('textColor', selectedColor.text);
-  formData.append('accentColor', selectedColor.accent);
-  formData.append('colorName', selectedColor.name);
-  formData.append('layout', selectedLayout.id);
-  formData.append('textPosition', selectedPos);
-  formData.append('aspectRatio', document.getElementById('aspectRatio').value);
-  formData.append('numFrames', document.getElementById('numFrames').value);
-  formData.append('transition', document.getElementById('transition').value);
-
-  // XHR for upload progress
-  const xhr = new XMLHttpRequest();
-  xhr.open('POST', '/generate');
-
-  xhr.upload.onprogress = e => {
-    if (e.lengthComputable) {
-      const pct = Math.round((e.loaded / e.total) * 40);
-      progressFill.style.width = pct + '%';
-      progressMsg.textContent = 'Uploading photos... ' + pct + '%';
-    }
-  };
-
-  xhr.onload = () => {
-    if (xhr.status === 200) {
-      const jobId = JSON.parse(xhr.responseText).jobId;
-      pollProgress(jobId, progressFill, progressMsg, resultWrap);
-    } else {
-      progressMsg.textContent = 'Upload failed. Please try again.';
-      generateBtn.disabled = false;
-    }
-  };
-  xhr.onerror = () => { progressMsg.textContent = 'Network error.'; generateBtn.disabled = false; };
-  xhr.send(formData);
-});
-
-function pollProgress(jobId, fill, msg, resultWrap) {
-  const interval = setInterval(async () => {
-    try {
-      const r = await fetch('/progress/' + jobId);
-      const d = await r.json();
-      fill.style.width = d.progress + '%';
-      msg.textContent = d.message || 'Processing...';
-      if (d.status === 'done') {
-        clearInterval(interval);
-        fill.style.width = '100%';
-        msg.textContent = 'Done!';
-        resultWrap.style.display = 'block';
-        document.getElementById('resultVideo').src = '/download/' + jobId;
-        document.getElementById('dlBtn').href = '/download/' + jobId;
-        document.getElementById('generateBtn').disabled = false;
-      } else if (d.status === 'error') {
-        clearInterval(interval);
-        msg.textContent = 'Error: ' + (d.error || 'Something went wrong.');
-        document.getElementById('generateBtn').disabled = false;
-      }
-    } catch(e) { clearInterval(interval); msg.textContent = 'Connection lost.'; }
-  }, 1500);
+function poll(jobId,fill,msg,rw,btn){
+const iv=setInterval(async()=>{
+try{
+const d=await fetch('/progress/'+jobId).then(r=>r.json());
+fill.style.width=d.progress+'%';
+msg.textContent=d.message||'Processing...';
+if(d.status==='done'){clearInterval(iv);fill.style.width='100%';msg.textContent='Done!';rw.style.display='block';document.getElementById('resultVideo').src='/download/'+jobId;document.getElementById('dlBtn').href='/download/'+jobId;btn.disabled=false;}
+else if(d.status==='error'){clearInterval(iv);msg.textContent='Error: '+(d.error||'Something went wrong.');btn.disabled=false;}
+}catch(e){clearInterval(iv);msg.textContent='Connection lost.';}
+},2000);
 }
 </script>
 </body>
