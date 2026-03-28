@@ -8,8 +8,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f0f;color:#fff;min-height:100vh}
 .header{background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:16px 24px;display:flex;align-items:center;gap:12px}
-.logo{font-size:18px;font-weight:700;color:#e07940;letter-spacing:-.5px}
-.logo span{color:#fff;font-weight:400}
+.logo{font-size:18px;font-weight:700;color:#e07940;letter-spacing:-.5px}.logo span{color:#fff;font-weight:400}
 .container{max-width:720px;margin:0 auto;padding:32px 20px 80px}
 h2{font-size:22px;font-weight:600;margin-bottom:6px}
 .subtitle{color:#888;font-size:14px;margin-bottom:32px}
@@ -21,34 +20,27 @@ label{display:block;font-size:12px;color:#888;margin-bottom:5px}
 input[type=text],input[type=tel],select,textarea{width:100%;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;color:#fff;padding:10px 14px;font-size:14px;outline:none;transition:border .2s}
 input:focus,select:focus,textarea:focus{border-color:#e07940}
 select option{background:#1a1a1a}
-textarea{resize:vertical;min-height:100px}
-.char-count{font-size:11px;color:#555;text-align:right;margin-top:4px}
-.char-count.warn{color:#e07940}
 .upload-box{border:2px dashed #2a2a2a;border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:border .2s}
-.upload-box:hover,.upload-box.drag{border-color:#e07940}
-.upload-box p{color:#888;font-size:13px;margin-top:6px}
-.upload-box .icon{font-size:28px}
-.upload-box input{display:none}
+.upload-box:hover{border-color:#e07940}.upload-box p{color:#888;font-size:13px;margin-top:6px}
+.upload-box .icon{font-size:28px}.upload-box input{display:none}
 .preview-wrap{margin-top:10px;display:flex;flex-wrap:wrap;gap:8px}
 .preview-img{width:80px;height:80px;object-fit:cover;border-radius:6px;border:1px solid #2a2a2a}
 .voice-section{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:20px}
 .voice-tabs{display:flex;gap:8px;margin-bottom:16px}
 .vtab{flex:1;padding:10px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:13px;cursor:pointer;transition:all .2s;text-align:center}
 .vtab.active{border-color:#e07940;color:#e07940;background:rgba(224,121,64,0.08)}
-.vtab-content{display:none}
-.vtab-content.show{display:block}
+.vtab-content{display:none}.vtab-content.show{display:block}
 .record-btn{width:100%;padding:14px;border:2px solid #e07940;border-radius:10px;background:transparent;color:#e07940;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
 .record-btn:hover{background:rgba(224,121,64,0.1)}
-.record-btn.recording{background:#e07940;color:#fff;border-color:#e07940}
-.record-btn.recording:hover{background:#c8622a}
+.record-btn.recording{background:#e07940;color:#fff}
 .rec-dot{width:10px;height:10px;border-radius:50%;background:currentColor;display:none}
 .record-btn.recording .rec-dot{display:block;animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .rec-timer{font-size:13px;color:#888;text-align:center;margin-top:8px;min-height:20px}
 .rec-preview{margin-top:12px;display:none}
 .rec-preview audio{width:100%}
-.rec-preview .redo-btn{margin-top:8px;width:100%;padding:8px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:12px;cursor:pointer}
-.frame-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.redo-btn{margin-top:8px;width:100%;padding:8px;border:1px solid #2a2a2a;border-radius:8px;background:transparent;color:#888;font-size:12px;cursor:pointer}
+.frame-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .frame-opt{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;overflow:hidden;transition:border .2s}
 .frame-opt.selected{border-color:#e07940}
 .frame-opt svg{width:100%;display:block}
@@ -57,16 +49,14 @@ textarea{resize:vertical;min-height:100px}
 .color-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .color-opt{cursor:pointer;border:2px solid transparent;border-radius:8px;overflow:hidden;transition:border .2s}
 .color-opt.selected{border-color:#e07940}
-.color-swatch{height:36px}
-.color-name{font-size:9px;text-align:center;padding:3px 0;background:#1a1a1a;color:#888}
+.color-swatch{height:36px}.color-name{font-size:9px;text-align:center;padding:3px 0;background:#1a1a1a;color:#888}
 .ar-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .ar-opt{cursor:pointer;border:2px solid #2a2a2a;border-radius:8px;padding:12px;text-align:center;background:#1a1a1a;transition:all .2s}
 .ar-opt.selected{border-color:#e07940}
 .ar-opt .ar-name{font-size:13px;font-weight:600;color:#fff}
 .ar-opt .ar-sub{font-size:10px;color:#888;margin-top:2px}
 .btn{width:100%;padding:14px;background:#e07940;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;transition:background .2s;margin-top:8px}
-.btn:hover{background:#c8622a}
-.btn:disabled{background:#444;cursor:not-allowed}
+.btn:hover{background:#c8622a}.btn:disabled{background:#444;cursor:not-allowed}
 .prog-wrap{display:none;margin-top:20px}
 .prog-bg{background:#2a2a2a;border-radius:8px;height:8px;overflow:hidden;margin:10px 0}
 .prog-fill{height:100%;background:#e07940;border-radius:8px;transition:width .3s;width:0%}
@@ -76,14 +66,15 @@ textarea{resize:vertical;min-height:100px}
 .dl-btn{display:inline-block;padding:10px 28px;background:#e07940;color:#fff;border-radius:8px;font-weight:600;text-decoration:none;font-size:14px}
 .tip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px 16px;font-size:12px;color:#888;margin-bottom:20px;line-height:1.6}
 .tip strong{color:#e07940}
+.powered{font-size:10px;color:#555;text-align:center;margin-top:6px}
 </style>
 </head>
 <body>
 <div class="header"><div class="logo">QCV <span>Avatar Creator</span></div></div>
 <div class="container">
 <h2>AI Avatar Video Creator</h2>
-<p class="subtitle">Upload your photo, record your voice and script — get a professional talking avatar video.</p>
-<div class="tip"><strong>How it works:</strong> Upload your headshot + record your script in your own voice (30 seconds max). Pick your frame style, color, and format. Hit generate — your AI avatar video is ready in minutes.</div>
+<p class="subtitle">Upload your headshot, record your script in your voice — get a professional talking avatar video powered by HeyGen.</p>
+<div class="tip"><strong>How it works:</strong> Upload your headshot + record your script in your own voice (30 seconds max). Pick your frame style and color. Hit generate — HeyGen animates your photo to speak in your exact voice.</div>
 
 <div class="section">
 <div class="stitle">Agent Info</div>
@@ -113,17 +104,18 @@ textarea{resize:vertical;min-height:100px}
 
 <div class="section">
 <div class="stitle">Your Headshot</div>
+<div class="tip" style="margin-bottom:10px"><strong>Tips for best results:</strong> Use a front-facing, well-lit portrait. Clear background preferred. No sunglasses. The closer and cleaner the photo, the better HeyGen animates it.</div>
 <div class="upload-box" id="photoBox">
 <div class="icon">📷</div>
 <p>Tap to upload your portrait photo</p>
-<p style="font-size:11px;color:#555;margin-top:4px">Front-facing, well-lit, no sunglasses</p>
-<input type="file" id="photoInput" accept="image/*" capture="user">
+<p style="font-size:11px;color:#555;margin-top:4px">JPG or PNG — front-facing, well-lit</p>
+<input type="file" id="photoInput" accept="image/*">
 </div>
 <div class="preview-wrap" id="photoPreview"></div>
 </div>
 
 <div class="section">
-<div class="stitle">Background Photo</div>
+<div class="stitle">Background Photo <span style="font-size:10px;color:#555;font-weight:400;text-transform:none">(optional)</span></div>
 <div class="upload-box" id="bgBox">
 <div class="icon">🏠</div>
 <p>Tap to upload your property or background photo</p>
@@ -134,16 +126,13 @@ textarea{resize:vertical;min-height:100px}
 
 <div class="section">
 <div class="stitle">Record Your Script</div>
-<div class="tip" style="margin-bottom:12px"><strong>Tip:</strong> Keep it to 3-4 sentences — about 20-30 seconds. Speak clearly in a quiet room. This is your actual voice that will be in the video.</div>
+<div class="tip" style="margin-bottom:12px"><strong>Keep it to 20-30 seconds</strong> — 3 to 4 sentences max. Speak clearly, naturally, in a quiet room. This is the exact voice your avatar will use.</div>
 <div class="voice-section">
 <div class="voice-tabs">
-<button class="vtab active" onclick="switchTab('record')">Record Now</button>
-<button class="vtab" onclick="switchTab('upload')">Upload Audio File</button>
+<button class="vtab active" id="tabRecordBtn" onclick="switchTab('record',this)">Record Now</button>
+<button class="vtab" id="tabUploadBtn" onclick="switchTab('upload',this)">Upload Audio File</button>
 </div>
 <div class="vtab-content show" id="tab-record">
-<textarea id="scriptText" placeholder="Hi, I'm Jane Smith with Keller Williams Atlanta. I just listed this stunning 4-bedroom home at 142 Peachtree Street for $485,000. Call me today at (404) 555-0100 to schedule your private showing." rows="4" style="margin-bottom:12px;width:100%;background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;color:#fff;padding:10px 14px;font-size:13px;resize:none;outline:none"></textarea>
-<div class="char-count" id="charCount">0 / 500</div>
-<div style="margin-top:12px">
 <button class="record-btn" id="recordBtn" onclick="toggleRecord()">
 <div class="rec-dot"></div>
 <span id="recordBtnText">Tap to Record</span>
@@ -154,9 +143,8 @@ textarea{resize:vertical;min-height:100px}
 <button class="redo-btn" onclick="redoRecording()">Record Again</button>
 </div>
 </div>
-</div>
 <div class="vtab-content" id="tab-upload">
-<div class="upload-box" id="voiceBox" style="border-style:dashed;margin-top:0">
+<div class="upload-box" id="voiceBox">
 <div class="icon">🎤</div>
 <p>Upload a 20-30 second recording (MP3 or WAV)</p>
 <input type="file" id="voiceInput" accept="audio/*">
@@ -216,13 +204,13 @@ textarea{resize:vertical;min-height:100px}
 </div>
 
 <button class="btn" id="generateBtn" disabled>Generate Avatar Video</button>
+<div class="powered">Powered by HeyGen AI</div>
 <div class="prog-wrap" id="progWrap">
 <div class="prog-bg"><div class="prog-fill" id="progFill"></div></div>
 <div class="prog-msg" id="progMsg">Starting...</div>
 </div>
 <div class="result-wrap" id="resultWrap">
-<video id="resultVideo" controls playsinline></video>
-<br>
+<video id="resultVideo" controls playsinline></video><br>
 <a class="dl-btn" id="dlBtn" download="qcv-avatar-video.mp4">Download Video</a>
 </div>
 </div>
@@ -252,10 +240,10 @@ document.querySelectorAll('.frame-opt').forEach(el=>{
 el.onclick=()=>{document.querySelectorAll('.frame-opt').forEach(x=>x.classList.remove('selected'));el.classList.add('selected');selFrame=el.dataset.frame;};
 });
 
-function switchTab(t){
+function switchTab(t,btn){
 document.querySelectorAll('.vtab').forEach(x=>x.classList.remove('active'));
 document.querySelectorAll('.vtab-content').forEach(x=>x.classList.remove('show'));
-event.target.classList.add('active');
+btn.classList.add('active');
 document.getElementById('tab-'+t).classList.add('show');
 }
 
@@ -263,6 +251,7 @@ function setupUpload(boxId,inputId,previewId,type){
 const box=document.getElementById(boxId);
 const inp=document.getElementById(inputId);
 const prev=document.getElementById(previewId);
+if(!box||!inp)return;
 box.onclick=()=>inp.click();
 inp.onchange=()=>{if(inp.files[0])handleFile(inp.files[0],type,prev);};
 function handleFile(f,t,p){
@@ -276,10 +265,6 @@ setupUpload('photoBox','photoInput','photoPreview','photo');
 setupUpload('bgBox','bgInput','bgPreview','bg');
 setupUpload('voiceBox','voiceInput','voiceUploadPreview','voice');
 
-const scriptTA=document.getElementById('scriptText');
-const charCount=document.getElementById('charCount');
-scriptTA.oninput=()=>{const n=scriptTA.value.length;charCount.textContent=n+' / 500';charCount.className='char-count'+(n>400?' warn':'');checkReady();};
-
 async function toggleRecord(){
 if(isRecording){stopRecording();return;}
 try{
@@ -291,14 +276,12 @@ mediaRecorder.onstop=()=>{
 stream.getTracks().forEach(t=>t.stop());
 voiceBlob=new Blob(recChunks,{type:'audio/webm'});
 voiceFile=null;
-const url=URL.createObjectURL(voiceBlob);
-document.getElementById('recAudio').src=url;
+document.getElementById('recAudio').src=URL.createObjectURL(voiceBlob);
 document.getElementById('recPreview').style.display='block';
 checkReady();
 };
 mediaRecorder.start();
-isRecording=true;
-recSeconds=0;
+isRecording=true;recSeconds=0;
 document.getElementById('recordBtn').classList.add('recording');
 document.getElementById('recordBtnText').textContent='Recording... Tap to Stop';
 recInterval=setInterval(()=>{
@@ -313,8 +296,7 @@ if(recSeconds>=60)stopRecording();
 
 function stopRecording(){
 if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
-isRecording=false;
-clearInterval(recInterval);
+isRecording=false;clearInterval(recInterval);
 document.getElementById('recordBtn').classList.remove('recording');
 document.getElementById('recordBtnText').textContent='Tap to Record';
 }
@@ -328,12 +310,8 @@ checkReady();
 
 function checkReady(){
 const hasVoice=voiceBlob||voiceFile;
-const hasScript=scriptTA.value.trim().length>10;
-document.getElementById('generateBtn').disabled=!(photoFile&&hasVoice&&hasScript);
+document.getElementById('generateBtn').disabled=!(photoFile&&hasVoice);
 }
-
-const params=new URLSearchParams(window.location.search);
-if(params.get('name'))document.getElementById('agentName').value=params.get('name');
 
 document.getElementById('generateBtn').onclick=async()=>{
 const btn=document.getElementById('generateBtn');
@@ -347,7 +325,6 @@ fd.append('photo',photoFile);
 if(bgFile)fd.append('bgPhoto',bgFile);
 if(voiceBlob)fd.append('voice',voiceBlob,'recording.webm');
 else if(voiceFile)fd.append('voice',voiceFile);
-fd.append('script',scriptTA.value);
 fd.append('agentName',document.getElementById('agentName').value);
 fd.append('agentPhone',document.getElementById('agentPhone').value);
 fd.append('brokerage',document.getElementById('brokerage').value);
@@ -365,10 +342,10 @@ fd.append('accentColor',selColor.accent);
 fd.append('aspectRatio',selAR);
 const xhr=new XMLHttpRequest();
 xhr.open('POST','/generate');
-xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*25);progFill.style.width=p+'%';progMsg.textContent='Uploading... '+p+'%';}};
+xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*20);progFill.style.width=p+'%';progMsg.textContent='Uploading... '+p+'%';}};
 xhr.onload=()=>{
 if(xhr.status===200){const {jobId}=JSON.parse(xhr.responseText);poll(jobId,progFill,progMsg,resultWrap,btn);}
-else{progMsg.textContent='Upload failed.';btn.disabled=false;}
+else{progMsg.textContent='Upload failed. Try again.';btn.disabled=false;}
 };
 xhr.onerror=()=>{progMsg.textContent='Network error.';btn.disabled=false;};
 xhr.send(fd);
@@ -380,7 +357,7 @@ try{
 const d=await fetch('/progress/'+jobId).then(r=>r.json());
 fill.style.width=d.progress+'%';msg.textContent=d.message||'Processing...';
 if(d.status==='done'){clearInterval(iv);fill.style.width='100%';msg.textContent='Done!';rw.style.display='block';document.getElementById('resultVideo').src='/download/'+jobId;document.getElementById('dlBtn').href='/download/'+jobId;btn.disabled=false;}
-else if(d.status==='error'){clearInterval(iv);msg.textContent='Error: '+(d.error||'Something went wrong.');btn.disabled=false;}
+else if(d.status==='error'){clearInterval(iv);msg.textContent='Error: '+(d.error||'Something went wrong');btn.disabled=false;}
 }catch(e){clearInterval(iv);msg.textContent='Connection lost.';}
 },2500);
 }
