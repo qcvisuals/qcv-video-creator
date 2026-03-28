@@ -131,15 +131,7 @@ input:focus{outline:none;border-color:#1a1a1a;}
         <button class="opt-btn" onclick="setOpt('t',this)">Zoom<br><span style="font-size:10px;opacity:0.6;">Zoom In</span></button>
       </div>
     </div>
-    <div class="card">
-      <h3>Music Mood</h3><p>Choose the background music style for your video.</p>
-      <div class="option-grid" id="mg">
-        <button class="opt-btn active" onclick="setOpt('m',this)">Cinematic</button>
-        <button class="opt-btn" onclick="setOpt('m',this)">Upbeat</button>
-        <button class="opt-btn" onclick="setOpt('m',this)">Elegant</button>
-        <button class="opt-btn" onclick="setOpt('m',this)">Dramatic</button>
-      </div>
-    </div>
+    
     <div class="card">
       <h3>Video Format</h3><p>Choose your target platform and aspect ratio.</p>
       <div class="option-grid" id="fg">
@@ -204,10 +196,19 @@ function gateSubmit(){
   var n=document.getElementById('gname').value.trim(),e=document.getElementById('gemail').value.trim();
   if(!n||!e){alert('Please enter your name and email.');return;}
   fetch('https://formspree.io/f/mwvwekvj',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:n,email:e,source:'QCV Video Creator'})});
+  showMain();
+}
+function showMain(){
   document.getElementById('gate').style.display='none';
   document.getElementById('main-content').style.display='block';
   buildDD('bed','bed',4);buildDD('bath','bath',3);
 }
+function checkUrlParams(){
+  var p=new URLSearchParams(window.location.search);
+  var n=p.get('name'),e=p.get('email');
+  if(n&&e){showMain();}
+}
+window.addEventListener('load',checkUrlParams);
 function handlePhotos(e){
   var f=Array.from(e.target.files);
   if(f.length<8||f.length>10){alert('Please upload between 8 and 10 photos.');e.target.value='';return;}
@@ -256,7 +257,7 @@ function generateVideo(){
   fd.append('tagline',document.getElementById('tagline').value);
   fd.append('agentName',document.getElementById('agentName').value);
   fd.append('agentPhone',document.getElementById('agentPhone').value);
-  fd.append('musicMood',music);fd.append('videoFormat',fmt);fd.append('transition',trans);
+  fd.append('musicMood','Cinematic');fd.append('videoFormat',fmt);fd.append('transition',trans);
   var xhr=new XMLHttpRequest();
   xhr.open('POST','/api/generate-video');
   xhr.upload.onprogress=function(e){
