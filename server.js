@@ -139,7 +139,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     saveJob(jobId,{status:'processing',progress:44,message:'Processing photo...'});
     // Convert photo to properly formatted JPEG with dimensions
     const jpegPath='/tmp/photo-'+jobId+'.jpg';
-    await ffmpeg(['-y','-i',photo.path,'-vf','scale=if(gt(iw\,1280)\,1280\,iw):-2','-q:v','2',jpegPath]);
+    await ffmpeg(['-y','-i',photo.path,'-q:v','2',jpegPath]);
     saveJob(jobId,{status:'processing',progress:48,message:'Uploading photo...'});
     const imgAsset=await uploadAsset(jpegPath,'image/jpeg');
     toClean.push(jpegPath);
@@ -153,9 +153,9 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     saveJob(jobId,{status:'processing',progress:68,message:'Sending to HeyGen...'});
     const videoId=await generateVideo(talkingPhotoId,audAsset.id,aspectRatio);
 
-    saveJob(jobId,{status:'processing',progress:72,message:'Rendering your avatar â please wait...'});
+    saveJob(jobId,{status:'processing',progress:72,message:'Rendering your avatar Ã¢ÂÂ please wait...'});
     
-    // Poll in background â survives Railway restarts via file
+    // Poll in background Ã¢ÂÂ survives Railway restarts via file
     const start=Date.now();
     let attempt=0;
     const poll=async()=>{
@@ -166,7 +166,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
           const d=await heygenGet('/v1/video_status.get?video_id='+videoId);
           const status=d.data?.status;
           console.log('Poll status:',status,'attempt:',attempt);
-          saveJob(jobId,{status:'processing',progress:Math.min(74+attempt*2,94),message:'Rendering... ('+Math.round((Date.now()-start)/1000)+'s) â HeyGen is processing your avatar'});
+          saveJob(jobId,{status:'processing',progress:Math.min(74+attempt*2,94),message:'Rendering... ('+Math.round((Date.now()-start)/1000)+'s) Ã¢ÂÂ HeyGen is processing your avatar'});
           if(status==='completed'&&d.data?.video_url){
             const buf=Buffer.from(await fetch(d.data.video_url).then(r=>r.arrayBuffer()));
             const out='/tmp/avatar-'+jobId+'.mp4';
