@@ -41,21 +41,39 @@ async function heygenGet(endpoint){
   const t=await r.text();try{return JSON.parse(t);}catch(e){throw new Error(t.slice(0,200));}
 }
 
-async function uploadAsset(filePath,mimeType){
-  const buf=fs.readFileSync(filePath);
+// Upload image using multipart form — required for HeyGen to detect dimensions
+async function uploadImage(filePath){
+  const fd = new FormData();
+  fd.append('file', fs.createReadStream(filePath), {filename:'photo.jpg', contentType:'image/jpeg'});
   const r=await fetch('https://upload.heygen.com/v1/asset',{
-    method:'POST',headers:{'X-Api-Key':HEYGEN_KEY,'Content-Type':mimeType,'Accept':'application/json'},body:buf
+    method:'POST',
+    headers:{'X-Api-Key':HEYGEN_KEY,...fd.getHeaders(),'Accept':'application/json'},
+    body:fd
   });
-  const t=await r.text();let d;try{d=JSON.parse(t);}catch(e){throw new Error('Upload:'+t.slice(0,300));}
-  if(d.error)throw new Error('Upload:'+JSON.stringify(d.error).slice(0,200));
-  console.log('Upload result:',JSON.stringify(d.data));
+  const t=await r.text();let d;try{d=JSON.parse(t);}catch(e){throw new Error('ImgUpload:'+t.slice(0,300));}
+  if(d.error)throw new Error('ImgUpload:'+JSON.stringify(d.error).slice(0,200));
+  console.log('Image upload result:',JSON.stringify(d.data));
   const id=d.data?.id||d.data?.asset_id;
-  const key=d.data?.image_key||('image/'+id+'/original');
-  if(!id)throw new Error('No asset ID:'+t.slice(0,200));
-  return {id,key};
+  if(!id)throw new Error('No image asset ID:'+t.slice(0,200));
+  return id;
 }
 
-async function registerAvatar(imageId,imageKey){
+// Upload audio as raw binary — works fine for audio
+async function uploadAudio(filePath){
+  const buf=fs.readFileSync(filePath);
+  const r=await fetch('https://upload.heygen.com/v1/asset',{
+    method:'POST',headers:{'X-Api-Key':HEYGEN_KEY,'Content-Type':'audio/mpeg','Accept':'application/json'},body:buf
+  });
+  const t=await r.text();let d;try{d=JSON.parse(t);}catch(e){throw new Error('AudUpload:'+t.slice(0,300));}
+  if(d.error)throw new Error('AudUpload:'+JSON.stringify(d.error).slice(0,200));
+  console.log('Audio upload result:',JSON.stringify(d.data));
+  const id=d.data?.id||d.data?.asset_id;
+  if(!id)throw new Error('No audio asset ID:'+t.slice(0,200));
+  return id;
+}
+
+async function registerAvatar(imageId){
+  const imageKey='image/'+imageId+'/original';
   const g=await heygenPost('/v2/photo_avatar/avatar_group/create',{name:'QCV-'+Date.now(),image_key:imageKey});
   console.log('Avatar group result:',JSON.stringify(g));
   if(g.error)throw new Error('Avatar:'+JSON.stringify(g.error).slice(0,200));
@@ -128,29 +146,29 @@ app.post('/generate',upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',ma
     await ffmpeg(['-y','-i',voice.path,'-vn','-acodec','libmp3lame','-ar','44100','-ab','128k',mp3]);
     toClean.push(mp3);
 
-    saveJob(jobId,{status:'processing',progress:20,message:'Converting photo...'});
+    saveJob(jobId,{status:'processing',progress:18,message:'Converting photo to JPEG...'});
     const jpegPath='/tmp/photo-'+jobId+'.jpg';
     await ffmpeg(['-y','-i',photo.path,'-vframes','1','-f','image2','-vcodec','mjpeg',jpegPath]);
     toClean.push(jpegPath);
 
-    saveJob(jobId,{status:'processing',progress:28,message:'Cloning your voice...'});
+    saveJob(jobId,{status:'processing',progress:26,message:'Cloning your voice...'});
     voiceId=await cloneVoice(mp3,agentName||'QCV');
 
-    saveJob(jobId,{status:'processing',progress:38,message:'Generating speech from script...'});
+    saveJob(jobId,{status:'processing',progress:36,message:'Generating speech from script...'});
     const ttsPath=await tts(voiceId,script);
     toClean.push(ttsPath);
 
-    saveJob(jobId,{status:'processing',progress:46,message:'Uploading photo...'});
-    const imgAsset=await uploadAsset(jpegPath,'image/jpeg');
+    saveJob(jobId,{status:'processing',progress:44,message:'Uploading photo...'});
+    const imageId=await uploadImage(jpegPath);
 
-    saveJob(jobId,{status:'processing',progress:54,message:'Creating avatar...'});
-    const talkingPhotoId=await registerAvatar(imgAsset.id,imgAsset.key);
+    saveJob(jobId,{status:'processing',progress:52,message:'Creating your avatar...'});
+    const talkingPhotoId=await registerAvatar(imageId);
 
-    saveJob(jobId,{status:'processing',progress:62,message:'Uploading voice audio...'});
-    const audAsset=await uploadAsset(ttsPath,'audio/mpeg');
+    saveJob(jobId,{status:'processing',progress:60,message:'Uploading voice audio...'});
+    const audioId=await uploadAudio(ttsPath);
 
-    saveJob(jobId,{status:'processing',progress:68,message:'Generating talking avatar...'});
-    const videoId=await generateVideo(talkingPhotoId,audAsset.id,aspectRatio);
+    saveJob(jobId,{status:'processing',progress:68,message:'Generating talking avatar video...'});
+    const videoId=await generateVideo(talkingPhotoId,audioId,aspectRatio);
 
     saveJob(jobId,{status:'processing',progress:72,message:'Rendering your avatar — please wait...'});
 
@@ -162,8 +180,8 @@ app.post('/generate',upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',ma
         try{
           const d=await heygenGet('/v1/video_status.get?video_id='+videoId);
           const status=d.data?.status;
-          console.log('Poll:',status,'attempt:',attempt);
-          saveJob(jobId,{status:'processing',progress:Math.min(74+attempt*2,94),message:'Rendering... ('+Math.round((Date.now()-start)/1000)+'s)'});
+          console.log('Poll status:',status,'attempt:',attempt);
+          saveJob(jobId,{status:'processing',progress:Math.min(74+attempt*2,94),message:'Rendering... ('+Math.round((Date.now()-start)/1000)+'s) — HeyGen is processing your avatar'});
           if(status==='completed'&&d.data?.video_url){
             const buf=Buffer.from(await fetch(d.data.video_url).then(r=>r.arrayBuffer()));
             const out='/tmp/avatar-'+jobId+'.mp4';
@@ -173,9 +191,9 @@ app.post('/generate',upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',ma
             saveJob(jobId,{status:'done',progress:100,message:'Your avatar video is ready!',outputPath:out});
             return;
           }
-          if(status==='failed')throw new Error('HeyGen failed:'+(d.data?.error||'unknown'));
+          if(status==='failed')throw new Error('HeyGen render failed:'+(d.data?.error||'unknown'));
         }catch(e){
-          if(e.message.includes('HeyGen failed'))throw e;
+          if(e.message.includes('render failed'))throw e;
           console.error('Poll error:',e.message);
         }
       }
