@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const nodemailer = require('nodemailer');
+const { spawn } = require('child_process');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,10 +15,13 @@ function loadOrders(){try{return JSON.parse(fs.readFileSync(ORDERS_FILE,'utf8'))
 function saveOrder(id,data){const o=loadOrders();o[id]=data;try{fs.writeFileSync(ORDERS_FILE,JSON.stringify(o));}catch(e){}}
 function getOrder(id){return loadOrders()[id];}
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: { user: 'qualitycapturevisuals@gmail.com', pass: process.env.GMAIL_APP_PASSWORD }
-});
+function ffmpeg(args){
+  return new Promise((resolve,reject)=>{
+    const p=spawn('ffmpeg',args,{stdio:['ignore','pipe','pipe']});
+    let e='';p.stderr.on('data',d=>e+=d);
+    p.on('close',c=>c===0?resolve():reject(new Error(e.slice(-200))));
+  });
+}
 
 app.post('/submit', upload.fields([{name:'photo',maxCount:1},{name:'voice',maxCount:1}]), async(req,res)=>{
   const orderId = uuidv4().slice(0,8).toUpperCase();
@@ -27,80 +30,79 @@ app.post('/submit', upload.fields([{name:'photo',maxCount:1},{name:'voice',maxCo
     const voice = req.files['voice']?.[0];
     if(!photo) return res.json({error:'No photo uploaded'});
     if(!voice) return res.json({error:'No voice uploaded'});
-
     const b = req.body;
-    const agentName = b.agentName||'Agent';
-    const script = b.script||'';
-    const occasion = b.occasion||'Just Listed';
-    const price = b.price||'';
-    const address = b.address||'';
-    const cityState = b.cityState||'';
-    const beds = b.beds||'';
-    const baths = b.baths||'';
-    const agentPhone = b.agentPhone||'';
-    const brokerage = b.brokerage||'';
-    const frameStyle = b.frame||'centered';
-    const bgColor = b.bgColor||'#1a1a2e';
-    const aspectRatio = b.aspectRatio||'9x16';
 
-    saveOrder(orderId, {
+    // Convert voice to mp3 and photo to jpg for storage
+    const mp3Path = '/tmp/order-'+orderId+'-voice.mp3';
+    const jpgPath = '/tmp/order-'+orderId+'-photo.jpg';
+    await ffmpeg(['-y','-i',voice.path,'-vn','-acodec','libmp3lame','-ar','44100','-ab','128k',mp3Path]);
+    await ffmpeg(['-y','-i',photo.path,'-vframes','1','-f','image2','-vcodec','mjpeg',jpgPath]);
+
+    // Clean up original uploads
+    try{fs.unlinkSync(photo.path);}catch(e){}
+    try{fs.unlinkSync(voice.path);}catch(e){}
+
+    const order = {
+      orderId,
       status: 'received',
-      agentName, agentPhone, brokerage,
-      address, cityState, price, beds, baths,
-      occasion, script, frameStyle, bgColor, aspectRatio,
+      agentName: b.agentName||'',
+      agentEmail: b.agentEmail||'',
+      agentPhone: b.agentPhone||'',
+      brokerage: b.brokerage||'',
+      address: b.address||'',
+      cityState: b.cityState||'',
+      price: b.price||'',
+      beds: b.beds||'',
+      baths: b.baths||'',
+      occasion: b.occasion||'Just Listed',
+      script: b.script||'',
+      frame: b.frame||'centered',
+      bgColor: b.bgColor||'#1a1a2e',
+      aspectRatio: b.aspectRatio||'9x16',
+      photoPath: jpgPath,
+      audioPath: mp3Path,
       submittedAt: new Date().toISOString()
-    });
-
-    const mailOptions = {
-      from: 'qualitycapturevisuals@gmail.com',
-      to: 'qualitycapturevisuals@gmail.com',
-      subject: 'QCV Avatar Request #'+orderId+' — '+agentName,
-      html: `
-        <h2>New Avatar Video Request</h2>
-        <p><strong>Order ID:</strong> ${orderId}</p>
-        <p><strong>Agent:</strong> ${agentName}</p>
-        <p><strong>Phone:</strong> ${agentPhone}</p>
-        <p><strong>Brokerage:</strong> ${brokerage}</p>
-        <hr>
-        <p><strong>Property:</strong> ${address}, ${cityState}</p>
-        <p><strong>Price:</strong> ${price}</p>
-        <p><strong>Beds/Baths:</strong> ${beds} bd / ${baths} ba</p>
-        <p><strong>Occasion:</strong> ${occasion}</p>
-        <hr>
-        <p><strong>Script:</strong></p>
-        <blockquote>${script}</blockquote>
-        <hr>
-        <p><strong>Frame:</strong> ${frameStyle} | <strong>Color:</strong> ${bgColor} | <strong>Ratio:</strong> ${aspectRatio}</p>
-      `,
-      attachments: [
-        { filename: 'headshot-'+agentName.replace(/\s/g,'-')+'.jpg', path: photo.path },
-        { filename: 'voice-'+agentName.replace(/\s/g,'-')+'.webm', path: voice.path }
-      ]
     };
 
-    await transporter.sendMail(mailOptions);
-
-    // Send confirmation to agent if email provided
-    if(b.agentEmail) {
-      await transporter.sendMail({
-        from: 'qualitycapturevisuals@gmail.com',
-        to: b.agentEmail,
-        subject: 'QCV Avatar Video — Order Received #'+orderId,
-        html: `<p>Hi ${agentName},</p><p>We received your avatar video request (Order #${orderId}). Your video will be ready within 24 hours.</p><p>— Quality Capture Visuals</p>`
-      });
-    }
-
+    saveOrder(orderId, order);
     res.json({ success: true, orderId });
+
   } catch(err) {
     console.error('Submit error:', err.message);
     res.json({ error: err.message });
   }
 });
 
+// Serve order files for Claude Cowork to download
+app.get('/order/:id/photo', (req,res)=>{
+  const o=getOrder(req.params.id);
+  if(!o||!o.photoPath) return res.status(404).send('Not found');
+  res.download(o.photoPath, 'photo-'+o.orderId+'.jpg');
+});
+
+app.get('/order/:id/audio', (req,res)=>{
+  const o=getOrder(req.params.id);
+  if(!o||!o.audioPath) return res.status(404).send('Not found');
+  res.download(o.audioPath, 'voice-'+o.orderId+'.mp3');
+});
+
 app.get('/order/:id', (req,res)=>{
-  const o = getOrder(req.params.id);
+  const o=getOrder(req.params.id);
   if(!o) return res.status(404).json({error:'Order not found'});
   res.json(o);
 });
 
-app.listen(PORT, ()=>console.log('QCV Avatar Submit running on port '+PORT));
+app.get('/orders', (req,res)=>{
+  const orders = loadOrders();
+  const list = Object.values(orders).sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+  res.json(list);
+});
+
+app.post('/order/:id/complete', express.json(), (req,res)=>{
+  const o=getOrder(req.params.id);
+  if(!o) return res.status(404).json({error:'Not found'});
+  saveOrder(req.params.id, {...o, status:'completed', completedAt: new Date().toISOString(), videoUrl: req.body.videoUrl||''});
+  res.json({success:true});
+});
+
+app.listen(PORT, ()=>console.log('QCV Avatar Orders running on port '+PORT));
