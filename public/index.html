@@ -7,8 +7,9 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f0f0f;color:#fff;min-height:100vh}
-.header{background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:16px 24px;display:flex;align-items:center}
+.header{background:#1a1a1a;border-bottom:1px solid #2a2a2a;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:18px;font-weight:700;color:#e07940}.logo span{color:#fff;font-weight:400}
+.badge{font-size:11px;background:#e07940;color:#fff;padding:3px 8px;border-radius:4px;font-weight:600}
 .container{max-width:720px;margin:0 auto;padding:32px 20px 80px}
 h2{font-size:22px;font-weight:600;margin-bottom:6px}
 .sub{color:#888;font-size:14px;margin-bottom:32px}
@@ -51,34 +52,38 @@ textarea{resize:vertical}
 .ao.sel{border-color:#e07940}.an{font-size:13px;font-weight:600}.as{font-size:10px;color:#888;margin-top:2px}
 .btn{width:100%;padding:14px;background:#e07940;border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:600;cursor:pointer;margin-top:8px;transition:background .2s}
 .btn:hover{background:#c8622a}.btn:disabled{background:#444;cursor:not-allowed}
-.pw2{display:none;margin-top:20px}
-.pb{background:#2a2a2a;border-radius:8px;height:8px;overflow:hidden;margin:10px 0}
-.pf{height:100%;background:#e07940;border-radius:8px;transition:width .3s;width:0%}
-.pm{font-size:13px;color:#888;text-align:center}
-.rw{display:none;margin-top:20px;text-align:center}
-.rw video{width:100%;max-width:400px;border-radius:10px;margin-bottom:12px}
-.db{display:inline-block;padding:10px 28px;background:#e07940;color:#fff;border-radius:8px;font-weight:600;text-decoration:none;font-size:14px}
 .tip{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:12px 16px;font-size:12px;color:#888;margin-bottom:20px;line-height:1.6}
 .tip strong{color:#e07940}
-.pow{font-size:10px;color:#555;text-align:center;margin-top:6px}
-.cc{font-size:11px;color:#555;text-align:right;margin-top:4px}
-.cc.warn{color:#e07940}
+.success{display:none;text-align:center;padding:40px 20px}
+.success .check{font-size:64px;margin-bottom:16px}
+.success h3{font-size:22px;font-weight:600;margin-bottom:8px}
+.success p{color:#888;font-size:14px;line-height:1.6}
+.oid{display:inline-block;background:#1a1a1a;border:1px solid #e07940;color:#e07940;padding:8px 20px;border-radius:8px;font-size:16px;font-weight:700;margin:16px 0}
 </style>
 </head>
 <body>
-<div class="header"><div class="logo">QCV <span>Avatar Creator</span></div></div>
+<div class="header">
+  <div class="logo">QCV <span>Avatar Creator</span></div>
+  <div class="badge">Powered by AI</div>
+</div>
 <div class="container">
+
+<div id="formWrap">
 <h2>AI Avatar Video Creator</h2>
-<p class="sub">Upload your headshot, type your script, record your voice — get a professional talking avatar video.</p>
-<div class="tip"><strong>How it works:</strong> Upload your headshot + record 30 seconds of your voice + type your script. Your AI avatar will speak your exact script in your cloned voice.</div>
+<p class="sub">Submit your info, photo, and voice recording. Your professional talking avatar video will be ready within 24 hours.</p>
+
+<div class="tip"><strong>How it works:</strong> Fill out the form below, upload your headshot, and record or upload your voice reading your script. QCV handles the rest — your avatar video will be emailed back to you within 24 hours.</div>
 
 <div class="sec">
 <div class="st">Agent Info</div>
 <div class="g2">
-<div><label>Agent Name</label><input type="text" id="agentName" placeholder="Jane Smith"></div>
+<div><label>Agent Name *</label><input type="text" id="agentName" placeholder="Jane Smith" required></div>
 <div><label>Phone</label><input type="tel" id="agentPhone" placeholder="(404) 555-0100"></div>
 </div>
-<div style="margin-top:10px"><label>Brokerage</label><input type="text" id="brokerage" placeholder="Keller Williams Atlanta"></div>
+<div class="g2" style="margin-top:10px">
+<div><label>Email (to receive your video) *</label><input type="email" id="agentEmail" placeholder="jane@kwatlanta.com" required></div>
+<div><label>Brokerage</label><input type="text" id="brokerage" placeholder="Keller Williams Atlanta"></div>
+</div>
 </div>
 
 <div class="sec">
@@ -100,28 +105,22 @@ textarea{resize:vertical}
 
 <div class="sec">
 <div class="st">Your Script</div>
-<div class="tip" style="margin-bottom:10px"><strong>Type exactly what your avatar will say.</strong> Keep it to 3-4 sentences — about 20-30 seconds max.</div>
-<label>Script (what your avatar speaks)</label>
-<textarea id="scriptText" rows="4" maxlength="500" placeholder="Hi, I'm Jane Smith with Keller Williams Atlanta. I'm excited to share this beautiful newly listed home at 142 Peachtree Street, priced at $485,000. Call me today to schedule your private showing!"></textarea>
-<div class="cc" id="cc">0 / 500</div>
+<div class="tip" style="margin-bottom:10px"><strong>Type exactly what you want your avatar to say.</strong> Keep it to 3-4 sentences — about 20-30 seconds.</div>
+<label>Script *</label>
+<textarea id="scriptText" rows="4" maxlength="500" placeholder="Hi, I'm Jane Smith with Keller Williams Atlanta. I'm excited to share this stunning newly listed home at 142 Peachtree Street, priced at $485,000. Call me today at (404) 555-0100 to schedule your private showing!" required></textarea>
+<div style="font-size:11px;color:#555;text-align:right;margin-top:4px" id="cc">0 / 500</div>
 </div>
 
 <div class="sec">
-<div class="st">Your Headshot</div>
-<div class="tip" style="margin-bottom:10px"><strong>Best results:</strong> Front-facing, well-lit portrait. Clear background. No sunglasses.</div>
-<div class="ub" id="photoBox"><div class="ic">📷</div><p>Tap to upload your portrait photo</p><p style="font-size:11px;color:#555;margin-top:4px">JPG or PNG recommended</p><input type="file" id="photoInput" accept="image/*"></div>
+<div class="st">Your Headshot *</div>
+<div class="tip" style="margin-bottom:10px"><strong>Best results:</strong> Front-facing, well-lit, clear background, no sunglasses.</div>
+<div class="ub" id="photoBox"><div class="ic">📷</div><p>Tap to upload your portrait photo</p><p style="font-size:11px;color:#555;margin-top:4px">JPG or PNG</p><input type="file" id="photoInput" accept="image/*"></div>
 <div class="pw" id="photoPreview"></div>
 </div>
 
 <div class="sec">
-<div class="st">Background Photo <span style="font-size:10px;color:#555;font-weight:400;text-transform:none">(optional)</span></div>
-<div class="ub" id="bgBox"><div class="ic">🏠</div><p>Tap to upload a property or background photo</p><input type="file" id="bgInput" accept="image/*"></div>
-<div class="pw" id="bgPreview"></div>
-</div>
-
-<div class="sec">
-<div class="st">Record Your Voice Sample</div>
-<div class="tip" style="margin-bottom:12px"><strong>30-60 seconds of your natural voice.</strong> Just talk normally — read something, describe a property, anything. This is used to clone your voice.</div>
+<div class="st">Record Your Voice *</div>
+<div class="tip" style="margin-bottom:12px"><strong>Record yourself reading your script.</strong> Speak clearly in a quiet room. This is the voice your avatar will use.</div>
 <div class="vs">
 <div class="vt">
 <button class="vtb act" onclick="switchTab('record',this)">Record Now</button>
@@ -133,7 +132,7 @@ textarea{resize:vertical}
 <div class="rp" id="recPreview"><audio id="recAudio" controls></audio><button class="redo" onclick="redoRec()">Record Again</button></div>
 </div>
 <div class="vc" id="tab-upload">
-<div class="ub" id="voiceBox"><div class="ic">🎤</div><p>Upload MP3 or WAV (30-60 seconds)</p><input type="file" id="voiceInput" accept="audio/*"></div>
+<div class="ub" id="voiceBox"><div class="ic">🎤</div><p>Upload MP3 or WAV (20-60 seconds)</p><input type="file" id="voiceInput" accept="audio/*"></div>
 <div id="vup"></div>
 </div>
 </div>
@@ -143,11 +142,11 @@ textarea{resize:vertical}
 <div class="st">Frame Style</div>
 <div class="fg">
 <div class="fo sel" data-frame="centered">
-<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="355" fill="#1a1a2e"/><text x="100" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text><rect x="16" y="26" width="168" height="105" rx="5" fill="#3a5a6a"/><text x="100" y="84" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)" font-family="sans-serif">Background photo</text><ellipse cx="100" cy="208" rx="30" ry="30" fill="#4a7060"/><path d="M52 320 Q52 242 100 242 Q148 242 148 320" fill="#4a7060"/><text x="100" y="215" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text><rect x="40" y="330" width="120" height="1.5" fill="#e07940"/><text x="100" y="345" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text></svg>
+<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="355" fill="#1a1a2e"/><text x="100" y="18" text-anchor="middle" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text><rect x="16" y="26" width="168" height="105" rx="5" fill="#3a5a6a"/><text x="100" y="84" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.4)" font-family="sans-serif">Background photo</text><ellipse cx="100" cy="208" rx="30" ry="30" fill="#4a7060"/><path d="M52 320 Q52 242 100 242 Q148 242 148 320" fill="#4a7060"/><text x="100" y="215" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Your Avatar</text><rect x="40" y="330" width="120" height="1.5" fill="#e07940"/><text x="100" y="345" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name · Brokerage</text></svg>
 <div class="fl">Frame 1 — Centered</div>
 </div>
 <div class="fo" data-frame="split">
-<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="355" fill="#111"/><text x="12" y="18" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text><rect x="82" y="26" width="106" height="90" rx="5" fill="#3a5a6a"/><text x="135" y="76" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="sans-serif">Background</text><rect x="12" y="125" width="118" height="190" rx="5" fill="#2a3a4a" opacity="0.4"/><ellipse cx="71" cy="190" rx="26" ry="26" fill="#4a6a7a"/><path d="M28 314 Q28 220 71 220 Q114 220 114 314" fill="#4a6a7a"/><text x="71" y="196" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Avatar</text><rect x="138" y="325" width="52" height="1.5" fill="#e07940"/><text x="190" y="338" text-anchor="end" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text></svg>
+<svg viewBox="0 0 200 355" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="355" fill="#111"/><text x="12" y="18" font-size="9" font-weight="700" fill="#fff" font-family="sans-serif" letter-spacing="1">OCCASION</text><rect x="82" y="26" width="106" height="90" rx="5" fill="#3a5a6a"/><text x="135" y="76" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.35)" font-family="sans-serif">Background</text><rect x="12" y="125" width="118" height="190" rx="5" fill="#2a3a4a" opacity="0.4"/><ellipse cx="71" cy="190" rx="26" ry="26" fill="#4a6a7a"/><path d="M28 314 Q28 220 71 220 Q114 220 114 314" fill="#4a6a7a"/><text x="71" y="196" text-anchor="middle" font-size="7" fill="rgba(255,255,255,0.5)" font-family="sans-serif">Your Avatar</text><rect x="138" y="325" width="52" height="1.5" fill="#e07940"/><text x="190" y="338" text-anchor="end" font-size="7" fill="rgba(255,255,255,0.6)" font-family="sans-serif">Agent Name</text></svg>
 <div class="fl">Frame 2 — Split</div>
 </div>
 </div>
@@ -166,16 +165,25 @@ textarea{resize:vertical}
 </div>
 </div>
 
-<button class="btn" id="genBtn" disabled>Generate Avatar Video</button>
-<div class="pow">Powered by ElevenLabs + HeyGen AI</div>
-<div class="pw2" id="progWrap"><div class="pb"><div class="pf" id="progFill"></div></div><div class="pm" id="progMsg">Starting...</div></div>
-<div class="rw" id="resultWrap"><video id="rv" controls playsinline></video><br><a class="db" id="dlBtn" download="qcv-avatar-video.mp4">Download Video</a></div>
+<button class="btn" id="submitBtn" disabled>Submit Avatar Request</button>
+<div style="font-size:11px;color:#555;text-align:center;margin-top:8px">Your video will be ready within 24 hours and emailed to you.</div>
+</div>
+
+<div class="success" id="successWrap">
+<div class="check">✅</div>
+<h3>Request Submitted!</h3>
+<p>Your avatar video order has been received.</p>
+<div class="oid" id="orderIdDisplay"></div>
+<p>Your professional talking avatar video will be<br>emailed to you within <strong style="color:#e07940">24 hours</strong>.</p>
+<p style="margin-top:16px;font-size:12px">Questions? Email <a href="mailto:qualitycapturevisuals@gmail.com" style="color:#e07940">qualitycapturevisuals@gmail.com</a></p>
+</div>
+
 </div>
 
 <script>
 const COLORS=[{name:'Midnight',hex:'#1a1a2e'},{name:'True Black',hex:'#0a0a0a'},{name:'QCV Orange',hex:'#e07940'},{name:'Warm Cream',hex:'#f0ebe0'},{name:'Navy',hex:'#0f1e35'}];
 let selColor=COLORS[0],selFrame='centered',selAR='9x16';
-let photoFile=null,bgFile=null,voiceBlob=null,voiceFile=null;
+let photoFile=null,voiceBlob=null,voiceFile=null;
 let mr=null,rc=[],ri=null,rs=0,isRec=false;
 
 const cg=document.getElementById('colorGrid');
@@ -190,24 +198,16 @@ document.querySelectorAll('.fo').forEach(el=>{el.onclick=()=>{document.querySele
 
 function switchTab(t,btn){document.querySelectorAll('.vtb').forEach(x=>x.classList.remove('act'));document.querySelectorAll('.vc').forEach(x=>x.classList.remove('show'));btn.classList.add('act');document.getElementById('tab-'+t).classList.add('show');}
 
-function setupUpload(bid,iid,pid,type){
-const box=document.getElementById(bid),inp=document.getElementById(iid),prev=document.getElementById(pid);
-if(!box||!inp)return;
-box.onclick=()=>inp.click();
-inp.onchange=()=>{if(inp.files[0])handle(inp.files[0],type,prev);};
-function handle(f,t,p){
-if(t==='photo'){photoFile=f;const img=document.createElement('img');img.className='pi';img.src=URL.createObjectURL(f);p.innerHTML='';p.appendChild(img);}
-else if(t==='bg'){bgFile=f;const img=document.createElement('img');img.className='pi';img.src=URL.createObjectURL(f);p.innerHTML='';p.appendChild(img);}
-else{voiceFile=f;voiceBlob=null;p.innerHTML='<audio controls src="'+URL.createObjectURL(f)+'" style="width:100%;margin-top:8px"></audio>';}
-checkReady();
-}
-}
-setupUpload('photoBox','photoInput','photoPreview','photo');
-setupUpload('bgBox','bgInput','bgPreview','bg');
-setupUpload('voiceBox','voiceInput','vup','voice');
+const photoBox=document.getElementById('photoBox'),photoInput=document.getElementById('photoInput');
+photoBox.onclick=()=>photoInput.click();
+photoInput.onchange=()=>{if(photoInput.files[0]){photoFile=photoInput.files[0];const img=document.createElement('img');img.className='pi';img.src=URL.createObjectURL(photoFile);document.getElementById('photoPreview').innerHTML='';document.getElementById('photoPreview').appendChild(img);checkReady();}};
+
+const voiceBox=document.getElementById('voiceBox'),voiceInput=document.getElementById('voiceInput');
+voiceBox.onclick=()=>voiceInput.click();
+voiceInput.onchange=()=>{if(voiceInput.files[0]){voiceFile=voiceInput.files[0];voiceBlob=null;document.getElementById('vup').innerHTML='<audio controls src="'+URL.createObjectURL(voiceFile)+'" style="width:100%;margin-top:8px"></audio>';checkReady();}};
 
 const sTA=document.getElementById('scriptText'),ccEl=document.getElementById('cc');
-sTA.oninput=()=>{const n=sTA.value.length;ccEl.textContent=n+' / 500';ccEl.className='cc'+(n>400?' warn':'');checkReady();};
+sTA.oninput=()=>{ccEl.textContent=sTA.value.length+' / 500';checkReady();};
 
 async function toggleRecord(){
 if(isRec){stopRec();return;}
@@ -220,28 +220,30 @@ mr.start();isRec=true;rs=0;
 document.getElementById('recordBtn').classList.add('rec');
 document.getElementById('rbt').textContent='Recording... Tap to Stop';
 ri=setInterval(()=>{rs++;const m=String(Math.floor(rs/60)).padStart(2,'0'),s=String(rs%60).padStart(2,'0');document.getElementById('recTimer').textContent=m+':'+s;if(rs>=60)stopRec();},1000);
-}catch(e){alert('Microphone access denied. Please allow microphone and try again.');}
+}catch(e){alert('Microphone access denied.');}
 }
 function stopRec(){if(mr&&mr.state!=='inactive')mr.stop();isRec=false;clearInterval(ri);document.getElementById('recordBtn').classList.remove('rec');document.getElementById('rbt').textContent='Tap to Record';}
 function redoRec(){voiceBlob=null;document.getElementById('recPreview').style.display='none';document.getElementById('recTimer').textContent='';checkReady();}
 
 function checkReady(){
 const hasVoice=voiceBlob||voiceFile;
-const hasScript=document.getElementById('scriptText').value.trim().length>10;
-document.getElementById('genBtn').disabled=!(photoFile&&hasVoice&&hasScript);
+const hasScript=sTA.value.trim().length>10;
+const hasName=document.getElementById('agentName').value.trim().length>0;
+const hasEmail=document.getElementById('agentEmail').value.trim().length>0;
+document.getElementById('submitBtn').disabled=!(photoFile&&hasVoice&&hasScript&&hasName&&hasEmail);
 }
+['agentName','agentEmail'].forEach(id=>document.getElementById(id).addEventListener('input',checkReady));
 
-document.getElementById('genBtn').onclick=async()=>{
-const btn=document.getElementById('genBtn');
-const pw=document.getElementById('progWrap'),pf=document.getElementById('progFill'),pm=document.getElementById('progMsg'),rw=document.getElementById('resultWrap');
-btn.disabled=true;pw.style.display='block';rw.style.display='none';
+document.getElementById('submitBtn').onclick=async()=>{
+const btn=document.getElementById('submitBtn');
+btn.disabled=true;btn.textContent='Submitting...';
 const fd=new FormData();
 fd.append('photo',photoFile);
-if(bgFile)fd.append('bgPhoto',bgFile);
 if(voiceBlob)fd.append('voice',voiceBlob,'recording.webm');
 else if(voiceFile)fd.append('voice',voiceFile);
-fd.append('script',document.getElementById('scriptText').value);
+fd.append('script',sTA.value);
 fd.append('agentName',document.getElementById('agentName').value);
+fd.append('agentEmail',document.getElementById('agentEmail').value);
 fd.append('agentPhone',document.getElementById('agentPhone').value);
 fd.append('brokerage',document.getElementById('brokerage').value);
 fd.append('address',document.getElementById('address').value);
@@ -249,29 +251,20 @@ fd.append('cityState',document.getElementById('cityState').value);
 fd.append('price',document.getElementById('price').value);
 fd.append('beds',document.getElementById('beds').value);
 fd.append('baths',document.getElementById('baths').value);
-fd.append('sqft',document.getElementById('sqft').value);
+fd.append('sqft',document.getElementById('sqft').value||'');
 fd.append('occasion',document.getElementById('occasion').value);
 fd.append('frame',selFrame);
 fd.append('bgColor',selColor.hex);
 fd.append('aspectRatio',selAR);
-const xhr=new XMLHttpRequest();
-xhr.open('POST','/generate');
-xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=Math.round((e.loaded/e.total)*20);pf.style.width=p+'%';pm.textContent='Uploading... '+p+'%';}};
-xhr.onload=()=>{if(xhr.status===200){const {jobId}=JSON.parse(xhr.responseText);poll(jobId,pf,pm,rw,btn);}else{pm.textContent='Upload failed.';btn.disabled=false;}};
-xhr.onerror=()=>{pm.textContent='Network error.';btn.disabled=false;};
-xhr.send(fd);
-};
-
-function poll(jobId,fill,msg,rw,btn){
-const iv=setInterval(async()=>{
 try{
-const d=await fetch('/progress/'+jobId).then(r=>r.json());
-fill.style.width=d.progress+'%';msg.textContent=d.message||'Processing...';
-if(d.status==='done'){clearInterval(iv);fill.style.width='100%';msg.textContent='Done!';rw.style.display='block';document.getElementById('rv').src='/download/'+jobId;document.getElementById('dlBtn').href='/download/'+jobId;btn.disabled=false;}
-else if(d.status==='error'){clearInterval(iv);msg.textContent='Error: '+(d.error||'Something went wrong');btn.disabled=false;}
-}catch(e){clearInterval(iv);msg.textContent='Connection lost.';}
-},2500);
-}
+const res=await fetch('/submit',{method:'POST',body:fd});
+const d=await res.json();
+if(d.error){alert('Error: '+d.error);btn.disabled=false;btn.textContent='Submit Avatar Request';return;}
+document.getElementById('formWrap').style.display='none';
+document.getElementById('successWrap').style.display='block';
+document.getElementById('orderIdDisplay').textContent='Order #'+d.orderId;
+}catch(e){alert('Submission failed. Please try again.');btn.disabled=false;btn.textContent='Submit Avatar Request';}
+};
 </script>
 </body>
 </html>
