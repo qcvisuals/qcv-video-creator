@@ -50,7 +50,7 @@ async function uploadAsset(filePath, mimeType) {
 
 async function registerPhotoAvatar(imageAssetId, imageKey) {
   // Step 1: Create avatar group
-  const g = await heygenPost('/v2/photo_avatar/avatar_group/create', { name: 'QCV-'+Date.now(), image_key: imageKey||imageAssetId });
+  const g = await heygenPost('/v2/photo_avatar/avatar_group/create', { name: 'QCV-'+Date.now(), image_key: 'image/'+imageAssetId+'/original' });
   if(g.error) throw new Error('Group create: '+JSON.stringify(g.error).slice(0,200));
   const groupId = g.data?.group_id||g.data?.id;
   if(!groupId) throw new Error('No group_id: '+JSON.stringify(g).slice(0,200));
@@ -160,7 +160,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     jobs[jobId]={status:'processing',progress:68,message:'Generating talking avatar video...'};
     const videoId=await generateVideo(lookId,audioId,aspectRatio);
 
-    jobs[jobId]={status:'processing',progress:75,message:'Rendering â 1-3 minutes...'};
+    jobs[jobId]={status:'processing',progress:75,message:'Rendering Ã¢ÂÂ 1-3 minutes...'};
     const videoUrl=await pollVideo(videoId,jobId);
 
     jobs[jobId]={status:'processing',progress:94,message:'Downloading your video...'};
