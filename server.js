@@ -137,11 +137,10 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     toClean.push(ttsPath);
 
     saveJob(jobId,{status:'processing',progress:44,message:'Processing photo...'});
-    // Convert photo to properly formatted JPEG with dimensions
+    // Use sharp to properly encode JPEG with dimensions
+    const sharp = require('sharp');
     const jpegPath='/tmp/photo-'+jobId+'.jpg';
-    await ffmpeg(['-y','-i',photo.path,'-q:v','2',jpegPath]);
-    saveJob(jobId,{status:'processing',progress:48,message:'Uploading photo...'});
-    const imgAsset=await uploadAsset(jpegPath,'image/jpeg');
+    await sharp(photo.path).jpeg({quality:90}).toFile(jpegPath);
     toClean.push(jpegPath);
 
     saveJob(jobId,{status:'processing',progress:52,message:'Creating avatar...'});
@@ -153,9 +152,9 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     saveJob(jobId,{status:'processing',progress:68,message:'Sending to HeyGen...'});
     const videoId=await generateVideo(talkingPhotoId,audAsset.id,aspectRatio);
 
-    saveJob(jobId,{status:'processing',progress:72,message:'Rendering your avatar Ã¢ÂÂ please wait...'});
+    saveJob(jobId,{status:'processing',progress:72,message:'Rendering your avatar ÃÂ¢ÃÂÃÂ please wait...'});
     
-    // Poll in background Ã¢ÂÂ survives Railway restarts via file
+    // Poll in background ÃÂ¢ÃÂÃÂ survives Railway restarts via file
     const start=Date.now();
     let attempt=0;
     const poll=async()=>{
@@ -166,7 +165,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
           const d=await heygenGet('/v1/video_status.get?video_id='+videoId);
           const status=d.data?.status;
           console.log('Poll status:',status,'attempt:',attempt);
-          saveJob(jobId,{status:'processing',progress:Math.min(74+attempt*2,94),message:'Rendering... ('+Math.round((Date.now()-start)/1000)+'s) Ã¢ÂÂ HeyGen is processing your avatar'});
+          saveJob(jobId,{status:'processing',progress:Math.min(74+attempt*2,94),message:'Rendering... ('+Math.round((Date.now()-start)/1000)+'s) ÃÂ¢ÃÂÃÂ HeyGen is processing your avatar'});
           if(status==='completed'&&d.data?.video_url){
             const buf=Buffer.from(await fetch(d.data.video_url).then(r=>r.arrayBuffer()));
             const out='/tmp/avatar-'+jobId+'.mp4';
