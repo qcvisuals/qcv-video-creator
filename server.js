@@ -44,13 +44,16 @@ async function uploadAsset(filePath, mimeType) {
   });
   const t=await r.text(); let d; try{d=JSON.parse(t);}catch(e){throw new Error('Upload: '+t.slice(0,200));}
   if(d.error) throw new Error('Upload: '+JSON.stringify(d.error).slice(0,200));
-  const id=d.data?.id||d.data?.asset_id||d.data?.image_asset_id; const key=d.data?.image_key||d.data?.url||id; if(!id) throw new Error('No asset ID: '+t.slice(0,200));
+  console.log('Upload response:', JSON.stringify(d.data));
+  const id=d.data?.id||d.data?.asset_id||d.data?.image_asset_id;
+  const key=d.data?.image_key||d.data?.key||('image/'+id+'/original');
+  if(!id) throw new Error('No asset ID: '+t.slice(0,200));
   return {id, key};
 }
 
 async function registerPhotoAvatar(imageAssetId, imageKey) {
   // Step 1: Create avatar group
-  const g = await heygenPost('/v2/photo_avatar/avatar_group/create', { name: 'QCV-'+Date.now(), image_key: 'image/'+imageAssetId+'/original' });
+  const g = await heygenPost('/v2/photo_avatar/avatar_group/create', { name: 'QCV-'+Date.now(), image_key: imageKey });
   if(g.error) throw new Error('Group create: '+JSON.stringify(g.error).slice(0,200));
   const groupId = g.data?.group_id||g.data?.id;
   if(!groupId) throw new Error('No group_id: '+JSON.stringify(g).slice(0,200));
@@ -160,7 +163,7 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     jobs[jobId]={status:'processing',progress:68,message:'Generating talking avatar video...'};
     const videoId=await generateVideo(lookId,audioId,aspectRatio);
 
-    jobs[jobId]={status:'processing',progress:75,message:'Rendering Ã¢ÂÂ 1-3 minutes...'};
+    jobs[jobId]={status:'processing',progress:75,message:'Rendering ÃÂ¢ÃÂÃÂ 1-3 minutes...'};
     const videoUrl=await pollVideo(videoId,jobId);
 
     jobs[jobId]={status:'processing',progress:94,message:'Downloading your video...'};
