@@ -44,19 +44,19 @@ async function uploadAsset(filePath, mimeType) {
   });
   const t=await r.text(); let d; try{d=JSON.parse(t);}catch(e){throw new Error('Upload: '+t.slice(0,200));}
   if(d.error) throw new Error('Upload: '+JSON.stringify(d.error).slice(0,200));
-  const id=d.data?.id||d.data?.asset_id; if(!id) throw new Error('No asset ID: '+t.slice(0,200));
-  return id;
+  const id=d.data?.id||d.data?.asset_id||d.data?.image_asset_id; const key=d.data?.image_key||d.data?.url||id; if(!id) throw new Error('No asset ID: '+t.slice(0,200));
+  return {id, key};
 }
 
-async function registerPhotoAvatar(imageAssetId) {
+async function registerPhotoAvatar(imageAssetId, imageKey) {
   // Step 1: Create avatar group
-  const g = await heygenPost('/v2/photo_avatar/avatar_group/create', { name: 'QCV-'+Date.now() });
+  const g = await heygenPost('/v2/photo_avatar/avatar_group/create', { name: 'QCV-'+Date.now(), image_key: imageKey||imageAssetId });
   if(g.error) throw new Error('Group create: '+JSON.stringify(g.error).slice(0,200));
   const groupId = g.data?.group_id||g.data?.id;
   if(!groupId) throw new Error('No group_id: '+JSON.stringify(g).slice(0,200));
 
   // Step 2: Add photo to group
-  const a = await heygenPost('/v2/photo_avatar/avatar_group/'+groupId+'/add', { image_asset_id: imageAssetId });
+  const a = await heygenPost('/v2/photo_avatar/avatar_group/'+groupId+'/add', { image_key: imageKey||imageAssetId, image_asset_id: imageAssetId });
   if(a.error) throw new Error('Add photo: '+JSON.stringify(a.error).slice(0,200));
   const lookId = a.data?.look_id||a.data?.talking_photo_id||a.data?.id;
   if(!lookId) throw new Error('No look_id: '+JSON.stringify(a).slice(0,200));
@@ -147,18 +147,20 @@ app.post('/generate', upload.fields([{name:'photo',maxCount:1},{name:'bgPhoto',m
     toClean.push(ttsPath);
 
     jobs[jobId]={status:'processing',progress:44,message:'Uploading photo...'};
-    const imageId=await uploadAsset(photo.path,photo.mimetype||'image/jpeg');
+    const imageAsset=await uploadAsset(photo.path,photo.mimetype||'image/jpeg');
+    const imageId=imageAsset.id||imageAsset; const imageKey=imageAsset.key||imageAsset;
 
     jobs[jobId]={status:'processing',progress:52,message:'Registering your avatar...'};
-    const lookId=await registerPhotoAvatar(imageId);
+    const lookId=await registerPhotoAvatar(imageId, imageKey);
 
     jobs[jobId]={status:'processing',progress:60,message:'Uploading cloned voice audio...'};
-    const audioId=await uploadAsset(ttsPath,'audio/mpeg');
+    const audioAsset=await uploadAsset(ttsPath,'audio/mpeg');
+    const audioId=audioAsset.id||audioAsset;
 
     jobs[jobId]={status:'processing',progress:68,message:'Generating talking avatar video...'};
     const videoId=await generateVideo(lookId,audioId,aspectRatio);
 
-    jobs[jobId]={status:'processing',progress:75,message:'Rendering — 1-3 minutes...'};
+    jobs[jobId]={status:'processing',progress:75,message:'Rendering â 1-3 minutes...'};
     const videoUrl=await pollVideo(videoId,jobId);
 
     jobs[jobId]={status:'processing',progress:94,message:'Downloading your video...'};
